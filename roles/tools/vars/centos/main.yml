@@ -1,0 +1,8 @@
+# vars file for tools
+__base_pkg: []
+
+__tools: []
+
+__tools_extensions: []
+
+__tools_from_snapd: []

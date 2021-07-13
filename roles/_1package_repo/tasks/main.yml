@@ -1,0 +1,47 @@
+---
+- name: APT_REPO | Include vars for specific os
+  include_vars: "{{ ansible_distribution }}/{{ hostvars[inventory_hostname].ansible_distribution_major_version }}.yml"
+  tags:
+    - always
+
+- name: APT_REPO | Ensure apt keys are managed
+  apt_key:
+    state: "{{ apt_repo_state }}"
+    id: "{{ item.id | default(omit) }}"
+    file: "{{ item.file | default(omit) }}"
+    keyserver: "{{ item.keyserver | default(omit) }}"
+    url: "{{ item.url | default(omit) }}"
+    validate_certs: yes
+  register: task_result
+  until: task_result is succeeded
+  retries: 30
+  delay: 10
+  become: yes
+  with_items:
+    - "{{ apt_repo_keys }}"
+  notify: update apt repository cache
+  when:
+    - ansible_os_family | lower == 'debian'
+  tags:
+    - always
+
+- name: APT_REPO | Ensure apt repositories are managed
+  apt_repository:
+    state: "{{ apt_repo_state }}"
+    repo: "{{ item.repo }}"
+    filename: "{{ item.file }}"
+    validate_certs: yes
+    update_cache: yes
+  register: task_result
+  until: task_result is succeeded
+  retries: 30
+  delay: 10
+  become: yes
+  with_items:
+    - "{{ apt_repo_repositories }}"
+  notify: update apt repository cache
+  when:
+    - ansible_os_family | lower == 'debian'
+  tags: always
+# Make sure the handler runs now and not at the end of the playbook
+# - meta: flush_handlers

@@ -1,0 +1,12 @@
+---
+- name: Tools | Include vars for specific os
+  include_vars: "{{ ansible_distribution | lower }}/main.yml"
+  tags:
+    - always
+
+- name: Echo the OS's distribution
+  debug:
+    msg: "{{ ansible_distribution }}"
+
+- name: Tools | Import install
+  import_tasks: install.yml

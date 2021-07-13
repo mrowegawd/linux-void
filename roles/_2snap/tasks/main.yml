@@ -1,0 +1,16 @@
+---
+- name: 00SNAP | Ensure snapd packages are managed | Debian
+  snap:
+    name: "{{ packages }}"
+    state: "{{ state }}"
+  retries: 3
+  delay: 3
+  register: jobcommon
+  until: jobcommon is success
+  vars:
+    packages: "{{ _apt_packages }}"
+    state: '{{ _apt_state | default("present") }}'
+  become: yes
+  when: ansible_os_family | lower == 'debian'
+  tags:
+    - always

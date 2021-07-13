@@ -1,0 +1,34 @@
+---
+- name: 00PACKAGE | Ensure apt packages are managed | Debian
+  apt:
+    name: "{{ packages }}"
+    state: "{{ state }}"
+    autoclean: yes
+    autoremove: yes
+    force_apt_get: yes
+    update_cache: yes
+    # cache_valid_time: 50000
+    install_recommends: False
+  retries: 3
+  delay: 3
+  register: jobcommon
+  until: jobcommon is success
+  vars:
+    packages: "{{ _apt_packages }}"
+    state: '{{ _apt_state | default("present") }}'
+  become: yes
+  when: ansible_os_family | lower == 'debian'
+  tags:
+    - always
+
+- name: 00PACKAGE | Ensure yum packages are managed | Redhat
+  yum:
+    name: "{{ packages }}"
+    state: "{{ state }}"
+  vars:
+    packages: "{{ _apt_packages }}"
+    state: '{{ _apt_state | default("present") }}'
+  become: yes
+  when: ansible_os_family | lower == 'redhat'
+  tags:
+    - always

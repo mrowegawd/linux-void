@@ -1,0 +1,69 @@
+---
+# vars file for tools
+__base_pkg:
+  - build-essential
+  - git
+  - make
+  - g++
+  - gcc
+  - cmake
+
+__tools:
+  # basic
+  - htop
+  - vim
+  - snapd
+  - unzip
+  - p7zip-full
+  - gzip
+  - unrar
+  - xz-utils # extract tar ext .xz
+  - whois
+  - expect
+  # - universal-ctags
+  - ccze
+  - jq
+  - task-spooler # task spooler
+  - pdfgrep
+  - cmatrix
+  - lxappearance
+  - multitail
+  - rsync
+  - dos2unix
+
+  # music
+  - mpc
+  - ncmpcpp
+  - mpd
+  - vlc
+
+  # video and screen
+  - simplescreenrecorder # recording
+  - mpv
+  - screenkey
+  - scrot # screenshot
+
+  # keyboard viewer
+  - screenkey
+
+  # todo manager
+  - taskwarrior
+  - remind
+  - incron
+
+  # color text command line
+  - figlet
+  - toilet
+
+  # pdf
+  - zathura
+
+__tools_extensions:
+  # zahtura
+  - zathura-cb
+  - zathura-djvu
+  - zathura-pdf-poppler
+  - zathura-ps
+
+__tools_from_snapd:
+  - newsboat
