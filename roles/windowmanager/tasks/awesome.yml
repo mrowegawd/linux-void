@@ -1,0 +1,188 @@
+---
+- become: yes
+  block:
+    - name: AWESOME | Ensure file awesome {{ temp_dir }} exists
+      file:
+        path: "{{ temp_dir }}/{{ item }}"
+        state: directory
+      with_items:
+        - awesome
+        - sxhkd
+        - xcb-util-xrm
+        - sutils
+        - luarocks
+        - xtitle
+        - xdo
+      tags:
+        - install
+        - awesome
+
+    - name: AWESOME | Clone awesome from github
+      git:
+        repo: "{{ item.repo }}"
+        dest: "{{ item.dest }}"
+        clone: "yes"
+        force: "yes"
+        recursive: "yes"
+        update: "yes"
+        track_submodules: "yes"
+      retries: 3
+      delay: 3
+      register: awesomegit
+      until: awesomegit is success
+      with_items:
+        - "{{ awesome_git }}"
+      tags:
+        - install
+        - awesome
+
+    - name: AWESOME | Clone xcb-util-xrm from github
+      git:
+        repo: "https://github.com/Airblader/xcb-util-xrm"
+        dest: "{{ temp_dir }}/xcb-util-xrm"
+        clone: yes
+        force: "yes"
+        update: no
+        recursive: false
+      retries: 3
+      delay: 3
+      register: jobxcbutilxrm
+      until: jobxcbutilxrm is success
+      tags:
+        - install
+        - awesome
+
+    - name: AWESOME | Install dependencies awesome
+      shell: |
+        make
+        make install
+      args:
+        executable: /bin/bash
+        chdir: "{{ temp_dir }}/{{ item }}"
+      with_items:
+        - sxhkd
+        - sutils
+        - xtitle
+        - xdo
+      tags:
+        - install
+        - awesome
+
+    - name: AWESOME | Ensure awesome dependencies installed
+      include_role:
+        name: _0package
+      vars:
+        _apt_packages: "{{ __awesome_deps }}"
+      tags:
+        - install
+        - awesome
+
+    - name: AWESOME | Install the build-dep for package awesome
+      apt:
+        pkg: awesome
+        state: build-dep
+        cache_valid_time: 3200
+        update_cache: yes
+
+    # - name: AWESOME | Install xcb-util-xrm
+    #   shell: |
+    #     ./autogen.sh --prefix=/usr
+    #     make && make install
+    #   args:
+    #     executable: /bin/bash
+    #     chdir: "{{ temp_dir }}/{{ item }}"
+    #   with_items:
+    #     - xcb-util-xrm
+    #   tags:
+    #     - install
+    #     - awesome
+
+    - name: AWESOME | Install lua
+      include_role:
+        name: _0package
+      vars:
+        _apt_packages: ["liblua{{ lua_version }}-dev", "lua{{ lua_version }}"]
+      tags:
+        - install
+        - awesome
+
+    - name: AWESOME | Ensure usr/bin/lua<version> are exists
+      stat:
+        path: "/usr/bin/lua{{ lua_version }}"
+      register: check_bin_lua
+      tags:
+        - install
+        - awesome
+
+    # lua5.3 do not install usr/bin/lua so we make sysmlinks
+    - name: AWESOME | Ensure symlink lua exists
+      file:
+        src: "/usr/bin/lua{{ lua_version }}"
+        dest: "/usr/bin/lua"
+        state: link
+      when: check_bin_lua.stat.exists == true
+
+    - name: AWESOMEE | Wget luarocks (package manager for lua)
+      get_url:
+        url: "{{ item.url }}"
+        dest: "{{ item.dest }}"
+        force: no
+      with_items:
+        - url: "https://github.com/luarocks/luarocks/archive/v3.0.4.tar.gz"
+          dest: "{{ temp_dir }}/luarocks"
+
+    - name: AWESOME | Extract luarocks.tar.gz
+      shell: |
+        tar xzf {{ item }}-3.0.4.tar.gz
+      args:
+        executable: /bin/bash
+        chdir: "{{ temp_dir }}/luarocks"
+      with_items:
+        - luarocks
+      # unarchive:
+      #   src: "{{ temp_dir }}/luarocks/luarocks-3.0.4.tar.gz"
+      #   dest: "{{ temp_dir }}/luarocks"
+      # creates: "{{ temp_dir }}/luarocks"
+      # remote_src: no
+
+    - name: AWESOME | Install luarocks
+      shell: |
+        ./configure && make build && make install
+      args:
+        executable: /bin/bash
+        chdir: "{{ temp_dir }}/luarocks/{{ item }}-3.0.4"
+      with_items:
+        - luarocks
+
+    - name: AWESOME | Install packages with luarocks
+      command: "/usr/local/bin/luarocks install {{ item }}"
+      retries: 3
+      delay: 3
+      register: jobluacrocks
+      until: jobluacrocks is success
+      with_items:
+        - luacov
+        - luacheck
+        - busted
+        - ldoc
+        - markdown
+        - lgi
+        - pulseaudio_widget
+
+    # sudo apt install build/*.deb
+    - name: AWESOME | Install awesome
+      shell: |
+        make CMAKE_ARGS="-DGENERATE_DOC:BOOLEAN=OFF" && make install
+      args:
+        executable: /bin/bash
+        chdir: "{{ temp_dir }}/{{ item }}"
+      with_items:
+        - awesome
+#     - name: AWESOME | Install deb awesome
+#       apt:
+#         deb: "*.deb"
+#       args:
+#         executable: /bin/bash
+#         chdir: "{{ temp_dir }}/{{ item }}/build"
+#       with_items:
+#         - awesome

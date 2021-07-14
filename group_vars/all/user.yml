@@ -1,0 +1,114 @@
+---
+# Main group for sudo command and allowing 'ssh' client
+
+_group_admin: "{{ 'admin' if ansible_os_family == 'Debian' else 'wheel' }}"
+
+_mypass_user_sudo: '{{ lookup("file", "~/moxconf/development/linux-void/tmp/user") }}'
+_mypass_user_password_md5: '{{ lookup("file", "~/moxconf/development/linux-void/tmp/userpass-SHA5") }}'
+_mypass_user_password: '{{ lookup("file", "~/moxconf/development/linux-void/tmp/userpass") }}'
+
+_mypass_sshkey: ""
+_mypass_sshkey_pub: ""
+_mypass_sshkey_pub_renew: ""
+
+###############################
+#
+# USERS ASSETS
+#
+###############################
+
+_user_admin:
+  - name: "{{ _mypass_user_sudo }}"
+    password: "{{ _mypass_user_password_md5 }}"
+    shell: "/bin/bash"
+    home: "yes"
+    group:
+      primary: "{{ _mypass_user_sudo }}"
+      secondary:
+        - "{{ _group_admin }}"
+    authorized:
+      new: "{{ _mypass_sshkey_pub }}"
+      renew: "{{ _mypass_sshkey_pub_renew }}"
+
+_user_common: []
+# - name: 'user_common'
+#   password: ''
+#   shell: '/bin/false'
+#   home: 'no'
+#   group:
+#     secondary: ''
+
+_visudo_rules:
+  - admin:
+      add:
+        - "User_Alias ADMINS = %{{ _group_admin }}"
+      rule:
+        - "ADMINS ALL=(ALL) PASSWD: ALL"
+
+# Digunakan pada roles system.find-and-destroy/config-system-account.yml
+# dg configurasi shell: /nologin
+_os_ignore_users:
+  - "vagrant"
+  - "kicthen"
+
+###############################
+#
+# CRONJOB
+#
+###############################
+# Ingat untuk cron jalan tiap 2 menit = */2
+# jika mau menjalankan cron tiap 3 jam maka, set menit ke 0 dan jam ke */2
+
+# Kosongkan dgn '[]' atau isi seperti contoh
+# _cronjob_add:
+#   - foruser: '{{ _user_admin[0].name }}'
+#     name: 'Cat benda mati'
+#     minute: "*/20"
+#     hour: "*"
+#     day: "*"
+#     month: "*"
+#     weekday: "*"
+#     job: 'cat /home/maman/.bashrc >> /home/maman/hello_user'
+#
+#   - foruser: '{{ _user_admin[0].name }}'
+#     name: 'hey bibeh'
+#     minute: 0
+#     hour: '*/2'
+#     day: "*"
+#     month: "*"
+#     weekday: "*"
+#     job: 'cat /home/maman/.bashrc >> /home/maman/taggarbaru'
+#
+#
+# _cronjob_del:
+#   - foruser: '{{ _user_admin[0].name }}'
+#     name: 'Cat benda mati'
+
+_cronjob_add:
+  - foruser: "{{ _user_admin[0].name }}"
+    name: "dropbox backup"
+    minute: "0"
+    hour: "*/4"
+    day: "*"
+    month: "*"
+    weekday: "*"
+    job: "export DISPLAY=:0 && bash ~/moxconf/exbin/for-local-bin/backupin"
+
+_cronjob_del: []
+
+###############################
+#
+# REMOVE CALL
+#
+###############################
+# Meremove jika apa saja jika dikehendaki
+# EXAMPLE:
+#   _remove_call_ppa:
+#     - 'ppa:neovim-ppa/unstable'
+#
+#   _remove_call_deb:
+#     - 'deb http://download.virtualbox.org/virtualbox/debian {{ ansible_distribution_release }} contrib'
+
+_remove_call_deb: []
+_remove_call_ppa: []
+_remove_call_pkg_apt: []

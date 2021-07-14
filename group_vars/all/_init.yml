@@ -1,0 +1,4 @@
+#> _init.yml ==================================================================
+# jika 'yes' update package akan di jalankan pada role _init
+# jika 'no' update tidak akan dijalankan
+_dev_mode: yes

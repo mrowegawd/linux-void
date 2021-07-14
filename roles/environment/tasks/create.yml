@@ -1,0 +1,70 @@
+# - name: CREATE-USER | Add group for run sudo and ssh command
+#   group:
+#     name: "{{ item }}"
+#     state: present
+#   with_items:
+#     - "{{ [_group_admin] + user_groups }}"
+#   tags:
+#     - install
+#     - groupadd
+
+- name: USER | Get the username running the deploy
+  become: false
+  local_action: command whoami
+  register: username_on_the_host
+  changed_when: false
+
+- name: USER | Check current path /home/user if exists
+  stat:
+    path: "/home/{{ username_on_the_host.stdout_lines[0] }}"
+  register: check_user_home
+  tags:
+    - install
+    - autoenv
+
+- block:
+    - name: USER | Create admin group
+      group:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - "{{[_group_admin]}}"
+      tags:
+        - install
+        - groupadd
+
+    - name: USER | Create admin user
+      user:
+        name: "{{ item.name }}"
+        password: "{{ item.password }}"
+        shell: "{{ item.shell }}"
+        createhome: "{{ item.home }}"
+        update_password: "always"
+        state: present
+        # tidak perlu lagi `create group primary`, karena sudah auto created
+        # group: '{{ user_admin_full.group.primary }}'
+        groups: '{{ item.group.secondary | join(",") }}'
+        append: "yes"
+      no_log: true
+      with_items:
+        - "{{ _user_admin + _user_common }}"
+      tags:
+        - install
+        - useradd
+
+    - name: USER | Check facts list home users
+      command: ls /home
+      register: user_create_dir_list_home
+      changed_when: false
+      tags:
+        - always
+
+    - name: USER | Hardening permission home users
+      file:
+        path: "/home/{{ item }}"
+        mode: 0700
+      with_items: "{{ user_create_dir_list_home.stdout_lines }}"
+      tags:
+        - medium
+
+  when: check_user_home.stat.exists != true

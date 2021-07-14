@@ -1,0 +1,56 @@
+---
+- name: RUBY | Register, check plugin ruby asdf if exists
+  become: yes
+  become_user: "{{ user_admin }}"
+  shell: |
+    source ~/.asdf/asdf.sh && asdf plugin-list
+  args:
+    executable: /bin/bash
+  register: ruby_asdf_plugin_list
+  changed_when: false
+  failed_when: false
+  ignore_errors: yes
+  tags:
+    - install
+    - programming
+    - ruby
+
+- name: RUBY | Add plugin asdf for ruby
+  become: yes
+  become_user: "{{ user_admin }}"
+  shell: |
+    source ~/.asdf/asdf.sh && asdf plugin-add ruby
+  args:
+    executable: /bin/bash
+  when:
+    - '"ruby" not in ruby_asdf_plugin_list.stdout'
+  tags:
+    - install
+    - programming
+    - ruby
+
+- name: RUBY | Install ruby version with asdf
+  become: yes
+  become_user: "{{ user_admin }}"
+  shell: |
+    source ~/.asdf/asdf.sh && asdf install ruby {{ ruby_version }}
+  args:
+    executable: /bin/bash
+  register: ruby_installed
+  tags:
+    - install
+    - programming
+    - ruby
+
+- name: RUBY | Set global ruby version
+  become: yes
+  become_user: "{{ user_admin }}"
+  shell: |
+    source ~/.asdf/asdf.sh && asdf global ruby {{ ruby_version }}
+  args:
+    executable: /bin/bash
+  when: ruby_installed is success
+  tags:
+    - install
+    - programming
+    - ruby

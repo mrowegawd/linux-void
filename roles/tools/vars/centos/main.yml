@@ -1,5 +1,7 @@
+---
+#>tools.yml ===================================================================
 # vars file for tools
-__base_pkg: []
+__tools_base_pkg: []
 
 __tools: []
 

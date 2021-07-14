@@ -1,0 +1,20 @@
+---
+- name: ASDF | Ensure git exists
+  include_role:
+    name: _0package
+  vars:
+    _apt_packages: ["git"]
+  tags:
+    - install
+
+- name: ASDF | Install clone asdf
+  become: yes
+  become_user: "{{ user_admin }}"
+  git:
+    repo: "https://github.com/asdf-vm/asdf.git"
+    dest: "/home/{{ user_admin }}/.asdf"
+    # version: "{{ _asdf_version }}"
+  tags:
+    - install
+    - programming
+    - asdf

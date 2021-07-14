@@ -1,0 +1,14 @@
+_accounts_security_disable_account_if_password_expires: no # V-71941
+_run_auth_security_remove_shosts_files: no
+
+#>> accounts.yml ==============================================================
+_accounts_pwquality_apply_rules: yes
+_accounts_pwquality_require_uppercase: yes # V-71903
+_accounts_pwquality_require_lowercase: yes # V-71905
+_accounts_pwquality_require_numeric: yes # V-71907
+_accounts_pwquality_require_special: yes # V-71909
+_accounts_pwquality_require_characters_changed: yes # V-71911
+_accounts_pwquality_require_character_classes_changed: yes # V-71913
+_accounts_pwquality_limit_repeated_characters: yes # V-71915
+_accounts_pwquality_limit_repeated_character_classes: yes # V-71917
+_accounts_pwquality_require_minimum_password_length: no # V-71935

@@ -1,0 +1,10 @@
+---
+# tasks file for browsers
+- name: BROWSERS | Include vars for specific os
+  include_vars: "{{ ansible_distribution | lower }}/main.yml"
+  tags:
+    - always
+
+- become: yes
+  block:
+    - import_tasks: firefox.yml

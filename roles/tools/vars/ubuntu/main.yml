@@ -1,5 +1,7 @@
+---
+#>tools.yml ===================================================================
 # vars file for tools
-__base_pkg:
+__tools_base_pkg:
   - build-essential
   - git
   - make
@@ -29,6 +31,8 @@ __tools:
   - multitail
   - rsync
   - dos2unix
+  - stow
+  - git
 
   # music
   - mpc
@@ -69,3 +73,22 @@ __tools_extensions:
   - zathura-ps
 
 __tools_from_snapd: []
+
+# tools yang di install melalui ppa
+__tools_ppa_keys: []
+
+__tools_ppa: []
+
+#>tmux.yml ====================================================================
+__tmux_deps:
+  - libevent-dev
+  - libncurses-dev
+  - automake
+  - autoconf
+  - gcc
+  - pkg-config
+
+#>telegram.yml ====================================================================
+__telegram_deps:
+  - xz-utils
+  - pulseaudio

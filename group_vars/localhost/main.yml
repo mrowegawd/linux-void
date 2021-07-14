@@ -1,0 +1,7 @@
+_mypass_user_sudo: '{{ lookup("file", "~/moxconf/development/linux-void/tmp/user") }}'
+_mypass_user_password_md5: '{{ lookup("file", "~/moxconf/development/linux-void/tmp/userpass-SHA5") }}'
+_mypass_user_password: '{{ lookup("file", "~/moxconf/development/linux-void/tmp/userpass") }}'
+
+_mypass_sshkey: ""
+_mypass_sshkey_pub: ""
+_mypass_sshkey_pub_renew: ""

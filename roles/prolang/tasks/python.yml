@@ -1,0 +1,71 @@
+---
+- name: PYTHON3 | Installing pre-reqs
+  include_role:
+    name: _0package
+  vars:
+    _apt_packages: "{{ __dep_pkgs }}"
+  tags:
+    - always
+    - install
+
+- name: PYTHON3 | Register, check plugin python if exists
+  become: yes
+  become_user: "{{ user_admin }}"
+  shell: |
+    source ~/.asdf/asdf.sh && asdf plugin-list
+  args:
+    executable: /bin/bash
+  register: python3_asdf_plugin_list
+  changed_when: false
+  failed_when: false
+  ignore_errors: yes
+  tags:
+    - install
+    - programming
+    - python3
+
+- name: PYTHON3 | Add python plugin for asdf
+  become: yes
+  become_user: "{{ user_admin }}"
+  shell: |
+    source ~/.asdf/asdf.sh && asdf plugin-add python
+  args:
+    executable: /bin/bash
+  when:
+    - '"python" not in python3_asdf_plugin_list.stdout'
+  tags:
+    - install
+    - programming
+    - python3
+
+- name: PYTHON3 | Install python3 and python2 with asdf
+  become: yes
+  become_user: "{{ user_admin }}"
+  shell: |
+    source ~/.asdf/asdf.sh && asdf install python {{ item }}
+  args:
+    executable: /bin/bash
+  register: python3_installed
+  with_items:
+    - "{{ python2_version }}"
+    - "{{ python3_version }}"
+  tags:
+    - install
+    - programming
+    - python3
+
+- name: PYTHON3 | Set global python3 and python2 with asdf
+  become: yes
+  become_user: "{{ user_admin }}"
+  shell: |
+    source ~/.asdf/asdf.sh && asdf global python {{ python3_version }} {{ python2_version }}
+  args:
+    executable: /bin/bash
+  with_items:
+    - "{{ python2_version }}"
+    - "{{ python3_version }}"
+  when: python3_installed is success
+  tags:
+    - install
+    - programming
+    - python3

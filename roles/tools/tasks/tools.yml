@@ -1,0 +1,44 @@
+---
+- name: TOOLS | Installing pre-reqs
+  include_role:
+    name: _0package
+  vars:
+    _apt_packages: "{{ __tools_base_pkg }}"
+  tags:
+    - always
+    - install
+
+- name: TOOLS | Install development tools for redhat
+  yum:
+    name: "@Development Tools"
+    state: present
+  when: ansible_os_family == 'RedHat'
+
+- name: TOOLS | Installing tools
+  include_role:
+    name: _0package
+  vars:
+    _apt_packages: "{{ __tools + __tools_extensions }}"
+  when: __tools | length > 0 and __tools_extensions | length > 0
+  tags:
+    - install
+
+- name: TOOLS | Adding ppa to system
+  ansible.builtin.apt_repository:
+    repo: "{{ item }}"
+    state: present
+    update_cache: yes
+    filename: ansible_misc
+  with_items: "{{ __tools_ppa_keys }}"
+  when: __tools_ppa | length > 0
+  tags:
+    - install
+
+- name: TOOLS | Installing tools with ppa
+  include_role:
+    name: _0package
+  vars:
+    _apt_packages: "{{ __tools_ppa }}"
+  when: __tools_ppa | length > 0
+  tags:
+    - install

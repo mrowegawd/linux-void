@@ -1,0 +1,17 @@
+---
+- name: PROLANG | Include vars for specific os
+  include_vars: "{{ ansible_distribution | lower }}/main.yml"
+  tags:
+    - always
+
+- become: yes
+  block:
+    - import_tasks: asdf.yml
+    - import_tasks: python.yml
+    - import_tasks: nodejs.yml
+    - import_tasks: rust.yml
+    - import_tasks: ruby.yml
+    - import_tasks: golang.yml
+
+    # - import_tasks: java.yml
+    # - import_tasks: php.yml

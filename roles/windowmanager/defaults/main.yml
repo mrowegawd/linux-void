@@ -1,0 +1,47 @@
+---
+#>bspwm.yml ===================================================================
+bspwm_git:
+  - repo: "https://github.com/baskerville/bspwm.git"
+    dest: "{{ temp_dir }}/bspwm"
+  - repo: "https://github.com/baskerville/sxhkd.git"
+    dest: "{{ temp_dir }}/sxhkd"
+  - repo: "https://github.com/baskerville/sutils.git"
+    dest: "{{ temp_dir }}/sutils"
+  - repo: "https://github.com/baskerville/xtitle.git"
+    dest: "{{ temp_dir }}/xtitle"
+  - repo: "https://github.com/baskerville/xdo.git"
+    dest: "{{ temp_dir }}/xdo"
+
+#>awesome.yml =================================================================
+awesome_git:
+  - repo: "https://github.com/awesomewm/awesome"
+    dest: "{{ temp_dir }}/awesome"
+  - repo: "https://github.com/baskerville/sxhkd.git"
+    dest: "{{ temp_dir }}/sxhkd"
+  - repo: "https://github.com/baskerville/sutils.git"
+    dest: "{{ temp_dir }}/sutils"
+  - repo: "https://github.com/baskerville/xtitle.git"
+    dest: "{{ temp_dir }}/xtitle"
+  - repo: "https://github.com/baskerville/xdo.git"
+    dest: "{{ temp_dir }}/xdo"
+
+lua_version: "{{ _install_programming.lua.lua_version }}"
+
+#>dwm.yml =====================================================================
+dwm_git:
+  - repo: "https://github.com/sunilRF9/Custom-DWM-Build"
+    dest: "{{ temp_dir }}/dwm"
+
+#>wm_tools.yml ================================================================
+#> rofi
+rofi_check_version: "0.15.2"
+
+rofi_check_name: "check-{{ rofi_check_version }}"
+rofi_check_url_git: "https://github.com/libcheck/check/releases/download"
+rofi_check_url_download: "{{ rofi_check_url_git }}/0.15.2/{{ rofi_check_name }}.tar.gz"
+# https://github.com/libcheck/check/archive/refs/tags/0.15.2.tar.gz
+
+#> polybar
+polybar_git:
+  - url: "https://github.com/jaagr/polybar"
+    dest: "{{ temp_dir }}/polybar"

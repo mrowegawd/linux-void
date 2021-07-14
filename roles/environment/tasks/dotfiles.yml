@@ -1,0 +1,33 @@
+---
+- name: DOTFILES | Ensure minimal pkg's exists
+  include_role:
+    name: _0package
+  vars:
+    _apt_packages: ["git", "stow", "vim", "rsync"]
+  tags:
+    - install
+
+- name: DOTFILES | Git clone my dotfiles from github
+  become: yes
+  become_user: "{{ user_admin }}"
+  git:
+    repo: "https://github.com/mrowegawd/dotfiles.git"
+    dest: "/home/{{ user_admin }}/moxconf/development/dotfiles"
+    version: "test-plugin"
+  changed_when: false
+  tags:
+    - install
+    - programming
+    - asdf
+
+- name: DOTFILES | Install the dotfiles
+  become: yes
+  become_user: "{{ user_admin }}"
+  shell: |
+    bash -lc 'bash install.sh'
+  args:
+    warn: no
+    chdir: "/home/{{ user_admin }}/moxconf/development/dotfiles"
+  changed_when: false
+  tags:
+    - always

@@ -1,0 +1,91 @@
+---
+- name: NODEJS | Installing pre-reqs
+  include_role:
+    name: _0package
+  vars:
+    _apt_packages: "{{ __dep_nodejs_pkgs }}"
+  tags:
+    - always
+    - install
+
+- name: NODEJS | Register, check asdf nodejs plugin if exists
+  become: yes
+  become_user: "{{ user_admin }}"
+  shell: |
+    source ~/.asdf/asdf.sh && asdf plugin-list
+  args:
+    executable: /bin/bash
+  register: nodejs_asdf_plugin_list
+  changed_when: false
+  failed_when: false
+  ignore_errors: yes
+  tags:
+    - install
+    - programming
+    - nodejs
+
+- name: NODEJS | Add asdf plugin nodejs
+  become: yes
+  become_user: "{{ user_admin }}"
+  shell: |
+    source ~/.asdf/asdf.sh && asdf plugin-add nodejs
+  args:
+    executable: /bin/bash
+  when:
+    - '"nodejs" not in nodejs_asdf_plugin_list.stdout'
+  tags:
+    - install
+    - programming
+    - nodejs
+
+- name: NODEJS | Import OpenPGP key
+  become: yes
+  become_user: "{{ user_admin }}"
+  shell: |
+    source ~/.asdf/asdf.sh && bash ~/.asdf/plugins/nodejs/bin/import-release-team-keyring
+  args:
+    executable: /bin/bash
+  when: '"nodejs" not in nodejs_asdf_plugin_list.stdout'
+  tags:
+    - install
+    - programming
+    - nodejs
+
+- name: NODEJS | Install nodejs version with asdf
+  become: yes
+  become_user: "{{ user_admin }}"
+  shell: |
+    source ~/.asdf/asdf.sh && asdf install nodejs {{ nodejs_version }}
+  args:
+    executable: /bin/bash
+  register: nodejs_installed
+  tags:
+    - install
+    - programming
+    - nodejs
+
+- name: NODEJS | Set global nodejs version with asdf
+  become: yes
+  become_user: "{{ user_admin }}"
+  shell: |
+    source ~/.asdf/asdf.sh && asdf global nodejs {{ nodejs_version }}
+  args:
+    executable: /bin/bash
+  when: nodejs_installed is success
+  tags:
+    - install
+    - programming
+    - nodejs
+
+- name: NODEJS | Install yarn globally
+  become: yes
+  become_user: "{{ user_admin }}"
+  shell: |
+    source ~/.asdf/asdf.sh && npm install -g yarn
+  args:
+    executable: /bin/bash
+  when: nodejs_installed is success
+  tags:
+    - install
+    - programming
+    - nodejs

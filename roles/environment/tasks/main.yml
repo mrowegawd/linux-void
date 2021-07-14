@@ -1,0 +1,31 @@
+---
+- name: Environment | Include vars for specific os
+  include_vars: "{{ ansible_distribution | lower }}/main.yml"
+  tags:
+    - always
+
+- become: yes
+  block:
+    - name: USERS | Check for .shosts or shosts.equiv files
+      find:
+        paths: /
+        recurse: yes
+        hidden: yes
+        patterns: ".shosts,shosts.equiv"
+      changed_when: False
+      register: shosts_find
+      async: 300
+      poll: 0
+      when:
+        # - not check_mode | bool
+        - _run_auth_security_remove_shosts_files | bool
+      tags:
+        - high
+        - auth
+    - import_tasks: accounts.yml
+    - import_tasks: auth.yml
+    - import_tasks: create.yml
+    - import_tasks: visudo.yml
+    - import_tasks: folders.yml
+    - import_tasks: dotfiles.yml
+    - import_tasks: locale.yml

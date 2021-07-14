@@ -4,9 +4,9 @@
   tags:
     - always
 
-- name: Echo the OS's distribution
-  debug:
-    msg: "{{ ansible_distribution }}"
-
-- name: Tools | Import install
-  import_tasks: install.yml
+- become: yes
+  block:
+    - import_tasks: tools.yml
+    # - import_tasks: tools_programming.yml
+    # - import_tasks: tmux.yml
+    - import_tasks: telegram.yml

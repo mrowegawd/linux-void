@@ -1,0 +1,18 @@
+---
+# defaults file for prolang
+
+#> python.yml =================================================================
+python3_version: "{{ _install_programming.python3.python3_version }}"
+python2_version: "{{ _install_programming.python3.python2_version }}"
+
+#> rust.yml ===================================================================
+rust_version: "{{ _install_programming.rust.rust_version }}"
+
+#> nodejs.yml =================================================================
+nodejs_version: "{{ _install_programming.nodejs.nodejs_version }}"
+
+#> ruby.yml =================================================================
+ruby_version: "{{ _install_programming.ruby.ruby_version }}"
+
+#> golang.yml =================================================================
+go_version: "{{ _install_programming.golang.golang_version }}"

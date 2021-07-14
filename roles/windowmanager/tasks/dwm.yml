@@ -1,0 +1,51 @@
+---
+- become: yes
+  block:
+    - name: DWM | Ensure dwm dependencies installed
+      include_role:
+        name: _0package
+      vars:
+        _apt_packages: "{{ __dwm_deps }}"
+      tags:
+        - install
+        - dwm
+
+    - name: DWM | Ensure file dwm {{ temp_dir }} exists
+      file:
+        path: "{{ temp_dir }}/{{ item }}"
+        state: directory
+      with_items:
+        - dwm
+      tags:
+        - install
+        - dwm
+
+    - name: DWM | Clone dwm from github
+      git:
+        repo: "{{ item.repo }}"
+        dest: "{{ item.dest }}"
+        clone: yes
+        update: no
+        force: yes
+        recursive: false
+      retries: 3
+      delay: 3
+      register: jobdwmgit
+      until: jobdwmgit is success
+      with_items:
+        - "{{ dwm_git }}"
+      tags:
+        - install
+        - dwm
+
+    - name: DWM | Install dwm
+      shell: |
+        make && make install
+      args:
+        executable: /bin/bash
+        chdir: "{{ temp_dir }}/{{ item }}"
+      with_items:
+        - dwm
+      tags:
+        - install
+        - dwm

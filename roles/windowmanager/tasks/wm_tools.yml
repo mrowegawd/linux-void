@@ -1,0 +1,173 @@
+# dunst
+- become: yes
+  block:
+    - name: DUNST | Install dunst
+      include_role:
+        name: _0package
+      vars:
+        _apt_packages: "{{ __dunst_deps }}"
+      tags:
+        - install
+        - dunst
+
+# rofi
+- name: ROFI | Check if Rofi commands already installed
+  shell: >
+    bash -lc 'if command -v rofi &> /dev/null;
+    then echo "good"; else echo "not found"; fi'
+  args:
+    warn: no
+  changed_when: false
+  register: check_rofi_command
+  tags:
+    - always
+
+- become: yes
+  block:
+    - name: ROFI | Ensure rofi folder temp exists
+      file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - "{{ temp_dir }}/rofi"
+        - "{{ temp_dir }}/check"
+      tags:
+        - install
+        - rofi
+
+    - name: ROFI | Install build dependencies for rofi
+      include_role:
+        name: _0package
+      vars:
+        _apt_packages: "{{ __rofi_deps }}"
+      tags:
+        - install
+        - rofi
+
+    - name: ROFI | Download check-{{ rofi_check_version }}.tar.gz from git
+      get_url:
+        url: "{{ rofi_check_url_download }}"
+        dest: "{{ temp_dir }}/check"
+      tags:
+        - install
+        - rofi
+
+    - name: ROFI | Uncompress check-{{ rofi_check_version }}.tar.gz
+      command: >
+        bash -lc 'tar xzf {{ rofi_check_name }}.tar.gz'
+        warn=False
+      args:
+        chdir: "{{ temp_dir }}/check"
+      changed_when: false
+      tags:
+        - install
+        - rofi
+
+    - name: ROFI | Install check-{{ rofi_check_version }} (with autoreconf)
+      shell: |
+        autoreconf --force --install
+        ./configure
+        make check
+        sudo make install
+        sudo ldconfig
+        warn=False
+      args:
+        chdir: "{{ temp_dir }}/check/{{ rofi_check_name }}"
+      changed_when: false
+      tags:
+        - install
+        - rofi
+
+    - name: ROFI | Clone rofi from github
+      git:
+        repo: "https://github.com/DaveDavenport/rofi"
+        dest: "{{ temp_dir }}/rofi"
+        depth: 1
+        version: "master"
+        clone: "yes"
+        force: "yes"
+        recursive: "yes"
+        update: "yes"
+        track_submodules: "yes"
+      tags:
+        - install
+        - rofi
+
+    - name: ROFI | Install rofi (with autoreconf)
+      shell: |
+        autoreconf --force --install
+        rm -Rf build/
+        mkdir -p build
+        cd build/
+        ../configure
+        make
+        sudo make install
+        warn=False
+      args:
+        chdir: "{{ temp_dir }}/rofi"
+      tags:
+        - install
+        - rofi
+
+  when: check_rofi_command.stdout.find('not found') != -1
+
+# polybar
+- name: POLYBAR | Check if Rofi commands already installed
+  shell: >
+    bash -lc 'if command -v polybar &> /dev/null;
+    then echo "good"; else echo "not found"; fi'
+  args:
+    warn: no
+  changed_when: false
+  register: check_polybar_command
+  tags:
+    - always
+
+- become: yes
+  block:
+    - name: POLYBAR | Install polybar deps
+      include_role:
+        name: _0package
+      vars:
+        _apt_packages: "{{ __polybar_deps }}"
+      tags:
+        - install
+        - polybar
+
+    - name: POLYBAR | Ensure polybar folder temp exists
+      file:
+        path: "{{ temp_dir }}/polybar"
+        state: directory
+      tags:
+        - install
+        - polybar
+
+    - name: POLYBAR | Clone polybar dari github
+      git:
+        repo: "{{ item.url }}"
+        dest: "{{ item.dest }}"
+        version: "master"
+        accept_hostkey: "yes"
+        force: "yes"
+        recursive: yes
+      with_items: "{{ polybar_git }}"
+      changed_when: false
+      tags:
+        - install
+        - polybar
+
+    - name: POLYBAR | Install polybar
+      shell: |
+        mkdir build
+        cd build
+        cmake ..
+        make -j$(nproc)
+        sudo make install
+      args:
+        chdir: "{{ temp_dir }}/polybar"
+      changed_when: false
+      tags:
+        - install
+        - polybar
+
+  when: check_polybar_command.stdout.find('not found') != -1

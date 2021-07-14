@@ -1,0 +1,24 @@
+---
+#>firefox.yml =================================================================
+
+firefox_install: true
+
+firefox_policies:
+  policies:
+    DisableAppUpdate: true
+    DisableBuiltinPDFViewer: true
+    DisableDeveloperTools: false
+    DisableFeedbackCommands: true
+    DisableFirefoxStudies: true
+    DisablePocket: true
+    DisableTelemetry: true
+    DontCheckDefaultBrowser: true
+    InstallAddonsPermission:
+      Default: false
+    NoDefaultBookmarks: true
+    OverrideFirstRunPage: ""
+    OverridePostUpdatePage: ""
+    OfferToSaveLogins: true
+    Homepage:
+      StartPage: homepage
+      URL: about:newtab

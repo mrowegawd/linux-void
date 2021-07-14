@@ -1,0 +1,57 @@
+---
+- name: GOLANG | Register, check asdf golang plugin if exists
+  become: yes
+  become_user: "{{ user_admin }}"
+  shell: |
+    source ~/.asdf/asdf.sh && asdf plugin-list
+  args:
+    executable: /bin/bash
+  register: golang_asdf_plugin_list
+  changed_when: false
+  failed_when: false
+  ignore_errors: yes
+  tags:
+    - install
+    - programming
+    - golang
+
+- name: GOLANG | Add asdf plugin golang
+  become: yes
+  become_user: "{{ user_admin }}"
+  shell: |
+    source ~/.asdf/asdf.sh && asdf plugin-add golang
+  args:
+    executable: /bin/bash
+  when:
+    - '"golang" not in golang_asdf_plugin_list.stdout'
+  tags:
+    - install
+    - programming
+    - golang
+
+- name: GOLANG | Install golang version with asdf
+  become: yes
+  become_user: "{{ user_admin }}"
+  shell: |
+    source ~/.asdf/asdf.sh && asdf install golang {{ go_version }}
+  args:
+    executable: /bin/bash
+  register: golang_installed
+  tags:
+    - install
+    - programming
+    - golang
+    - skip_ansible_lint
+
+- name: GOLANG | Set global golang version with asdf
+  become: yes
+  become_user: "{{ user_admin }}"
+  shell: |
+    source ~/.asdf/asdf.sh && asdf global golang {{ go_version }}
+  args:
+    executable: /bin/bash
+  when: golang_installed is success
+  tags:
+    - install
+    - programming
+    - golang

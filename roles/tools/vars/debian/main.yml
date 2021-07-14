@@ -1,6 +1,7 @@
 ---
+#>tools.yml ===================================================================
 # vars file for tools
-__base_pkg:
+__tools_base_pkg:
   - build-essential
   - git
   - make
@@ -30,6 +31,8 @@ __tools:
   - multitail
   - rsync
   - dos2unix
+  - stow
+  - git
 
   # music
   - mpc
@@ -46,10 +49,13 @@ __tools:
   # keyboard viewer
   - screenkey
 
+  # feed viewer
+  - newsboat
+
   # todo manager
   - taskwarrior
   - remind
-  - incron
+  # - incron      # dunno why cannot install incron on debian?!
 
   # color text command line
   - figlet
@@ -65,5 +71,25 @@ __tools_extensions:
   - zathura-pdf-poppler
   - zathura-ps
 
-__tools_from_snapd:
-  - newsboat
+# tools yang di install melalui ppa
+__tools_ppa_keys:
+  []
+  # - "ppa:altair-ibn-la-ahad/incron"
+
+__tools_ppa:
+  []
+  # - incron
+
+#>tmux.yml ====================================================================
+__tmux_deps:
+  - libevent-dev
+  - libncurses-dev
+  - automake
+  - autoconf
+  - gcc
+  - pkg-config
+
+#>telegram.yml ====================================================================
+__telegram_deps:
+  - xz-utils
+  - pulseaudio

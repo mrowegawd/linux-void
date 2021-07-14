@@ -1,0 +1,6 @@
+#>> accounts.yml ==============================================================
+__pam_auth_file: /etc/pam.d/common-auth
+__pam_password_file: /etc/pam.d/common-password
+
+#>> auth.yml ==================================================================
+__pam_postlogin_file: /etc/pam.d/login

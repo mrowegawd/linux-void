@@ -1,2 +1,49 @@
 ---
-# defaults file for tools
+#>tmux.yml ====================================================================
+tmux_version: "3.2a"
+tmux_download:
+  - url: "https://github.com/tmux/tmux/releases/download/{{ tmux_version }}/tmux-{{ tmux_version }}.tar.gz"
+    dest: "{{ temp_dir }}/tmux"
+    name: "tmux-{{ tmux_version }}"
+
+#>tools_programming.yml =======================================================
+tools_programming_python: []
+
+tools_programming_ruby:
+  - lolcat
+
+tools_programming_golang:
+  - "mvdan.cc/sh/cmd/shfmt"
+  - "github.com/jesseduffield/lazydocker"
+  - "github.com/jesseduffield/lazygit"
+  - "github.com/shurcooL/markdownfmt" # markdownfmt for vim
+
+tools_programming_rust:
+  - ripgrep
+  - exa
+
+  # fd find
+  - fd-find
+
+  # alternative cat command
+  - "--locked bat"
+
+tools_programming_nodejs:
+  # https://github.com/tldr-pages/tldr
+  - tldr
+
+  # Make any web page a desktop application
+  - nativefier
+
+tools_programming_pkg:
+  - shellcheck
+
+  # for plantuml dependencies
+  - graphviz
+
+#>telegram.yml ================================================================
+#https://updates.tdesktop.com/tlinux/tsetup.2.8.10.tar.xz
+telegram_version: "tsetup.2.8.10"
+telegram_link_download:
+  "https://telegram.org/dl/desktop/linux/{{ telegram_version }}.tar.xz"
+  # https://updates.tdesktop.com/tlinux/{{ telegram_version }}.tar.xz

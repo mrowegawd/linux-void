@@ -1,0 +1,56 @@
+---
+- name: RUST | Register, check plugin rust if exists
+  become: yes
+  become_user: "{{ user_admin }}"
+  shell: |
+    source ~/.asdf/asdf.sh && asdf plugin-list
+  args:
+    executable: /bin/bash
+  register: rust_asdf_check_list
+  changed_when: false
+  failed_when: false
+  ignore_errors: yes
+  tags:
+    - install
+    - programming
+    - rust
+
+- name: RUST | Add rust plugin for asdf
+  become: yes
+  become_user: "{{ user_admin }}"
+  shell: |
+    source ~/.asdf/asdf.sh && asdf plugin-add rust
+  args:
+    executable: /bin/bash
+  when:
+    - '"rust" not in rust_asdf_check_list.stdout'
+  tags:
+    - install
+    - programming
+    - rust
+
+- name: RUST | Install rust version with asdf
+  become: yes
+  become_user: "{{ user_admin }}"
+  shell: |
+    source ~/.asdf/asdf.sh && asdf install rust {{ rust_version }}
+  args:
+    executable: /bin/bash
+  register: rust_installed
+  tags:
+    - install
+    - programming
+    - rust
+
+- name: RUST | Set global rust version
+  become: yes
+  become_user: "{{ user_admin }}"
+  shell: |
+    source ~/.asdf/asdf.sh && asdf global rust {{ rust_version }}
+  args:
+    executable: /bin/bash
+  when: rust_installed is success
+  tags:
+    - install
+    - programming
+    - rust

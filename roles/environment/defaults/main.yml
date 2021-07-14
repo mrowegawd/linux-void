@@ -1,0 +1,140 @@
+---
+#>> locale.yml ================================================================
+config_system_locale: "pt_US.UTF-8"
+config_system_language: "en_US.UTF-8"
+
+#>> accounts.yml ==============================================================
+accounts_password_quality:
+  - parameter: ucredit
+    value: -1
+    stig_id: V-71903
+    description: "Password must contain at least one upper-case character"
+    enabled: "{{ _accounts_pwquality_require_uppercase }}"
+  - parameter: lcredit
+    value: -1
+    stig_id: V-71905
+    description: "Password must contain at least one lower-case character"
+    enabled: "{{ _accounts_pwquality_require_lowercase }}"
+  - parameter: dcredit
+    value: -1
+    stig_id: V-71907
+    description: "Password must contain at least one numeric character"
+    enabled: "{{ _accounts_pwquality_require_numeric }}"
+  - parameter: ocredit
+    value: -1
+    stig_id: V-71909
+    description: "Password must contain at least one special character"
+    enabled: "{{ _accounts_pwquality_require_special }}"
+  - parameter: difok
+    value: 8
+    stig_id: V-71911
+    description: "Password must have at least eight characters changed"
+    enabled: "{{ _accounts_pwquality_require_characters_changed }}"
+  - parameter: minclass
+    value: 4
+    stig_id: V-71913
+    description: "Password must have at least four character classes changed"
+    enabled: "{{ _accounts_pwquality_require_character_classes_changed }}"
+  - parameter: maxrepeat
+    value: 3
+    stig_id: V-71915
+    description: "Password must have at most three characters repeated consecutively"
+    enabled: "{{ _accounts_pwquality_limit_repeated_characters }}"
+  - parameter: maxclassrepeat
+    value: 4
+    stig_id: V-71917
+    description: "Password must have at most four characters in the same character class repeated consecutively"
+    enabled: "{{ _accounts_pwquality_limit_repeated_character_classes }}"
+  - parameter: minlen
+    value: 15
+    stig_id: V-71935
+    description: "Passwords must be a minimum of 15 characters in length"
+    enabled: "{{ _accounts_pwquality_require_minimum_password_length }}"
+# defaults file for environment
+
+# Ensure user/group admin utilities only store encrypted passwords.
+accounts_security_libuser_crypt_style_sha512: yes
+
+## shadow-utils settings
+# This variable is used in main/rhel7stig/auth.yml to set shadow file-related
+# configurations in /etc/login.defs.
+#
+# Each dictionary has this structure:
+#
+#   parameter: the parameter to set
+#   value: the value for the parameter
+#   stig_id: the STIG ID number for the requirement
+#
+accounts_shadow_utils:
+  - parameter: ENCRYPT_METHOD
+    value: "{{ _accounts_security_password_encrypt_method | default('') }}"
+    stig_id: V-71921
+    ansible_os_family: all
+  - parameter: PASS_MIN_DAYS
+    value: "{{ _accounts_security_password_min_lifetime_days | default('') }}"
+    stig_id: V-71925
+    ansible_os_family: all
+  - parameter: PASS_MAX_DAYS
+    value: "{{ _accounts_security_password_max_lifetime_days | default('') }}"
+    stig_id: V-71929
+    ansible_os_family: all
+  - parameter: FAIL_DELAY
+    value: "{{ _accounts_security_shadow_utils_fail_delay | default('') }}"
+    stig_id: V-71951
+    ansible_os_family: RedHat
+  - parameter: UMASK
+    value: "{{ __login_defs_env_umask | default('') }}"
+    stig_id: V-71995
+    ansible_os_family: all
+  - parameter: CREATE_HOME
+    value: "{{ _accounts_security_shadow_utils_create_home | default('') }}"
+    stig_id: V-72013
+    ansible_os_family: all
+
+# Use pwquality when passwords are changed or established.
+accounts_security_enable_pwquality_password_set: no
+
+#>> auth.yml ==================================================================
+auth_security_shadow_utils_fail_delay: 4
+auth_security_disallow_blank_password_login: yes
+auth_security_pam_faillock_enable: yes
+auth_security_pam_faillock_interval: 900
+auth_security_pam_faillock_attempts: 3
+auth_security_pam_faillock_deny_root: yes
+auth_security_pam_faillock_unlock_time: 604800
+
+# Check if sudoers has the NOPASSWD rule enabled
+auth_security_sudoers_nopasswd_check_enable: yes
+
+# grub custom configuration
+auth_grub_custom_file: /etc/grub.d/40_custom
+# grub main linux configuration
+auth_grub_linux_file: /etc/grub.d/10_linux
+
+# Require authentication in GRUB to boot into single-user or maintenance modes.
+auth_security_require_grub_authentication: yes # V-71961 / V-71963
+
+# Limit the number of concurrent connections per account.
+#auth_security_concurrent_session_limit: 10
+
+# Update the grub configuration.
+auth_security_enable_grub_update: yes
+
+#>> visudo.yml ================================================================
+visudo_set_rules_admin:
+  - insertafter: '{{ "^%?sudo." if ansible_os_family == "Debian" else "^#?.User_Alias" }}'
+    line: "{{ _visudo_rules[0].admin.add[0] }}"
+  - insertafter: "^#includedir"
+    line: "{{ _visudo_rules[0].admin.rule[0] }}"
+
+#>> visudo.yml ================================================================
+default_folders:
+  - path: "/home/{{ user_admin }}/moxconf/development"
+    mode: "0755"
+    owner: "{{ user_admin }}"
+    group: "{{ user_admin }}"
+
+  - path: "/home/{{ user_admin }}/.config"
+    mode: "0755"
+    owner: "{{ user_admin }}"
+    group: "{{ user_admin }}"
