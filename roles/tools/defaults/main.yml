@@ -16,7 +16,7 @@ tmux_download:
 #>tools_programming.yml =======================================================
 tools_programming_python:
   - tasklib # taskwarrior library
-  - yt-dlp # youtube-dl is dead now
+  - yt-dlp # youtube-dl are dead now
 
 tools_programming_ruby:
   - lolcat
