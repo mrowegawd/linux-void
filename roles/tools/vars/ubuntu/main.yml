@@ -43,7 +43,6 @@ __tools:
 
   # video and screen
   - simplescreenrecorder # recording
-  - mpv
   - flameshot
   - screenkey
   - vlc
