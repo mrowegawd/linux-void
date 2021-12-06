@@ -15,6 +15,8 @@ __tools:
   - vim
   - snapd
   - unzip
+  - ccze
+  - pv
   - p7zip-full
   - gzip
   - unrar
@@ -78,6 +80,14 @@ __tools_from_snapd: []
 __tools_ppa_keys: []
 
 __tools_ppa: []
+
+#>mpv.yml ====================================================================
+__mpv_deps:
+  - libavutil-dev
+  - libavcodec-dev
+  - libavformat-dev
+  - libavfilter-dev
+  - libswresample-dev
 
 #>tmux.yml ====================================================================
 __tmux_deps:

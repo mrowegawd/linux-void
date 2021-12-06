@@ -1,5 +1,5 @@
 ---
-- name: ROFI | Check tmux version if exists
+- name: TMUX | Check tmux version if exists
   shell: >
     bash -lc 'if command -v tmux &> /dev/null;
     then tmux -V; else echo "not found"; fi'
@@ -34,7 +34,7 @@
         path: "{{ temp_dir }}/{{ item }}"
         state: directory
       with_items:
-        - "tmux"
+        - tmux
       tags:
         - install
         - tmux

@@ -17,6 +17,8 @@ __tools:
   - unzip
   - p7zip-full
   - gzip
+  - ccze
+  - pv
   - unrar
   - xz-utils # extract tar ext .xz
   - whois
@@ -42,7 +44,6 @@ __tools:
 
   # video and screen
   - simplescreenrecorder # recording
-  - mpv
   - screenkey
   - scrot # screenshot
 
@@ -79,6 +80,14 @@ __tools_ppa_keys:
 __tools_ppa:
   []
   # - incron
+
+#>mpv.yml ====================================================================
+__mpv_deps:
+  - libavutil-dev
+  - libavcodec-dev
+  - libavformat-dev
+  - libavfilter-dev
+  - libswresample-dev
 
 #>tmux.yml ====================================================================
 __tmux_deps:

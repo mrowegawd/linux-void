@@ -1,4 +1,11 @@
 ---
+#>mpv.yml ====================================================================
+mpv_version: "0.34.0"
+mpv_download:
+  - url: "https://github.com/mpv-player/mpv/archive/refs/tags/v{{mpv_version}}.tar.gz"
+    dest: "{{ temp_dir }}/mpv"
+    name: "mpv-{{ mpv_version }}"
+
 #>tmux.yml ====================================================================
 tmux_version: "3.2a"
 tmux_download:
@@ -7,7 +14,9 @@ tmux_download:
     name: "tmux-{{ tmux_version }}"
 
 #>tools_programming.yml =======================================================
-tools_programming_python: []
+tools_programming_python:
+  - tasklib # taskwarrior library
+  - yt-dlp # youtube-dl is dead now
 
 tools_programming_ruby:
   - lolcat
@@ -43,7 +52,7 @@ tools_programming_pkg:
 
 #>telegram.yml ================================================================
 #https://updates.tdesktop.com/tlinux/tsetup.2.8.10.tar.xz
-telegram_version: "tsetup.2.8.10"
+telegram_version: "tsetup.3.2.4"
 telegram_link_download:
   "https://telegram.org/dl/desktop/linux/{{ telegram_version }}.tar.xz"
   # https://updates.tdesktop.com/tlinux/{{ telegram_version }}.tar.xz

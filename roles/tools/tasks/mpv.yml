@@ -1,0 +1,82 @@
+- name: MPV | Check mpv version if exists
+  shell: >
+    bash -lc 'if command -v mpv &> /dev/null;
+    then mpv --version; else echo "not found"; fi'
+  args:
+    warn: no
+  changed_when: false
+  register: check_mpv_command
+  tags:
+    - always
+
+- become: yes
+  block:
+    - name: MPV | Remove old mpv
+      apt:
+        name: mpv
+        state: absent
+      tags:
+        - install
+        - mpv
+
+    - name: MPV | Install dependencies mpv
+      include_role:
+        name: _0package
+      vars:
+        _apt_packages: "{{ __mpv_deps }}"
+      tags:
+        - install
+        - mpv
+
+    - name: MPV | Ensure path {{ temp_dir }}/mpv are exists
+      file:
+        path: "{{ temp_dir }}/{{ item }}"
+        state: directory
+      with_items:
+        - mpv
+      tags:
+        - install
+        - mpv
+
+    - name: MPV | Download mpv-{{ mpv_version }}.tar.gz
+      get_url:
+        url: "{{ item.url }}"
+        dest: "{{ item.dest }}"
+        mode: 0755
+        force: True
+        timeout: 30
+      register: jobmpvdownload
+      until: jobmpvdownload is succeeded
+      retries: 10
+      delay: 10
+      become: True
+      with_items:
+        - "{{ mpv_download }}"
+      tags:
+        - install
+        - mpv
+
+    - name: MPV | Extract mpv-{{ mpv_version }}.tar.gz
+      unarchive:
+        src: "{{ item.dest }}/{{ item.name }}.tar.gz"
+        dest: "{{ item.dest }}"
+        copy: no # with no will not copy or will deleted
+      with_items:
+        - "{{ mpv_download }}"
+      tags:
+        - install
+        - mpv
+
+    # NOTE: if you use gpu remove this flag: `--disable-gl`
+    - name: MPV | Install mpv
+      shell: |
+        ./bootstrap.py && ./waf build -j4 && ./waf configure --prefix=/usr --disable-gl
+      args:
+        chdir: "{{ item.dest }}/{{ item.name }}"
+      with_items:
+        - "{{ mpv_download }}"
+      tags:
+        - install
+        - mpv
+
+  when: _version not in check_mpv_command.stdout or check_mpv_command.stdout.find('not found') != -1
