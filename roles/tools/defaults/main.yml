@@ -1,4 +1,18 @@
 ---
+#>newsboat.yml ====================================================================
+torrent_version: "3.00"
+torrent_download:
+  - url: "https://github.com/transmission/transmission/releases/download/3.00/transmission-{{torrent_version}}.tar.xz"
+    dest: "{{ temp_dir }}/torrent"
+    name: "transmission-{{ torrent_version }}"
+
+#>newsboat.yml ====================================================================
+newsboat_version: "2.25"
+newsboat_download:
+  - url: "https://github.com/newsboat/newsboat/archive/refs/tags/r{{newsboat_version}}.tar.gz"
+    dest: "{{ temp_dir }}/newsboat"
+    name: "newsboat-r{{ newsboat_version }}"
+
 #>mpv.yml ====================================================================
 mpv_version: "0.34.0"
 mpv_download:

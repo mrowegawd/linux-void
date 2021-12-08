@@ -50,9 +50,6 @@ __tools:
   # keyboard viewer
   - screenkey
 
-  # feed viewer
-  - newsboat
-
   # todo manager
   - taskwarrior
   - remind
@@ -81,7 +78,56 @@ __tools_ppa:
   []
   # - incron
 
-#>mpv.yml ====================================================================
+#>torrent.yml =================================================================
+__torrent_deps:
+  - build-essential
+  - automake
+  - autoconf
+  - libtool
+  - pkg-config
+  - intltool
+  - libcurl4-openssl-dev
+  - libglib2.0-dev
+  - libevent-dev
+  - libminiupnpc-dev
+  - libgtk-3-dev
+  - libappindicator3-dev
+
+  - ca-certificates
+  - libssl-dev
+  - checkinstall
+
+#>newsboat.yml ================================================================
+__newsboat_deps:
+  - asciidoc
+  - asciidoctor
+  - asciidoc-base
+  - bc
+  - build-essential
+  - curl
+  - debhelper
+  - docbook-xml
+  - docbook-xsl
+  - elinks
+  - gettext
+  - git
+  - jq
+  - libcurl4-gnutls-dev
+  - libcurl4-openssl-dev
+  - libjson-c-dev
+  - libncursesw5-dev
+  - librtmp-dev
+  - libsqlite3-dev
+  - libssl-dev
+  - libstfl-dev
+  - libxml2-dev
+  - libxml2-utils
+  - ncurses-term
+  - perl
+  - pkg-config
+  - xsltproc
+
+#>mpv.yml =====================================================================
 __mpv_deps:
   - libavutil-dev
   - libavcodec-dev
@@ -98,7 +144,7 @@ __tmux_deps:
   - gcc
   - pkg-config
 
-#>telegram.yml ====================================================================
+#>telegram.yml ================================================================
 __telegram_deps:
   - xz-utils
   - pulseaudio
