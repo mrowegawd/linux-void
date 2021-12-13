@@ -1,4 +1,11 @@
 ---
+#>dunst
+dunst_version: "1.7.3"
+dunst_download:
+  - url: "https://github.com/dunst-project/dunst/archive/refs/tags/v{{ dunst_version }}.tar.gz"
+    dest: "{{ temp_dir }}/dunst"
+    name: "dunst-{{ dunst_version }}"
+
 #>bspwm.yml ===================================================================
 bspwm_git:
   - repo: "https://github.com/baskerville/bspwm.git"

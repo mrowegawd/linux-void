@@ -1,7 +1,15 @@
 # dunst
 - become: yes
   block:
-    - name: DUNST | Install dunst
+    - name: DUNST | Remove old dunst
+      apt:
+        name: dunst
+        state: absent
+      tags:
+        - install
+        - dunst
+
+    - name: DUNST | Install dependencies dunst
       include_role:
         name: _0package
       vars:
@@ -9,6 +17,45 @@
       tags:
         - install
         - dunst
+
+    - name: DUNST | Ensure path {{ temp_dir }}/dunst are exists
+      file:
+        path: "{{ temp_dir }}/{{ item }}"
+        state: directory
+      with_items:
+        - dunst
+      tags:
+        - install
+        - dunst
+
+    - name: DUNST | Download dunst-{{ dunst_version }}.tar.gz
+      get_url:
+        url: "{{ item.url }}"
+        dest: "{{ item.dest }}"
+        mode: 0755
+        force: True
+        timeout: 30
+      register: jobdunstdownload
+      until: jobdunstdownload is succeeded
+      retries: 10
+      delay: 10
+      become: True
+      with_items:
+        - "{{ dunst_download }}"
+      tags:
+        - install
+        - dunst
+
+    - name: DUNST | Install dunst
+      shell: |
+        make && sudo make install
+      args:
+        chdir: "{{ item.dest }}/{{ item.name }}"
+      with_items:
+        - "{{ dunst_download }}"
+      tags:
+        - install
+        - tmux
 
 # rofi
 - name: ROFI | Check if Rofi commands already installed

@@ -94,11 +94,17 @@ __dwm_deps:
 #>wm_tools.yml ================================================================
 #> dunst
 __dunst_deps:
-  - dunst
-  - libnotify-bin
-
-  # agar bisa pakai DISPLAY:
   - dbus-x11
+  - libdbus-1-dev
+  - libx11-dev
+  - libxinerama-dev
+  - libxrandr-dev
+  - libxss-dev
+  - libglib2.0-dev
+  - libpango1.0-dev
+  - libgtk-3-dev
+  - libxdg-basedir-dev
+  - libnotify-dev
 
 #> rofi
 __rofi_deps:
