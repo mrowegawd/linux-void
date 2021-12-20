@@ -7,6 +7,18 @@
 - become: yes
   block:
     - import_tasks: tools.yml
-    # - import_tasks: tools_programming.yml
-    # - import_tasks: tmux.yml
-    - import_tasks: telegram.yml
+    - name: Install tools from build source
+      include_role:
+        name: _0package
+        tasks_from: buildsource
+      with_items: "{{ install_tools_from_buildsource }}"
+
+    - name: Install tools with asdf source with lang
+      include_role:
+        name: _0package
+        tasks_from: installwithasdf
+      with_items: "{{ install_tools_from_asdf }}"
+
+    - import_tasks: mpv.yml
+    - import_tasks: dropbox.yml
+  when: ansible_os_family | lower == 'debian'

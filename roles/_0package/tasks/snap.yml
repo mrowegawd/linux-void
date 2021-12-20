@@ -2,7 +2,7 @@
 - name: 00SNAP | Ensure snapd packages are managed | Debian
   snap:
     name: "{{ packages }}"
-    state: "{{ state }}"
+    state: present
   retries: 3
   delay: 3
   register: jobcommon

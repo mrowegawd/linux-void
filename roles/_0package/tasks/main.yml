@@ -1,8 +1,8 @@
 ---
-- name: 00PACKAGE | Ensure apt packages are managed | Debian
+- name: 00PACKAGE | Ensure apt packages are managed | {{ ansible_distribution }} {{ ansible_distribution_version }}
   apt:
     name: "{{ packages }}"
-    state: "{{ state }}"
+    state: present
     autoclean: yes
     autoremove: yes
     force_apt_get: yes
@@ -21,10 +21,10 @@
   tags:
     - always
 
-- name: 00PACKAGE | Ensure yum packages are managed | Redhat
+- name: 00PACKAGE | Ensure yum packages are managed | {{ ansible_distribution }} {{ ansible_distribution_version }}
   yum:
     name: "{{ packages }}"
-    state: "{{ state }}"
+    state: present
   vars:
     packages: "{{ _apt_packages }}"
     state: '{{ _apt_state | default("present") }}'

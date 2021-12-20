@@ -1,0 +1,10 @@
+---
+- name: update apt repository cache
+  become: yes
+  apt:
+    cache_valid_time: 1
+    update_cache: true
+  register: task_result
+  until: task_result is succeeded
+  retries: 30
+  delay: 10

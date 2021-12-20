@@ -1,0 +1,28 @@
+---
+- name: DOCKER | Check docker if exis
+  become: yes
+  become_user: "{{ user_admin }}"
+  shell: |
+    set -o pipefail;
+    if command -v docker &> /dev/null;
+    then docker-compose --version | cut -d" " -f4 ; else echo "not found"; fi
+  args:
+    chdir: "/home/{{ user_admin }}"
+    executable: /bin/bash
+  changed_when: false
+  register: check_docker_compose_version
+
+- name: DOCKER-COMPOSE | Install Docker Compose | Debian
+  become: yes
+  get_url:
+    url: "{{ docker_compose_repo_format }}/docker-compose-Linux-x86_64"
+    dest: "/usr/local/bin/docker-compose"
+    force: True
+    owner: "root"
+    group: "root"
+    mode: "0755"
+  when: docker_compose_version not in check_docker_compose_version.stdout
+  tags:
+    - install
+    - docker
+    - dockercompose

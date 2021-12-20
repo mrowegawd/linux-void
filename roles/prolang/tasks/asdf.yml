@@ -13,6 +13,7 @@
   git:
     repo: "https://github.com/asdf-vm/asdf.git"
     dest: "/home/{{ user_admin }}/.asdf"
+    version: "master"
     # version: "{{ _asdf_version }}"
   tags:
     - install

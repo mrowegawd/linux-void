@@ -1,0 +1,31 @@
+---
+- name: Install Dropbox | Check path .dropbox-dist if exists
+  become: yes
+  become_user: "{{ user_admin }}"
+  stat:
+    path: "~/.dropbox-dist"
+  register: check_dropbox
+  check_mode: no
+
+- name: Install DROPBOX | Start download dropbox and extract them
+  become: yes
+  become_user: "{{ user_admin }}"
+  shell: |
+    set -o pipefail;
+    wget -O - "https://www.dropbox.com/download?plat=lnx.x86_64" | tar xzf -
+  args:
+    chdir: "/home/{{ user_admin }}"
+  when: not check_dropbox.stat.exists
+#
+# After download tar selesai, kamu harus menjalankan nya secara manual:
+#     ./.dropbox-dist/dropboxd
+#
+# - name: Install DROPBOX | Install dropbox
+#   become: yes
+#   become_user: "{{ user_admin }}"
+#   shell: |
+#     ./.dropbox-dist/dropboxd
+#   args:
+#     chdir: "/home/{{ user_admin }}"
+#
+# setelah shell di atas kita harus menjalankan ini

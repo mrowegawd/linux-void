@@ -7,11 +7,9 @@
 - become: yes
   block:
     - import_tasks: asdf.yml
-    - import_tasks: python.yml
-    - import_tasks: nodejs.yml
-    - import_tasks: rust.yml
-    - import_tasks: ruby.yml
-    - import_tasks: golang.yml
 
-    # - import_tasks: java.yml
-    # - import_tasks: php.yml
+    - name: Install programming language [prolang]
+      include_role:
+        name: _0package
+        tasks_from: buildasdf
+      with_items: "{{ install_prolangs }}"

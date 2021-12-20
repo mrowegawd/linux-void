@@ -1,0 +1,29 @@
+---
+# State is present by default
+apt_repo_state: present
+
+# Array of repositories to add by default
+apt_repo_repositories:
+  - file: debian-main
+    repo: deb http://deb.debian.org/debian/ buster main contrib non-free
+  - file: debian-main-src
+    repo: deb-src http://deb.debian.org/debian/ buster main contrib non-free
+  - file: debian-kartolo
+    repo: deb http://kartolo.sby.datautama.net.id/debian/ buster main contrib non-free
+  - file: debian-security
+    repo: deb http://security.debian.org/debian-security buster/updates main contrib non-free
+  - file: debian-security-src
+    repo: deb-src http://security.debian.org/debian-security buster/updates main contrib non-free
+  - file: buster-updates
+    repo: deb http://deb.debian.org/debian buster-updates main
+  - file: buster-updates-src
+    repo: deb-src http://deb.debian.org/debian buster-updates main
+  - file: buster-backports
+    repo: deb http://deb.debian.org/debian buster-backports main
+
+# Array of apt keys to add (all are optional)
+apt_repo_keys: []
+# - url:
+#   keyserver:
+#   id:
+#   file:

@@ -1,6 +1,5 @@
 ---
 #>tools.yml ===================================================================
-# vars file for tools
 __tools_base_pkg:
   - build-essential
   - git
@@ -12,6 +11,7 @@ __tools_base_pkg:
 __tools:
   # basic
   - htop
+  - grc
   - vim
   - snapd
   - unzip
@@ -40,7 +40,7 @@ __tools:
   - mpc
   - ncmpcpp
   - mpd
-  - vlc
+  # - vlc
 
   # video and screen
   - simplescreenrecorder # recording
@@ -50,10 +50,10 @@ __tools:
   # keyboard viewer
   - screenkey
 
-  # todo manager
-  - taskwarrior
-  - remind
-  # - incron      # dunno why cannot install incron on debian?!
+  # todo manager (not use anymore use orgmode instead)
+  # - taskwarrior
+  # - remind
+  # - incron
 
   # color text command line
   - figlet
@@ -80,30 +80,30 @@ __tools_ppa:
 
 #>torrent.yml =================================================================
 __torrent_deps:
-  - build-essential
-  - automake
+  - libayatana-appindicator3-1
   - autoconf
-  - libtool
-  - pkg-config
+  - automake
+  - build-essential
+  - ca-certificates
+  - checkinstall
   - intltool
   - libcurl4-openssl-dev
-  - libglib2.0-dev
   - libevent-dev
-  - libminiupnpc-dev
+  - libglib2.0-dev
   - libgtk-3-dev
-  - libappindicator3-dev
-
-  - ca-certificates
+  - libminiupnpc-dev
   - libssl-dev
-  - checkinstall
+  - libtool
+  - pkg-config
 
 #>newsboat.yml ================================================================
 __newsboat_deps:
   - asciidoc
-  - asciidoctor
   - asciidoc-base
+  - asciidoctor
   - bc
   - build-essential
+  - cargo
   - curl
   - debhelper
   - docbook-xml
@@ -113,7 +113,6 @@ __newsboat_deps:
   - git
   - jq
   - libcurl4-gnutls-dev
-  - libcurl4-openssl-dev
   - libjson-c-dev
   - libncursesw5-dev
   - librtmp-dev
@@ -125,15 +124,90 @@ __newsboat_deps:
   - ncurses-term
   - perl
   - pkg-config
+  - wget
   - xsltproc
 
 #>mpv.yml =====================================================================
 __mpv_deps:
-  - libavutil-dev
+  # - debhelper (>= 7)
+  # - libdav1d-dev
+  - autoconf
+  - automake
+  - build-essential
+  - gcc
+  - ladspa-sdk
+  - libarchive-dev
+  - libasound2-dev
+  - libass-dev
   - libavcodec-dev
-  - libavformat-dev
   - libavfilter-dev
+  - libavformat-dev
+  - libavutil-dev
+  - libbluray-dev
+  - libbrotli-dev
+  - libbs2b-dev
+  - libcaca-dev
+  - libcdio-paranoia-dev
+  - libdrm-dev
+  - libdvdnav-dev
+  - libegl1-mesa-dev
+  - libfontconfig-dev
+  - libfreetype6-dev
+  - libfribidi-dev
+  - libgbm-dev
+  - libgl1-mesa-dev
+  - libgme-dev
+  - libgnutls28-dev
+  - libgpac-dev
+  - libgsm1-dev
+  - libharfbuzz-dev
+  - libjack-dev
+  - libjpeg-dev
+  - liblcms2-dev
+  - liblircclient-dev
+  - liblua5.1-0-dev
+  - libmodplug-dev
+  - libmp3lame-dev
+  - libopenal-dev
+  - libopencore-amrnb-dev
+  - libopencore-amrwb-dev
+  - libopus-dev
+  - libpulse-dev
+  - librtmp-dev
+  - librubberband-dev
+  - libsdl1.2-dev
+  - libsoxr-dev
+  - libspeex-dev
+  - libssh-dev
   - libswresample-dev
+  - libtag1-dev
+  - libtheora-dev
+  - libtool
+  - libuchardet-dev
+  - libv4l-dev
+  - libva-dev
+  - libvdpau-dev
+  - libvo-amrwbenc-dev
+  - libvorbis-dev
+  - libvpx-dev
+  - libwayland-dev
+  - libx11-dev
+  - libx264-dev
+  - libxext-dev
+  - libxinerama-dev
+  - libxkbcommon-dev
+  - libxrandr-dev
+  - libxss-dev
+  - libxv-dev
+  - libxvidcore-dev
+  - nasm
+  - pkg-config
+  - python3
+  - python3-docutils
+  - texi2html
+  - x11proto-core-dev
+  - yasm
+  - zlib1g-dev
 
 #>tmux.yml ====================================================================
 __tmux_deps:

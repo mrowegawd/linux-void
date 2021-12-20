@@ -6,5 +6,6 @@
     - always
 
 - become: yes
+  include_vars: ""
   block:
     - import_tasks: firefox.yml

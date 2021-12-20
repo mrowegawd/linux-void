@@ -1,6 +1,6 @@
 ---
 #>python.yml ==================================================================
-__dep_pkgs:
+__dep_python_pkgs:
   - build-essential
   - git
   - make
@@ -30,3 +30,7 @@ __dep_nodejs_pkgs:
   - curl
   - dirmngr
   - gawk
+
+#>lua.yml =====================================================================
+__dep_lua_pkgs:
+  - unzip

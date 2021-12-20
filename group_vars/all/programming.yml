@@ -6,7 +6,7 @@ _install_programming:
     # choice operation systemnya dan check versionnya disitu
     flutter_version: "flutter_linux_v1.12.13+hotfix.5-stable" # debian
   golang:
-    golang_version: "1.13.5"
+    golang_version: "1.17.5"
     # if downloading golang versions, dia memiliki hash checksum khusus: versi 32 dan 64 bit
     # jadi sesuaikan dgn versi bit os.
     golang_checksum_32: "3b830fa25f79ab08b476f02c84ea4125f41296b074017b492ac1ff748cf1c7c9"
@@ -20,10 +20,10 @@ _install_programming:
     java_sdk: ""
   nodejs:
     # install nodejs versi long term, LTS
-    nodejs_version: "12.14.1"
-    nvm_version: "v0.35.2"
+    nodejs_version: "16.13.1"
+    nvm_version: "v0.39.1"
   lua:
-    lua_version: "5.3"
+    lua_version: "5.4.2"
   php:
     socket_path_fastcgi_listen: "127.0.0.1:9000"
     php_enable_at_startup: "localhost"
@@ -37,9 +37,9 @@ _install_programming:
     xdebug_remote_connect_back: 1
     group_for_webserver: "www"
   python3:
-    python3_version: "3.7.3"
+    python3_version: "3.10.0"
     python2_version: "2.7.16"
   ruby:
-    ruby_version: "2.7.0"
+    ruby_version: "3.0.2"
   rust:
-    rust_version: "1.40.0"
+    rust_version: "1.57.0"

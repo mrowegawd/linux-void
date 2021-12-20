@@ -1,72 +1,123 @@
 ---
-#>newsboat.yml ====================================================================
-torrent_version: "3.00"
-torrent_download:
-  - url: "https://github.com/transmission/transmission/releases/download/3.00/transmission-{{torrent_version}}.tar.xz"
-    dest: "{{ temp_dir }}/torrent"
-    name: "transmission-{{ torrent_version }}"
-
-#>newsboat.yml ====================================================================
-newsboat_version: "2.25"
-newsboat_download:
-  - url: "https://github.com/newsboat/newsboat/archive/refs/tags/r{{newsboat_version}}.tar.gz"
-    dest: "{{ temp_dir }}/newsboat"
-    name: "newsboat-r{{ newsboat_version }}"
-
-#>mpv.yml ====================================================================
-mpv_version: "0.34.0"
-mpv_download:
-  - url: "https://github.com/mpv-player/mpv/archive/refs/tags/v{{mpv_version}}.tar.gz"
-    dest: "{{ temp_dir }}/mpv"
-    name: "mpv-{{ mpv_version }}"
-
-#>tmux.yml ====================================================================
 tmux_version: "3.2a"
-tmux_download:
-  - url: "https://github.com/tmux/tmux/releases/download/{{ tmux_version }}/tmux-{{ tmux_version }}.tar.gz"
-    dest: "{{ temp_dir }}/tmux"
-    name: "tmux-{{ tmux_version }}"
+newsboat_version: "2.25"
+torrent_version: "3.00"
+telegram_version: "tsetup.3.3.0"
 
-#>tools_programming.yml =======================================================
-tools_programming_python:
-  - tasklib # taskwarrior library
-  - yt-dlp # youtube-dl are dead now
+# note: Dont forget to check this
+# - check pkg_name
+# - check url download
+# - check after_extract_filename, dia tergantung download url nya
+# - check cmd check version
+# - check cmd make
 
-tools_programming_ruby:
-  - lolcat
+install_tools_from_buildsource:
+  - pkg_name: "tmux"
+    pkg_version: "{{ tmux_version }}"
+    pkg_deps: "{{ __tmux_deps }}"
+    pkg_cmd_check_version: |
+      bash -lc 'if command -v tmux &> /dev/null;
+      then tmux -V ; else echo "not found"; fi'
+    pkg_url_download:
+      - url: "https://github.com/tmux/tmux/releases/download/{{ tmux_version }}/tmux-{{ tmux_version }}.tar.gz"
+        tar_file: "tmux-{{ tmux_version }}.tar.gz"
+        after_extract_filename: "tmux-{{ tmux_version }}"
+        dest_temp_dir: "{{ temp_dir }}/tmux"
+    pkg_cmd_make: |
+      ./configure && make && make install
 
-tools_programming_golang:
-  - "mvdan.cc/sh/cmd/shfmt"
-  - "github.com/jesseduffield/lazydocker"
-  - "github.com/jesseduffield/lazygit"
-  - "github.com/shurcooL/markdownfmt" # markdownfmt for vim
+  - pkg_name: "newsboat"
+    pkg_version: "{{ newsboat_version }}"
+    pkg_deps: "{{ __newsboat_deps }}"
+    pkg_cmd_check_version: |
+      bash -lc 'if command -v newsboat &> /dev/null;
+      then newsboat --version; else echo "not found"; fi'
+    pkg_url_download:
+      - url: "https://github.com/newsboat/newsboat/archive/refs/tags/r{{newsboat_version}}.tar.gz"
+        tar_file: "newsboat-r{{ newsboat_version }}.tar.gz"
+        after_extract_filename: "newsboat-r{{ newsboat_version }}"
+        dest_temp_dir: "{{ temp_dir }}/newsboat"
+    pkg_cmd_make: |
+      make && make install
 
-tools_programming_rust:
-  - ripgrep
-  - exa
+  - pkg_name: "torrent"
+    pkg_version: "{{ torrent_version }}"
+    pkg_deps: "{{ __torrent_deps }}"
+    pkg_cmd_check_version: |
+      bash -lc 'if command -v transmission-daemon &> /dev/null;
+      then transmission-daemon --V | grep {{torrent_version }} | cut -d" " -f2; else echo "not found"; fi'
+    pkg_url_download:
+      - url: "https://github.com/transmission/transmission/releases/download/3.00/transmission-{{ torrent_version }}.tar.xz"
+        tar_file: "transmission-{{ torrent_version }}.tar.xz"
+        after_extract_filename: "transmission-{{ torrent_version }}"
+        dest_temp_dir: "{{ temp_dir }}/torrent"
+    pkg_cmd_make: |
+      ./configure -q && make -s && sudo make install
 
-  # fd find
-  - fd-find
+  # - pkg_name: "telegram"
+  #   pkg_version: "{{ telegram_version }}"
+  #   pkg_deps: "{{ __telegram_deps }}"
+  #   pkg_cmd_check_version: |
+  #     bash -lc 'if command -v telegram &> /dev/null;
+  #     then echo "found"; else echo "not found"; fi'
+  #   pkg_url_download:
+  #     - url: "https://telegram.org/dl/desktop/linux/{{ telegram_version }}.tar.xz"
+  #       tar_file: "{{ telegram_version }}.tar.xz"
+  #       after_extract_filename: "{{ telegram_version }}"
+  #       dest_temp_dir: "{{ temp_dir }}/telegram"
+  #   pkg_cmd_make: |
+  #     tar -xf tsetup.*.*.*.tar.xz && mv Telegram /opt
 
-  # alternative cat command
-  - "--locked bat"
+# pip install
+install_tools_from_asdf:
+  - pkg_name: "python"
+    pkg_install_with: "asdf"
+    # harus string (not |), karena bakal di concat dngan pkg_lists
+    pkg_shell_install: "pip install -U"
+    pkg_lists:
+      - yt-dlp # youtube-dl are dead now
 
-tools_programming_nodejs:
-  # https://github.com/tldr-pages/tldr
-  - tldr
+  - pkg_name: "ruby"
+    pkg_install_with: "asdf"
+    pkg_shell_install: "gem install"
+    pkg_lists:
+      - lolcat
+  - pkg_name: "golang"
+    pkg_install_with: "asdf"
+    pkg_shell_install: "go get -u"
+    pkg_lists:
+      - "mvdan.cc/sh/cmd/shfmt"
+      # - "github.com/jesseduffield/lazydocker"
+      # - "github.com/jesseduffield/lazygit"
+      - "github.com/shurcooL/markdownfmt" # markdownfmt for vim
+  - pkg_name: "rust"
+    pkg_install_with: "asdf"
+    pkg_shell_install: "cargo install"
+    pkg_lists:
+      - ripgrep
+      - exa
+      # fd find
+      - fd-find
+      # alternative cat command
+      - "--locked bat"
+  - pkg_name: "nodejs"
+    pkg_install_with: "asdf"
+    pkg_shell_install: "npm install -g"
+    pkg_lists:
+      # https://github.com/tldr-pages/tldr
+      - tldr
+      # Make any web page a desktop application
+      - nativefier
+  - pkg_name: "apt"
+    pkg_install_with: "apt"
+    pkg_shell_install: ""
+    pkg_lists:
+      - shellcheck
+      # for plantuml dependencies
+      - graphviz
 
-  # Make any web page a desktop application
-  - nativefier
-
-tools_programming_pkg:
-  - shellcheck
-
-  # for plantuml dependencies
-  - graphviz
-
-#>telegram.yml ================================================================
-#https://updates.tdesktop.com/tlinux/tsetup.2.8.10.tar.xz
-telegram_version: "tsetup.3.2.4"
-telegram_link_download:
-  "https://telegram.org/dl/desktop/linux/{{ telegram_version }}.tar.xz"
-  # https://updates.tdesktop.com/tlinux/{{ telegram_version }}.tar.xz
+#>mpv.yml =====================================================================
+mpv_version: "0.34.0"
+mpv_build:
+  - repo: https://github.com/mpv-player/mpv-build.git
+    dest: "{{ temp_dir }}/mpv_build"

@@ -1,12 +1,12 @@
 ---
-- name: APT_REPO | Include vars for specific os
+- name: APT_REPO | Include vars for specific os | {{ ansible_distribution }} {{ ansible_distribution_version }}
   include_vars: "{{ ansible_distribution }}/{{ hostvars[inventory_hostname].ansible_distribution_major_version }}.yml"
   tags:
     - always
 
 - name: APT_REPO | Ensure apt keys are managed
   apt_key:
-    state: "{{ apt_repo_state }}"
+    state: present
     id: "{{ item.id | default(omit) }}"
     file: "{{ item.file | default(omit) }}"
     keyserver: "{{ item.keyserver | default(omit) }}"
@@ -27,7 +27,7 @@
 
 - name: APT_REPO | Ensure apt repositories are managed
   apt_repository:
-    state: "{{ apt_repo_state }}"
+    state: present
     repo: "{{ item.repo }}"
     filename: "{{ item.file }}"
     validate_certs: yes

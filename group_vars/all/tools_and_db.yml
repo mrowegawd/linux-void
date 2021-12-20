@@ -1,0 +1,103 @@
+_install_tooling:
+  rabbitmq:
+    via_install: "pkg"
+    install_rabbitmq: false
+    rabbitmq_version: "3.6.11"
+    rabbitmq_set_secure_install: true
+    rabbitmq_set_port: "8080"
+    rabbitmq_set_user:
+      - user: "aldi_gue"
+        password: "12345"
+        vhost: "/"
+        tags:
+          - administrator
+    rabbitmq_set_vhost:
+      - name: vhost1
+        node: rabbit # Optional, defaults to 'rabbit'
+        tracing: no # Optional, defaults to 'no'
+    rabbitmq_set_policy:
+      - name: HA Policy
+        vhost: "/" # Optional, defaults to '/'
+        pattern: ".*" # Optional, defaults to '.*'
+        tags: # Optional, defaults to '{}'
+          ha-mode: all
+          ha-sync-mode: automatic
+
+  docker:
+    docker_compose_version: "v2.2.2"
+    docker_version: "20.10.12"
+
+  jenkins:
+    via_install: "pkg"
+    jenkins_http_port: 4131
+    jenkins_install_via: "pkg"
+
+  dnscrypt:
+    via_install: "pkg"
+
+  vagrant:
+    version: "2.2.7"
+
+  virtualbox:
+    version: "virtualbox-6.0"
+
+  torsquid:
+    via_install: "pkg"
+
+  squid:
+    port: "3128"
+    via_install: "pkg"
+
+  ntp:
+    via_install: "pkg"
+    timezone: "Asia/Jakarta"
+    # setting area untuk ntp.conf. bisa cek di `ntp.org`
+    area: "id"
+
+  nfs:
+    via_install: "pkg"
+    rpc_bind_port: 411
+    rpc_bind_listening: 4110
+    # seharusnya dibuatin buat server atau local d inventories
+    for_server:
+      ip: "192.168.33.10"
+    for_client:
+      ip: "192.168.33.10"
+
+  LDAP:
+    via_install: "pkg"
+
+  tmux:
+    version: "3.0a"
+
+# DATABASE ------------------------------- ///
+_install_database:
+  mysql:
+    via_install: "pkg"
+    inventory_hostname: 192.168.33.40
+    mysql_root_password_update: no
+  redis:
+    via_install: "pkg"
+    redis_version: "4.0.6"
+  postgresql:
+    version: "10"
+    via_install: "pkg"
+    port: "4221"
+    for_monitoring:
+      db_name: "dbmonitoring"
+    for_webapp:
+      db_name: "dbwebap"
+    for_log:
+      db_name: "dblog"
+    for_dbmoxconf_pass:
+      db_name: "dbmoxconf_pass"
+    for_dbmoxconf_scrape:
+      db_name: "dbmoxconf_scrape"
+    for_dbmoxconf_data:
+      db_name: "dbmoxconf_data"
+  influxdb:
+    via_install: "pkg"
+  memcached:
+    via_install: "pkg"
+  mongo:
+    via_install: "pkg"

@@ -1,9 +1,14 @@
 ---
-- name: PROLANG | Include vars for specific os
+- name: VIRTUALMANAGER | Include vars for specific os
   include_vars: "{{ ansible_distribution | lower }}/main.yml"
   tags:
     - always
 
 - become: yes
   block:
-    - import_tasks: test.yml
+    # - import_tasks: docker.yml
+    # - import_tasks: docker_compose.yml
+
+    # Alternative virualbox?
+    # for test jangan di docker di vm saja
+    - import_tasks: qemu.yml

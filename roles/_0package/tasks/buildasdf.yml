@@ -1,0 +1,74 @@
+- name: Install {{ item.lang_name | upper }} | Check {{ item.lang_name }} version if exists
+  become: yes
+  become_user: "{{ user_admin }}"
+  shell: |
+    set -o pipefail;
+    source ~/.asdf/asdf.sh && {{ item.lang_cmd_check_version }}
+  args:
+    warn: no
+    executable: /bin/bash
+  changed_when: false
+  register: check_lang_version
+  ignore_errors: yes
+
+- name: Install {{ item.lang_name | upper }} | Set_fact check_lang_version_filter
+  set_fact:
+    check_lang_version_result: "{{ check_lang_version.stderr }} {{ check_lang_version.stdout }}"
+  when: check_lang_version is defined
+
+# - name: Just tell me whats going on..
+#   debug:
+#     msg: "{{ check_lang_version_result }}"
+
+- name: Install {{ item.lang_name | upper }} | Installing {{ item.lang_name }} deps
+  include_role:
+    name: _0package
+  vars:
+    _apt_packages: "{{ item.lang_deps }}"
+  when: item.lang_version not in check_lang_version_result
+
+- name: Install {{ item.lang_name | upper }} | Check plugin {{ item.lang_name }} if exists
+  become: yes
+  become_user: "{{ user_admin }}"
+  shell: |
+    source ~/.asdf/asdf.sh && asdf plugin-list
+  args:
+    executable: /bin/bash
+  register: check_asdf_plugin_lists
+  changed_when: false
+  failed_when: false
+  ignore_errors: yes
+  when: item.lang_version not in check_lang_version_result
+
+- name: Install {{ item.lang_name | upper }} | Add plugin {{ item.lang_name }}
+  become: yes
+  become_user: "{{ user_admin }}"
+  shell: |
+    source ~/.asdf/asdf.sh && {{ item.lang_plugin_install }}
+  args:
+    executable: /bin/bash
+  when:
+    - item.lang_version not in check_lang_version_result
+    - item.lang_plugin_asdf_name not in check_asdf_plugin_lists.stdout
+
+- name: Install {{ item.lang_name | upper }} | Install {{ item.lang_name }} {{ item.lang_version }} with asdf
+  become: yes
+  become_user: "{{ user_admin }}"
+  shell: |
+    source ~/.asdf/asdf.sh && asdf install {{ item.lang_plugin_asdf_name }} {{ item.lang_version }}
+  args:
+    executable: /bin/bash
+  register: progamming_lang_installed
+  when: item.lang_version not in check_lang_version_result
+
+- name: Install {{ item.lang_name | upper }} | Let asdf to setup global version for {{ item.lang_name }}
+  become: yes
+  become_user: "{{ user_admin }}"
+  shell: |
+    source ~/.asdf/asdf.sh && {{ item.lang_set_global_version }}
+  args:
+    warn: no
+    executable: /bin/bash
+  when:
+    - item.lang_version not in check_lang_version_result
+    - progamming_lang_installed is success
