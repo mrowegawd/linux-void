@@ -23,7 +23,7 @@
   become: yes
   become_user: "{{ user_admin }}"
   shell: |
-    bash install.sh
+    ./install.sh
   args:
     warn: no
     chdir: "/home/{{ user_admin }}/moxconf/development/dotfiles"
