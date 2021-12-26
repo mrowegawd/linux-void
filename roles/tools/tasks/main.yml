@@ -20,10 +20,10 @@
 
     - import_tasks: autoenv.yml
     - import_tasks: dropbox.yml
-    - import_tasks: fzf.yml
     - import_tasks: maim_slop.yml
     - import_tasks: mpv.yml
     - import_tasks: tools.yml
     - import_tasks: zsh.yml
+    - import_tasks: fzf.yml
 
   when: ansible_os_family | lower == 'debian'

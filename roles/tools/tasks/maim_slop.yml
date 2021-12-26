@@ -1,5 +1,4 @@
 ---
-
 - name: SLOP | Check installed slop version
   shell: >
     if command -v slop &> /dev/null;
@@ -13,83 +12,83 @@
   tags:
     - always
 
-- name: SLOP | Install slop with deps 
+- name: SLOP | Install slop with deps
   include_role:
-    name: 00package-meta
+    name: _0package
   when: check_slop.stdout.find('not found') != -1
   vars:
-    _apt_packages: 
+    _apt_packages:
       - cmake
       - libgl1-mesa-dev
       - slop
+      - maim
   tags:
     - install
     - maimslop
+# - name: MAIM | Check installed maim version
+#   shell: |
+#     if command -v maim &> /dev/null;
+#     then echo "found"; else echo "not found"; fi
+#   args:
+#     executable: /bin/bash
+#   ignore_errors: yes
+#   failed_when: false
+#   changed_when: false
+#   register: check_maim
+#   tags:
+#     - always
 
-- name: MAIM | Check installed maim version
-  shell: |
-    if command -v maim &> /dev/null;
-    then echo "found"; else echo "not found"; fi
-  args:
-    executable: /bin/bash
-  ignore_errors: yes
-  failed_when: false
-  changed_when: false
-  register: check_maim
-  tags:
-    - always
+# - become: yes
+#   block:
+#     - name: MAIM | Ensure maim folder temp exists
+#       file:
+#         path: '{{ temp_dir }}/maim'
+#         state: directory
+#       tags:
+#         - install
+#         - maimslop
 
-- become: yes
-  block:
-    - name: MAIM | Ensure maim folder temp exists
-      file:
-        path: '{{ temp_dir }}/maim'
-        state: directory
-      tags:
-        - install
-        - maimslop
+#     - name: MAIM | Install maim dependencies
+#       include_role:
+#         name: _0package
+#       vars:
+#         _apt_packages:
+#           - libxcomposite-dev
+#           - libxrandr-dev
+#           - libxfixes-dev
+#           - libglm-dev
+#           - libjpeg-dev
+#           - cmake
+#           - libgl1-mesa-dev
+#       tags:
+#         - install
+#         - maimslop
 
-    - name: MAIM | Install maim dependencies
-      include_role:
-        name: 00package-meta
-      vars:
-        _apt_packages:
-          - libxcomposite-dev
-          - libxrandr-dev
-          - libxfixes-dev
-          - libglm-dev
-          - libjpeg-dev
-          - cmake
-          - libgl1-mesa-dev
-      tags:
-        - install
-        - maimslop
+#     - name: MAIM | Clone maim from github
+#       become: yes
+#       git:
+#         repo: 'https://github.com/naelstrof/maim.git'
+#         dest: '{{ temp_dir }}/maim'
+#         version: 'master'
+#         update: yes
+#         force: yes
+#         recursive: yes
+#       tags:
+#         - install
+#         - maimslop
 
-    - name: MAIM | Clone maim from github
-      become: yes
-      git:
-        repo: 'https://github.com/naelstrof/maim.git'
-        dest: '{{ temp_dir }}/maim'
-        version: 'master'
-        update: yes
-        force: yes
-        recursive: yes
-      tags:
-        - install
-        - maimslop
-
-    - name: MAIM | Install maim
-      become: yes
-      command: |
-        {{ item }}
-      args:
-        chdir: '{{ temp_dir }}/maim'
-        executable: /bin/bash
-      with_items:
-        - 'cmake -DCMAKE_INSTALL_PREFIX="/usr" ./'
-        - 'make && sudo make install'
-      changed_when: false
-      tags:
-        - install
-        - maimslop
-  when: check_maim.stdout.find('not found') != -1
+#     - name: MAIM | Install maim
+#       become: yes
+#       shell: |
+#         {{ item }}
+#       args:
+#         chdir: '{{ temp_dir }}/maim'
+#         executable: /bin/bash
+#       with_items:
+#         - 'cmake -DCMAKE_INSTALL_PREFIX="/usr" ./'
+#         - 'make && sudo make install'
+#       changed_when: false
+#       tags:
+#         - install
+#         - maimslop
+#   when: check_maim.stdout.find('not found') != -1

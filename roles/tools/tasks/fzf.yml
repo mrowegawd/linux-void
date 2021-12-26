@@ -9,9 +9,10 @@
     - always
 
 - become: yes
-  become_user: "{{ user_admin }}"
   block:
     - name: FZF | Git Clone FZF ke home user
+      become: yes
+      become_user: "{{ user_admin }}"
       git:
         repo: "{{ item.repo }}"
         dest: "/home/{{ user_admin }}/{{ item.name }}"
@@ -25,6 +26,8 @@
         - fzf
 
     - name: FZF | Install FZF
+      become: yes
+      become_user: "{{ user_admin }}"
       command: |
         /home/{{ user_admin }}/.fzf/install
       register: fzf_install
@@ -33,6 +36,8 @@
         - fzf
 
     - name: FZF | Set permisson folder.FZF di homedir
+      become: yes
+      become_user: "{{ user_admin }}"
       file:
         path: "/home/{{ user_admin }}/.fzf"
         owner: "{{ user_admin }}"

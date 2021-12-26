@@ -3,7 +3,6 @@
   become: yes
   become_user: "{{ user_admin }}"
   shell: |
-    set -o pipefail;
     if command -v docker &> /dev/null;
     then docker --version | cut -d" " -f3 | cut -d"," -f1 ; else echo "not found"; fi
   args:
