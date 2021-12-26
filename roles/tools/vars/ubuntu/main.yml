@@ -29,7 +29,9 @@ __tools:
   - jq
   - task-spooler # task spooler
   - pdfgrep
+  - feh
   - cmatrix
+  - sxiv # tool for show image or gif
   - lxappearance
   - multitail
   - rsync

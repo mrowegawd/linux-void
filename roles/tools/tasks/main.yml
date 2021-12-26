@@ -6,7 +6,6 @@
 
 - become: yes
   block:
-    - import_tasks: tools.yml
     - name: Install tools from build source
       include_role:
         name: _0package
@@ -19,6 +18,12 @@
         tasks_from: installwithasdf
       with_items: "{{ install_tools_from_asdf }}"
 
-    - import_tasks: mpv.yml
+    - import_tasks: autoenv.yml
     - import_tasks: dropbox.yml
+    - import_tasks: fzf.yml
+    - import_tasks: maim_slop.yml
+    - import_tasks: mpv.yml
+    - import_tasks: tools.yml
+    - import_tasks: zsh.yml
+
   when: ansible_os_family | lower == 'debian'

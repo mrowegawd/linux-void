@@ -121,3 +121,26 @@ mpv_version: "0.34.0"
 mpv_build:
   - repo: https://github.com/mpv-player/mpv-build.git
     dest: "{{ temp_dir }}/mpv_build"
+
+# autoenv.yml =====================================================================
+autoenv_git:
+  - repo: "https://github.com/kennethreitz/autoenv.git"
+    version: "master"
+
+# fzf.yml =====================================================================
+fzf_repo:
+  - name: ".fzf"
+    repo: "https://github.com/junegunn/fzf.git"
+    version: master
+
+# zsh.yml =====================================================================
+zsh_version: 5.8
+zsh_plugins:
+  # - repo: 'https://github.com/zplug/zplug'
+  #   dest: '.zplug'
+  - repo: "git://github.com/robbyrussell/oh-my-zsh.git"
+    dest: ".oh-my-zsh"
+  - repo: "https://github.com/zsh-users/zsh-syntax-highlighting.git"
+    dest: ".config/zsh/plugins/zsh-syntax-highlighting"
+  - repo: "https://github.com/urbainvaes/fzf-marks.git"
+    dest: ".config/zsh/plugins/fzf-marks"

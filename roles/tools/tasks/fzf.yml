@@ -1,0 +1,46 @@
+---
+- name: FZF | Check folder .fzf if exists
+  become: yes
+  become_user: "{{ user_admin }}"
+  stat:
+    path: "/home/{{ user_admin }}/.fzf"
+  register: check_fzf
+  tags:
+    - always
+
+- become: yes
+  become_user: "{{ user_admin }}"
+  block:
+    - name: FZF | Git Clone FZF ke home user
+      git:
+        repo: "{{ item.repo }}"
+        dest: "/home/{{ user_admin }}/{{ item.name }}"
+        version: "{{ item.version }}"
+        accept_hostkey: yes
+        force: yes
+      with_items:
+        - "{{ fzf_repo }}"
+      tags:
+        - install
+        - fzf
+
+    - name: FZF | Install FZF
+      command: |
+        /home/{{ user_admin }}/.fzf/install
+      register: fzf_install
+      tags:
+        - install
+        - fzf
+
+    - name: FZF | Set permisson folder.FZF di homedir
+      file:
+        path: "/home/{{ user_admin }}/.fzf"
+        owner: "{{ user_admin }}"
+        group: "{{ user_admin }}"
+        recurse: "yes"
+      when: fzf_install is success
+      tags:
+        - install
+        - fzf
+
+  when: not check_fzf.stat.exists

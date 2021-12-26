@@ -1,0 +1,26 @@
+- name: AUTOENV | Register, check path home/user/.autoenv jika exists
+  become: yes
+  become_user: "{{ user_admin }}"
+  stat:
+    path: "/home/{{ user_admin }}/.autoenv"
+  register: check_autoenv_path
+  tags:
+    - install
+    - autoenv
+
+- name: AUTOENV | Install autoenv
+  become: yes
+  become_user: "{{ user_admin }}"
+  git:
+    repo: "{{ item.repo }}"
+    dest: "/home/{{ user_admin }}/.autoenv"
+    version: "{{ item.version }}"
+    update: yes
+    force: yes
+    recursive: yes
+  with_items:
+    - "{{ autoenv_git }}"
+  when: not check_autoenv_path.stat.exists
+  tags:
+    - install
+    - autoenv

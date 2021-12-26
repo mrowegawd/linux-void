@@ -1,0 +1,48 @@
+---
+- name: ZSH | Check zsh installed version
+  shell: |
+    set -o pipefail;
+    if command -v zsh &> /dev/null;
+    then zsh --version | cut -d" " -f2 | cut -d" " -f4 ; else echo "not found"; fi | cut -d" " -f4 ; else echo "not found"; fi
+  changed_when: false
+  failed_when: false
+  ignore_errors: yes
+  register: check_zsh_version
+  tags:
+    - always
+
+- become: yes
+  become_user: "{{ user_admin }}"
+  block:
+    - name: ZSH | Install package zsh
+      become: yes
+      include_role:
+        name: 00package-meta
+      vars:
+        _apt_packages: zsh
+      tags:
+        - install
+        - zsh
+
+    - name: ZSH | Ensure dir path ~/.zsh/plugins exists
+      file:
+        path: "/home/{{ user_admin }}/.zsh/plugins"
+        state: directory
+      tags:
+        - install
+        - zsh
+
+    - name: ZSH | Git clone oh-my-zsh and their plugins
+      git:
+        repo: "{{ item.repo }}"
+        dest: "/home/{{ user_admin }}/{{ item.dest }}"
+        version: master
+        force: yes
+        recursive: yes
+      with_items: "{{ zsh_plugins }}"
+      tags:
+        - install
+        - zsh
+        - updatesync
+
+  when: zsh_version not in check_zsh_version.stdout or check_zsh_version.stdout.find('not found') != -1
