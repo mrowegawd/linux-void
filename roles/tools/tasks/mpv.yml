@@ -1,33 +1,50 @@
 ---
-# Untuk install mpv butuh dependencies
-- name: MPV | Clone mpv-build from github
-  git:
-    repo: "{{ item.repo }}"
-    dest: "{{ item.dest }}"
-    clone: yes
-    update: no
-    force: yes
-    version: master
-    recursive: false
-  retries: 3
-  delay: 3
-  register: mpvdlgit
-  until: mpvdlgit is success
-  with_items: "{{ mpv_build }}"
-
-- name: MPV | Ensure mpv deps installed
-  include_role:
-    name: _0package
-  vars:
-    _apt_packages: "{{ __mpv_deps }}"
-
-- name: MPV | Install MPV
+- name: DOCKER | Check mpv installed version
+  become: yes
+  become_user: "{{ user_admin }}"
   shell: |
-    printf "%s\n" --disable-gl > mpv_options
-    ./rebuild -j4
-    sudo ./install
+    set -o pipefail;
+    if command -v mpv &> /dev/null;
+    then mpv --version | head -1 | cut -d" " -f2 ; else echo "not found"; fi ; else echo "not found"; fi
   args:
+    chdir: "/home/{{ user_admin }}"
     executable: /bin/bash
-    chdir: "{{ item.dest }}"
-  when: mpvdlgit is success
-  with_items: "{{ mpv_build }}"
+  changed_when: false
+  register: check_mpv_version
+
+- become: yes
+  block:
+    # Untuk install mpv butuh dependencies
+    - name: MPV | Clone mpv-build from github
+      git:
+        repo: "{{ item.repo }}"
+        dest: "{{ item.dest }}"
+        clone: yes
+        update: no
+        force: yes
+        version: master
+        recursive: false
+      retries: 3
+      delay: 3
+      register: mpvdlgit
+      until: mpvdlgit is success
+      with_items: "{{ mpv_build }}"
+
+    - name: MPV | Ensure mpv deps installed
+      include_role:
+        name: _0package
+      vars:
+        _apt_packages: "{{ __mpv_deps }}"
+
+    - name: MPV | Install MPV
+      shell: |
+        printf "%s\n" --disable-gl > mpv_options
+        ./rebuild -j4
+        sudo ./install
+      args:
+        executable: /bin/bash
+        chdir: "{{ item.dest }}"
+      when: mpvdlgit is success
+      with_items: "{{ mpv_build }}"
+
+  when: mpv_version not in check_mpv_version.stdout or check_mpv_version.stdout.find('not found') != -1
