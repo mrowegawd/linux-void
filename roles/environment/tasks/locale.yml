@@ -48,7 +48,8 @@
     #   command: localectl set-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
 
     # taken from: https://github.com/ansible/ansible/issues/44708
-    - set_fact:
+    - name: LOCALE | Set fact for system_settings_locale
+      set_fact:
         system_settings_locale: en_US.UTF-8
 
     - name: LOCALE | check if locale exists

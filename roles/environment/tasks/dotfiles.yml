@@ -19,15 +19,15 @@
     - install
     - programming
     - asdf
-
 - name: DOTFILES | Install the dotfiles
   become: yes
   become_user: "{{ user_admin }}"
   shell: |
-    bash -lc 'bash install.sh'
+    bash install.sh
   args:
     warn: no
     chdir: "/home/{{ user_admin }}/moxconf/development/dotfiles"
+    executable: /bin/bash
   changed_when: false
   tags:
     - always

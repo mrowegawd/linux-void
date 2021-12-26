@@ -22,10 +22,18 @@
       tags:
         - high
         - auth
-    - import_tasks: accounts.yml
-    - import_tasks: auth.yml
-    - import_tasks: create.yml
-    - import_tasks: visudo.yml
-    - import_tasks: folders.yml
-    - import_tasks: dotfiles.yml
-    - import_tasks: locale.yml
+
+    - name: Importing task accounts
+      import_tasks: accounts.yml
+    - name: Importing task auth
+      import_tasks: auth.yml
+    - name: Importing task create
+      import_tasks: create.yml
+    - name: Importing task visido
+      import_tasks: visudo.yml
+    - name: Importing task folders
+      import_tasks: folders.yml
+    - name: Importing task dotfiles
+      import_tasks: dotfiles.yml
+    - name: Importing task lolcale
+      import_tasks: locale.yml

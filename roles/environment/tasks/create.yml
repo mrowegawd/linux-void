@@ -28,7 +28,7 @@
         name: "{{ item }}"
         state: present
       with_items:
-        - "{{[_group_admin]}}"
+        - "{{ [ _group_admin ] }}"
       tags:
         - install
         - groupadd

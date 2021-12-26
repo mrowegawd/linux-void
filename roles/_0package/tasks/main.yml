@@ -9,8 +9,8 @@
     update_cache: yes
     # cache_valid_time: 50000
     install_recommends: False
-  retries: 3
-  delay: 3
+  retries: 5
+  delay: 5
   register: jobcommon
   until: jobcommon is success
   vars:

@@ -167,7 +167,6 @@
     then polybar --version | cut -d" " -f2 | head -1 ; else echo "not found"; fi
   args:
     warn: no
-
     executable: /bin/bash
   changed_when: false
   register: check_polybar_version
