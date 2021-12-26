@@ -141,6 +141,6 @@ zsh_plugins:
   - repo: "git://github.com/robbyrussell/oh-my-zsh.git"
     dest: ".oh-my-zsh"
   - repo: "https://github.com/zsh-users/zsh-syntax-highlighting.git"
-    dest: ".config/zsh/plugins/zsh-syntax-highlighting"
+    dest: ".cache/zsh/plugins/zsh-syntax-highlighting"
   - repo: "https://github.com/urbainvaes/fzf-marks.git"
-    dest: ".config/zsh/plugins/fzf-marks"
+    dest: ".cache/zsh/plugins/fzf-marks"
