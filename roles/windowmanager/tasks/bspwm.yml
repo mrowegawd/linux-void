@@ -1,4 +1,25 @@
 ---
+- name: BSPWM | Check bspwm installed version
+  shell: >
+    if command -v bspwm &> /dev/null;
+    then bspwm -version; else echo "not found"; fi
+  args:
+    warn: no
+    executable: /bin/bash
+  changed_when: false
+  register: check_bspwm_version
+  tags:
+    - always
+
+# - name: Test debug
+#   debug:
+#     msg: "{{ check_bspwm_version.stdout.find(bspwm_version) }}"
+#   when: bspwm_version not in check_bspwm_version.stdout or check_bspwm_version.stdout.find('not found') != -1
+
+# - name: Test Pause
+#   pause:
+#     seconds: 10
+
 - become: yes
   block:
     - name: BSPWM | Ensure bspwm dependencies installed
@@ -29,6 +50,7 @@
         repo: "{{ item.repo }}"
         dest: "{{ item.dest }}"
         clone: yes
+        version: master
         update: no
         force: yes
         recursive: false
@@ -81,3 +103,4 @@
       tags:
         - install
         - bspwm
+  when: bspwm_version not in check_bspwm_version.stdout or check_bspwm_version.stdout.find('not found') != -1

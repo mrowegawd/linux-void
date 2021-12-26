@@ -1,4 +1,25 @@
 # dunst
+- name: DUNST | Check dunst installed version
+  shell: >
+    if command -v dunst &> /dev/null;
+    then dunst --version; else echo "not found"; fi
+  args:
+    warn: no
+    executable: /bin/bash
+  changed_when: false
+  register: check_dunst_version
+  tags:
+    - always
+
+# - name: Test debug
+#   debug:
+#     msg: "{{ check_dunst_version.stdout.find(dunst_version) }}"
+#   when: dunst_version not in check_dunst_version.stdout or check_dunst_version.stdout.find('not found') != -1
+
+# - name: Test Pause
+#   pause:
+#     seconds: 10
+
 - become: yes
   block:
     - name: DUNST | Remove old dunst
@@ -46,6 +67,13 @@
         - install
         - dunst
 
+    - name: DUNST | Extract dunst-{{ dunst_version }}.tar.gz
+      unarchive:
+        src: "{{ item.dest }}/{{ item.name }}.tar.gz"
+        dest: "{{ item.dest }}"
+        copy: no # with no will not copy or will deleted
+      with_items: "{{ dunst_download }}"
+
     - name: DUNST | Install dunst
       shell: |
         make && sudo make install
@@ -56,16 +84,19 @@
       tags:
         - install
         - tmux
+  when: dunst_version not in check_dunst_version.stdout or check_dunst_version.stdout.find('not found') != -1
 
 # rofi
-- name: ROFI | Check if Rofi commands already installed
+- name: ROFI | Check rofi installed version
   shell: >
-    bash -lc 'if command -v rofi &> /dev/null;
-    then echo "good"; else echo "not found"; fi'
+    set -o pipefail;
+    if command -v rofi &> /dev/null;
+    then rofi -V | cut -d":" -f2 | cut -d" " -f2 |xargs ; else echo "not found"; fi
   args:
     warn: no
+    executable: /bin/bash
   changed_when: false
-  register: check_rofi_command
+  register: check_rofi_version
   tags:
     - always
 
@@ -91,82 +122,55 @@
         - install
         - rofi
 
-    - name: ROFI | Download check-{{ rofi_check_version }}.tar.gz from git
+    - name: DUNST | Download rofi-{{ rofi_version }}.tar.gz
+      become: yes
       get_url:
-        url: "{{ rofi_check_url_download }}"
-        dest: "{{ temp_dir }}/check"
+        url: "{{ item.url }}"
+        dest: "{{ item.dest }}"
+        mode: 0755
+        force: True
+        timeout: 30
+      register: jobrofidownload
+      until: jobrofidownload is succeeded
+      retries: 10
+      delay: 10
+      with_items: "{{ rofi_download }}"
       tags:
         - install
         - rofi
 
-    - name: ROFI | Uncompress check-{{ rofi_check_version }}.tar.gz
-      command: >
-        bash -lc 'tar xzf {{ rofi_check_name }}.tar.gz'
-        warn=False
-      args:
-        chdir: "{{ temp_dir }}/check"
-      changed_when: false
-      tags:
-        - install
-        - rofi
+    - name: RODI | Extract rofi-{{ rofi_version }}.tar.gz
+      unarchive:
+        src: "{{ item.dest }}/{{ item.name }}.tar.gz"
+        dest: "{{ item.dest }}"
+        copy: no # with no will not copy or will deleted
+      with_items: "{{ rofi_download }}"
 
-    - name: ROFI | Install check-{{ rofi_check_version }} (with autoreconf)
+    - name: ROFI | Install rofi
       shell: |
-        autoreconf --force --install
-        ./configure
-        make check
-        sudo make install
-        sudo ldconfig
-        warn=False
+        ./configure --disable-check && make && sudo make install
       args:
-        chdir: "{{ temp_dir }}/check/{{ rofi_check_name }}"
-      changed_when: false
+        warn: no
+        chdir: "{{ item.dest }}/{{ item.name }}"
+        executable: /bin/bash
+      with_items: "{{ rofi_download }}"
       tags:
         - install
         - rofi
-
-    - name: ROFI | Clone rofi from github
-      git:
-        repo: "https://github.com/DaveDavenport/rofi"
-        dest: "{{ temp_dir }}/rofi"
-        depth: 1
-        version: "master"
-        clone: "yes"
-        force: "yes"
-        recursive: "yes"
-        update: "yes"
-        track_submodules: "yes"
-      tags:
-        - install
-        - rofi
-
-    - name: ROFI | Install rofi (with autoreconf)
-      shell: |
-        autoreconf --force --install
-        rm -Rf build/
-        mkdir -p build
-        cd build/
-        ../configure
-        make
-        sudo make install
-        warn=False
-      args:
-        chdir: "{{ temp_dir }}/rofi"
-      tags:
-        - install
-        - rofi
-
-  when: check_rofi_command.stdout.find('not found') != -1
+  when: rofi_version not in check_rofi_version.stdout or check_rofi_version.stdout.find('not found') != -1
 
 # polybar
-- name: POLYBAR | Check if Rofi commands already installed
+- name: POLYBAR | Check polybar installed version
   shell: >
-    bash -lc 'if command -v polybar &> /dev/null;
-    then echo "good"; else echo "not found"; fi'
+    set -o pipefail;
+    if command -v polybar &> /dev/null;
+    then polybar --version | cut -d" " -f2 | head -1 ; else echo "not found"; fi
   args:
     warn: no
+
+    executable: /bin/bash
   changed_when: false
-  register: check_polybar_command
+  register: check_polybar_version
   tags:
     - always
 
@@ -189,19 +193,29 @@
         - install
         - polybar
 
-    - name: POLYBAR | Clone polybar dari github
-      git:
-        repo: "{{ item.url }}"
+    - name: POLYBAR | Download polybar-{{ polybar_version }}.tar.gz
+      become: yes
+      get_url:
+        url: "{{ item.url }}"
         dest: "{{ item.dest }}"
-        version: "master"
-        accept_hostkey: "yes"
-        force: "yes"
-        recursive: yes
-      with_items: "{{ polybar_git }}"
-      changed_when: false
+        mode: 0755
+        force: True
+        timeout: 30
+      register: jobpolybardownload
+      until: jobpolybardownload is succeeded
+      retries: 10
+      delay: 10
+      with_items: "{{ polybar_download }}"
       tags:
         - install
         - polybar
+
+    - name: POLYBAR | Extract polybar-{{ polybar_version }}.tar.gz
+      unarchive:
+        src: "{{ item.dest }}/{{ item.name }}.tar.gz"
+        dest: "{{ item.dest }}"
+        copy: no # with no will not copy or will deleted
+      with_items: "{{ polybar_download }}"
 
     - name: POLYBAR | Install polybar
       shell: |
@@ -211,10 +225,11 @@
         make -j$(nproc)
         sudo make install
       args:
-        chdir: "{{ temp_dir }}/polybar"
-      changed_when: false
+        warn: no
+        chdir: "{{ item.dest }}/{{ item.name }}"
+        executable: /bin/bash
+      with_items: "{{ polybar_download }}"
       tags:
         - install
         - polybar
-
-  when: check_polybar_command.stdout.find('not found') != -1
+  when: polybar_version not in check_polybar_version.stdout or check_polybar_version.stdout.find('not found') != -1

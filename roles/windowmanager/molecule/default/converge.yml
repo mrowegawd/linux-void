@@ -5,12 +5,12 @@
     - name: "Include _init"
       include_role:
         name: "_init"
-    - name: "Include environment"
-      include_role:
-        name: "environment"
-    - name: "Include prolang"
-      include_role:
-        name: "prolang"
+    # - name: "Include environment"
+    #   include_role:
+    #     name: "environment"
+    # - name: "Include prolang"
+    #   include_role:
+    #     name: "prolang"
     - name: "Include windowmanager"
       include_role:
         name: "windowmanager"

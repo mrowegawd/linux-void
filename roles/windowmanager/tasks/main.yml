@@ -7,7 +7,7 @@
 - become: yes
   block:
     - import_tasks: bspwm.yml
-    - import_tasks: awesome.yml
-    - import_tasks: dwm.yml
+    # - import_tasks: awesome.yml
+    # - import_tasks: dwm.yml
     - import_tasks: wm_tools.yml
   when: ansible_os_family | lower == 'debian'

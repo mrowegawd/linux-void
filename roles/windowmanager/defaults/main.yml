@@ -1,12 +1,6 @@
 ---
-#>dunst
-dunst_version: "1.7.3"
-dunst_download:
-  - url: "https://github.com/dunst-project/dunst/archive/refs/tags/v{{ dunst_version }}.tar.gz"
-    dest: "{{ temp_dir }}/dunst"
-    name: "dunst-{{ dunst_version }}"
-
 #>bspwm.yml ===================================================================
+bspwm_version: 0.9.10
 bspwm_git:
   - repo: "https://github.com/baskerville/bspwm.git"
     dest: "{{ temp_dir }}/bspwm"
@@ -41,14 +35,30 @@ dwm_git:
 
 #>wm_tools.yml ================================================================
 #> rofi
-rofi_check_version: "0.15.2"
+rofi_version: 1.7.2
+rofi_download:
+  - url: "https://github.com/davatorium/rofi/releases/download/{{ rofi_version }}/rofi-{{ rofi_version }}.tar.gz"
+    dest: "{{ temp_dir }}/rofi"
+    name: "rofi-{{ rofi_version }}"
 
-rofi_check_name: "check-{{ rofi_check_version }}"
-rofi_check_url_git: "https://github.com/libcheck/check/releases/download"
-rofi_check_url_download: "{{ rofi_check_url_git }}/0.15.2/{{ rofi_check_name }}.tar.gz"
+# kita tidak perlu lagi, rofi check, hanya untuk testing bukan functionally check:
+# https://github.com/davatorium/rofi/blob/next/INSTALL.md
+# rofi_check_version: "0.15.2"
+# rofi_check_name: "check-{{ rofi_check_version }}"
+# rofi_check_url_git: "https://github.com/libcheck/check/releases/download"
+# rofi_check_url_download: "{{ rofi_check_url_git }}/0.15.2/{{ rofi_check_name }}.tar.gz"
 # https://github.com/libcheck/check/archive/refs/tags/0.15.2.tar.gz
 
 #> polybar
-polybar_git:
-  - url: "https://github.com/jaagr/polybar"
+polybar_version: 3.5.7
+polybar_download:
+  - url: "https://github.com/polybar/polybar/releases/download/{{ polybar_version }}/polybar-{{ polybar_version }}.tar.gz"
     dest: "{{ temp_dir }}/polybar"
+    name: "polybar-{{ polybar_version }}"
+
+#>dunst
+dunst_version: "1.7.3"
+dunst_download:
+  - url: "https://github.com/dunst-project/dunst/archive/refs/tags/v{{ dunst_version }}.tar.gz"
+    dest: "{{ temp_dir }}/dunst"
+    name: "dunst-{{ dunst_version }}"

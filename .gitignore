@@ -1,3 +1,6 @@
 # vim: ft=cfg
 # testingbro
 # testingbro_2
+
+tmp
+.env
