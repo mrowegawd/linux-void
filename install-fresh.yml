@@ -6,7 +6,7 @@
     - _init
     - environment
     - system
-    - browsers
+    # - browsers
     - prolang
     - virtualmanager
     - windowmanager
