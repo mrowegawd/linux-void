@@ -1,5 +1,5 @@
 ---
-- name: DOCKER | Check mpv installed version
+- name: MPV | Check mpv installed version
   become: yes
   become_user: "{{ user_admin }}"
   shell: |
