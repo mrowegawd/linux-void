@@ -8,7 +8,7 @@
     - install
     - iptables
 
-- name: Test
+- name: Check ansible_service_mgr 
   debug:
     msg: "{{ ansible_service_mgr }}"
 
@@ -41,8 +41,8 @@
         owner: root
         group: root
         mode: '{{ "0644" if ansible_service_mgr == "systemd" else "0755" }}'
-      notify:
-        - restart firewall
+      # notify:
+      #   - restart firewall
       tags:
         - install
         - iptables

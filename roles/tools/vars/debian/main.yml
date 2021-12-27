@@ -1,4 +1,39 @@
 ---
+# neovim.yml ==================================================================
+__neovim_dependencies_pkg:
+  - xclip
+  - xsel
+
+  # neovim dependencies
+  - autoconf
+  - automake
+  - cmake
+  - dh-autoreconf
+  - g++
+  - gcc
+  - gettext
+  - gperf
+  - libluajit-5.1-dev
+  - libmsgpack-dev
+  - libncurses5-dev
+  - libtermkey-dev
+  - libtool
+  - libtool-bin
+  - libunibilium-dev
+  - libutf8proc-dev
+  - libuv1-dev
+  - libvterm-dev
+  - luajit
+  - luarocks
+  - make
+  - ninja-build
+  - pkg-config
+  - software-properties-common
+  - unzip
+  - vim
+  - xcb
+  - xutils-dev
+
 #>tools.yml ===================================================================
 __tools_base_pkg:
   - build-essential

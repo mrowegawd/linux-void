@@ -1,0 +1,58 @@
+---
+# install neovim
+# install st
+# install termite
+
+- become: yes
+  block:
+    - name: NEOVIM | Install neovim dependencies
+      include_role:
+        name: _0package
+      vars:
+        _apt_packages: '{{ __neovim_dependencies_pkg }}'
+      tags:
+        - install
+        - nvim
+
+    # - name: NEOVIM | Ensure neovim folder temp exists
+    #   file:
+    #     path: '{{ temp_dir }}/neovim'
+    #     state: directory
+    #   tags:
+    #     - install
+    #     - nvim
+
+    # - name: NEOVIM | Git clone neovim
+    #   git:
+    #     repo: '{{ __neovim_github }}'
+    #     dest: '{{ temp_dir }}/neovim'
+    #     force: yes
+    #     version: 'master'
+    #     update: yes
+    #     recursive: yes
+    #   tags:
+    #     - install
+    #     - nvim
+
+    # - name: NEOVIM | Luarocks build install
+    #   shell: |
+    #     luarocks build {{ item }}
+    #   args:
+    #     chdir: '{{ temp_dir }}/neovim'
+    #     warn: no
+    #   with_items: ['mpack', 'lpeg', 'inspect']
+    #   changed_when: false
+    #   failed_when: false
+    #   tags:
+    #     - install
+    #     - nvim
+
+    # - name: NEOVIM | Install neovim
+    #   shell: 'make CMAKE_BUILD_TYPE=RelWithDebInfo && sudo make install'
+    #   args:
+    #     chdir: '{{ temp_dir }}/neovim'
+    #     warn: no
+    #   changed_when: false
+    #   tags:
+    #     - install
+    #     - nvim
