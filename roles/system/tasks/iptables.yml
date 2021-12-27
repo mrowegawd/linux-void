@@ -1,0 +1,59 @@
+---
+- name: IPTABLES | Install iptables
+  include_role:
+    name: _0package
+  vars:
+    _apt_packages: "{{ __iptables_package }}"
+  tags:
+    - install
+    - iptables
+
+- name: Test
+  debug:
+    msg: "{{ ansible_service_mgr }}"
+
+# - name: IPTABLES | After install iptables, flush the settings
+#   command: iptables -F
+#   changed_when: false
+#   tags:
+#     - install
+#     - iptables
+
+- block:
+    - name: IPTABLES | Copy template files to dest for systemd
+      template:
+        src: "etc/conf/firewall.j2"
+        dest: /etc/firewall.bash
+        owner: root
+        group: root
+        mode: 0744
+      notify:
+        - restart firewall
+      tags:
+        - install
+        - iptables
+        - chiptables
+
+    - name: IPTABLES | Copy unit files to dest for systemd
+      template:
+        src: '{{ "etc/systemd/system/firewall.unit.j2" if ansible_service_mgr == "systemd" else "etc/init.d/firewall.init.j2" }}'
+        dest: '{{ "/etc/systemd/system/firewall.service" if ansible_service_mgr == "systemd" else "/etc/init.d/firewall" }}'
+        owner: root
+        group: root
+        mode: '{{ "0644" if ansible_service_mgr == "systemd" else "0755" }}'
+      notify:
+        - restart firewall
+      tags:
+        - install
+        - iptables
+
+    - name: IPTABLES | Configure the firewall service.
+      service:
+        name: firewall
+        state: started
+        enabled: true
+      tags:
+        - install
+        - iptables
+
+  when: ansible_service_mgr == 'systemd'

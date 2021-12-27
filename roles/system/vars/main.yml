@@ -1,2 +1,8 @@
 ---
 # vars file for system
+
+__iptables_package:
+  - "iptables"
+  - "iptables-persistent"
+
+__iptables_deamon: "firewall"

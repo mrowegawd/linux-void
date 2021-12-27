@@ -1,0 +1,2 @@
+__iptables_package:
+  - "iptables-services"

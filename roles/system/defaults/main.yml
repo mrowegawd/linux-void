@@ -1,2 +1,10 @@
 ---
-# defaults file for system
+# iptables.yml ================================================================
+iptables_log_prefix_name: "[netfilterCONF] "
+iptables_log_path_name: "/var/log/myiptables.log"
+
+firewall_log_dropped_packets: true
+
+# disable-firewalld.yml
+disabled_firewall_firewalld: true
+disabled_firewall_ufw: true

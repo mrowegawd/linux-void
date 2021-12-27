@@ -1,4 +1,6 @@
 ---
+_new_port_ssh: "2134"
+_myhomeland_rc: "localhost"
 # Main group for sudo command and allowing 'ssh' client
 
 _group_admin: "{{ 'admin' if ansible_os_family == 'Debian' else 'wheel' }}"

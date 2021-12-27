@@ -1,2 +1,10 @@
 ---
-# tasks file for system
+- name: Tools | Include vars for specific os
+  include_vars: "{{ ansible_distribution | lower }}/main.yml"
+  tags:
+    - always
+
+- become: yes
+  block:
+    - import_tasks: iptables.yml
+    - import_tasks: disable-firewalld.yml

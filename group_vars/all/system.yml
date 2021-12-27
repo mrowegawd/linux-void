@@ -1,0 +1,23 @@
+###################
+# IPTABLES        #
+###################
+# ipv4
+_iptables_firewall_forwarded_tcp_ports: []
+_iptables_firewall_forwarded_udp_ports: []
+
+_iptables_firewall_allowed_tcp_ports:
+  - "{{ _new_port_ssh }}"
+  - "25"
+  - "80"
+  - "443"
+
+_iptables_firewall_allowed_udp_ports: []
+
+_iptables_firewall_additional_rules: []
+
+_iptables_firewall_log_dropped_packets: true
+
+# ipv6
+_iptables_firewall_enable_ipv6: true
+
+_iptables_firewall_ip6_additional_rules: []

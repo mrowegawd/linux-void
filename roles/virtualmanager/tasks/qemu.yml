@@ -7,14 +7,12 @@
   tags:
     - install
     - docker
-
 # - name: KVM AND QEMU | Ensure libvirtd systemd enabled
 #   become: yes
 #   service:
 #     name: libvirtd
 #     enabled: true
 #     state: started
-
 # Manage cloud image
 # - name: KVM AND QEMU | Set qemu dir for images
 #   file:
