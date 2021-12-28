@@ -116,7 +116,8 @@ install_tools_from_asdf:
       # for plantuml dependencies
       - graphviz
 
-alacritty_url_donwload: https://api.github.com/repos/alacritty/alacritty/releases/latest
+#>alacritty.yml ===============================================================
+alacritty_url_download: https://api.github.com/repos/alacritty/alacritty/releases/latest
 
 #>mpv.yml =====================================================================
 mpv_version: "0.34.0"

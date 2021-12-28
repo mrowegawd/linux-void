@@ -1,4 +1,14 @@
 ---
+# alacritty.yml ===============================================================
+__alacritty_pkg:
+  - cmake
+  - pkg-config
+  - libfreetype6-dev
+  - libfontconfig1-dev
+  - libxcb-xfixes0-dev
+  - libxkbcommon-dev
+  - python3
+
 # neovim.yml ==================================================================
 __neovim_dependencies_pkg:
   - xclip

@@ -122,7 +122,7 @@
         - install
         - rofi
 
-    - name: DUNST | Download rofi-{{ rofi_version }}.tar.gz
+    - name: ROFI | Download rofi-{{ rofi_version }}.tar.gz
       become: yes
       get_url:
         url: "{{ item.url }}"
@@ -139,7 +139,7 @@
         - install
         - rofi
 
-    - name: RODI | Extract rofi-{{ rofi_version }}.tar.gz
+    - name: ROFI | Extract rofi-{{ rofi_version }}.tar.gz
       unarchive:
         src: "{{ item.dest }}/{{ item.name }}.tar.gz"
         dest: "{{ item.dest }}"
