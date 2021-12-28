@@ -6,25 +6,25 @@
 
 - become: yes
   block:
-    # - name: Install tools from build source
-    #   include_role:
-    #     name: _0package
-    #     tasks_from: buildsource
-    #   with_items: "{{ install_tools_from_buildsource }}"
+    - name: Install tools from build source
+      include_role:
+        name: _0package
+        tasks_from: buildsource
+      with_items: "{{ install_tools_from_buildsource }}"
 
-    # - name: Install tools with asdf source with lang
-    #   include_role:
-    #     name: _0package
-    #     tasks_from: installwithasdf
-    #   with_items: "{{ install_tools_from_asdf }}"
+    - name: Install tools with asdf source with lang
+      include_role:
+        name: _0package
+        tasks_from: installwithasdf
+      with_items: "{{ install_tools_from_asdf }}"
 
-    # - import_tasks: autoenv.yml
-    # - import_tasks: dropbox.yml
+    - import_tasks: autoenv.yml
+    - import_tasks: dropbox.yml
     - import_tasks: neovim.yml
-    # - import_tasks: maim_slop.yml
-    # - import_tasks: mpv.yml
-    # - import_tasks: tools.yml
-    # - import_tasks: zsh.yml
-    # - import_tasks: fzf.yml
+    - import_tasks: maim_slop.yml
+    - import_tasks: mpv.yml
+    - import_tasks: tools.yml
+    - import_tasks: zsh.yml
+    - import_tasks: fzf.yml
 
   when: ansible_os_family | lower == 'debian'

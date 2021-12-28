@@ -22,34 +22,28 @@ sudo apt install --no-install-recommends -y \
 pip3 install -U ansible
 pip3 install -U paramiko
 
-_whois() {
-  echo "package whois not found! let me install it.."
-  sudo apt install whois -y
-  sleep 1
-}
-
 _mkpass() {
   read -r -p "your password? " getvar
   read -r "getvar?your password? "
-  mkpasswd -m sha-512 "$getvar" >"$PATHTEMP/mypass_SHA512_$(date +%F)"
-  echo "$getvar" >"$PATHTEMP/mypass_$(date +%F)"
-  printf "%s $PATHTEMP\\n" "store pass path:"
+
+  mkdir -p tmp
+
+  mkpasswd -m sha-512 "$getvar" > tmp/userpass-SHA5
+  echo "$getvar" > tmp/userpass
+  echo "$USER" > tmp/user
 }
 
-PATHTEMP=$(mktemp -d)
-
 if command -v whois >/dev/null; then
-  _whois
+  echo "package whois not found! let me install it.."
+  sudo apt install whois -y
+  sleep 1
 fi
 
-_mkpass
-
-mkdir -p tmp
-touch tmp/user
-touch tmp/userpass
-touch tmp/userpass-SHA5
-
 clear
+echo ""
 
-printf "\n"
-printf "\n[+] Check example:\n\tnotes at *tmp_example*"
+_mkpass
+sleep 2
+printf "\n\t[+] Lets start ansible-playbook !!"
+
+ansible-playbook install-fresh.yml --ask-become-pass
