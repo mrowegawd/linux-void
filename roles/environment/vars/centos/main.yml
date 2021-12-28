@@ -1,6 +1,17 @@
-#>> accounts.yml ==============================================================
+---
+#>> pam.yml
 __pam_auth_file: /etc/pam.d/system-auth
 __pam_password_file: /etc/pam.d/password-auth
 
-#>> auth.yml ==================================================================
+__pam_os_package_ccreds: "pam_ccreds"
+__pam_os_package_cracklib: "pam_cracklib"
+__pam_os_package_passwdqc: "pam_passwdqc"
+
+#>> auth.yml
 __pam_postlogin_file: /etc/pam.d/postlogin
+
+# Commands
+__grub_update_cmd: "/usr/sbin/grub2-mkconfig -o {{ grub_config_file_boot }}"
+
+#
+__login_defs_env_umask: 077
