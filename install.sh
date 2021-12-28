@@ -24,7 +24,7 @@ pip3 install -U paramiko
 
 _mkpass() {
   read -r -p "your password? " getvar
-  read -r "getvar?your password? "
+  # read -r "getvar?your password? "
 
   mkdir -p tmp
 
@@ -33,7 +33,7 @@ _mkpass() {
   echo "$USER" > tmp/user
 }
 
-if command -v whois >/dev/null; then
+if [ -z "$(command -v mkpasswd)" ]; then
   echo "package whois not found! let me install it.."
   sudo apt install whois -y
   sleep 1
@@ -46,4 +46,4 @@ _mkpass
 sleep 2
 printf "\n\t[+] Lets start ansible-playbook !!"
 
-ansible-playbook install-fresh.yml --ask-become-pass
+ansible-playbooks install-fresh.yml --ask-become-pass
