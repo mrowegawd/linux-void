@@ -1,0 +1,81 @@
+---
+# taken from https://github.com/islander/ansible-role-alacritty
+
+- name: Fail for unsupported architecture
+  fail:
+    msg: "Can't install alacritty: unsupported arch ({{ ansible_architecture }})."
+  when: ansible_architecture != "x86_64"
+
+- name: Set package architecture
+  set_fact:
+    alacritty_pkg_arch: "{{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture }}"
+
+- name: Get urls for latest release of alacritty
+  uri:
+    url: "{{ alacritty_url_download }}"
+    body_format: json
+    return_content: true
+  changed_when: false
+  register: alacritty_latest
+
+- name: Parse alacritty deb url
+  set_fact:
+    alacritty_deb_url: "{{ alacritty_latest.json  | to_json | from_json | json_query(query) | first }}"
+  vars:
+    query: "assets[?ends_with(name, `{{ alacritty_pkg_arch }}.deb`)].browser_download_url"
+
+- name: Parse alacritty yaml url
+  set_fact:
+    alacritty_yml_url: "{{ alacritty_latest.json  | to_json | from_json | json_query(query) | first }}"
+  vars:
+    query: "assets[?ends_with(name, `alacritty.yml`)].browser_download_url"
+
+- name: Parse alacritty manpage url
+  set_fact:
+    alacritty_man: "{{ alacritty_latest.json  | to_json | from_json | json_query(query) | first }}"
+  vars:
+    query: "assets[?ends_with(name, `alacritty.1.gz`)].browser_download_url"
+
+- name: Debug alacritty
+  debug:
+    msg: "{{ item }}"
+  with_items:
+    - "{{ alacritty_deb_url }}"
+    - "{{ alacritty_yml_url }}"
+    - "{{ alacritty_man }}"
+
+- name: Download alacritty package
+  get_url:
+    url: "{{ alacritty_deb_url }}"
+    dest: "{{ ansible_env.HOME }}"
+  register: alacritty_download
+
+- name: Install alacritty package
+  become: yes
+  become_user: "root"
+  apt:
+    deb: "{{ alacritty_download.dest }}"
+  when: not alacritty_download.failed
+
+- name: Make alacritty manpage directory
+  become: yes
+  become_user: "root"
+  file:
+    path: "/usr/share/man/man1"
+    state: directory
+    mode: 0775
+
+- name: Download alacritty manpages
+  get_url:
+    url: "{{ alacritty_man }}"
+    dest: "/tmp"
+  register: alacritty_man_download
+
+- name: Install alacritty manpage
+  become: yes
+  become_user: "root"
+  shell: gunzip < /tmp/alacritty.1.gz > /usr/share/man/man1/alacritty.1
+  args:
+    creates: /usr/share/man/man1/alacritty.1
+  when: not alacritty_man_download.failed
+  notify: Update mandb

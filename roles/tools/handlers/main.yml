@@ -1,2 +1,7 @@
 ---
 # handlers file for tools
+- name: Update mandb
+  become: yes
+  become_user: "root"
+  command: mandb
+  # when: gunzip_alacritty_man is changed
