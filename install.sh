@@ -44,6 +44,6 @@ echo ""
 
 _mkpass
 sleep 2
-printf "\n\t[+] Lets start ansible-playbook !!"
+printf "\n\t[+] Lets start ansible-playbook !!\n"
 
-ansible-playbooks install-fresh.yml --ask-become-pass
+ansible-playbook install-fresh.yml --ask-become-pass
