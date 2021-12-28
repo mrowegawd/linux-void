@@ -22,6 +22,34 @@ sudo apt install --no-install-recommends -y \
 pip3 install -U ansible
 pip3 install -U paramiko
 
+_whois() {
+  echo "package whois not found! let me install it.."
+  sudo apt install whois -y
+  sleep 1
+}
+
+_mkpass() {
+  read -r -p "your password? " getvar
+  read -r "getvar?your password? "
+  mkpasswd -m sha-512 "$getvar" >"$PATHTEMP/mypass_SHA512_$(date +%F)"
+  echo "$getvar" >"$PATHTEMP/mypass_$(date +%F)"
+  printf "%s $PATHTEMP\\n" "store pass path:"
+}
+
+PATHTEMP=$(mktemp -d)
+
+if command -v whois >/dev/null; then
+  _whois
+fi
+
+_mkpass
+
+mkdir -p tmp
+touch tmp/user
+touch tmp/userpass
+touch tmp/userpass-SHA5
+
+clear
+
 printf "\n"
-printf "\n[+] Run command (from alias-bashscript): r_passkeygen"
-printf "\n[+] Check example:\n\tnotes at *tmp_example* (change to tmp)"
+printf "\n[+] Check example:\n\tnotes at *tmp_example*"

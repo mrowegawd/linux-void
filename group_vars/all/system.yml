@@ -1,3 +1,143 @@
+---
+##################
+# PACKAGECUSTOM  #
+##################
+
+#>> 00package-meta
+# State is latest by default
+_apt_state: latest
+
+# Array of packages to install
+_apt_packages: []
+#  - package 1
+#  - package2
+
+#>> modprobe.yml
+# whitelist exlude program for modprobe
+_modprobe_filesystem_whitelist_localhost:
+  - vfat
+
+_modprobe_filesystem_whitelist_server: []
+
+#>> auditd.yml
+# Set the action to take when the disk is full or network events cannot be sent.
+_auditd_security_disk_full_action: syslog # V-72087
+_auditd_security_network_failure_action: syslog # V-72087
+# Size of remaining disk space (in MB) that triggers alerts.
+_auditd_security_space_left: >
+  {{ (ansible_mounts | selectattr('mount', 'equalto', '/')
+  | map(attribute='size_total')
+  | first * 0.25 / 1024 / 1024) | int }}
+# V-72089
+
+# Action to take when the space_left threshold is reached.
+_auditd_security_space_left_action: email # V-72091
+# Send auditd email alerts to this user.
+_auditd_security_action_mail_acct: root # V-72093
+
+#>> kernel.yml
+# Disallow forwarding IPv4/IPv6 source routed packets on all interfaces
+# immediately and by default on new interfaces.
+_kernel_security_disallow_source_routed_packet_forward_ipv4: yes # V-72283 / V-72285
+_kernel_security_disallow_source_routed_packet_forward_ipv6: yes # V-72319
+# Disallow responses to IPv4 ICMP echoes sent to broadcast address.
+_kernel_security_disallow_echoes_broadcast_address: yes # V-72287
+# Disallow IPV4 ICMP redirects on all interfaces immediately and by default on
+# new interfaces.
+_kernel_security_disallow_icmp_redirects: yes # V-73175 / V-72289 / V-72291 / V-72293
+# Disallow IP forwarding.
+_kernel_security_disallow_ip_forwarding: no # V-72309
+# Disable USB storage support.
+_kernel_security_disable_usb_storage: yes # V-71983
+# Disable kdump.
+_kernel_security_disable_kdump: yes # V-72057
+# Disable Datagram Congestion Control Protocol (DCCP).
+_kernel_security_rhel7_disable_dccp: yes # V-77821
+# Enable Address Space Layout Randomization (ASLR).
+_kernel_security_enable_aslr: yes # V-77825
+
+# To enable the contrib tasks, set this variable to 'yes'.
+security_contrib_enabled: no
+
+#############
+# ACTIVATE  #
+#############
+#>> accounts.yml
+# enable pwquality rules (redhat only karena, only redhat yg punya install
+# default pwquality)
+_accounts_pwquality_apply_rules: yes
+
+_accounts_pwquality_require_uppercase: yes # V-71903
+_accounts_pwquality_require_lowercase: yes # V-71905
+_accounts_pwquality_require_numeric: yes # V-71907
+_accounts_pwquality_require_special: yes # V-71909
+_accounts_pwquality_require_characters_changed: yes # V-71911
+_accounts_pwquality_require_character_classes_changed: yes # V-71913
+_accounts_pwquality_limit_repeated_characters: yes # V-71915
+_accounts_pwquality_limit_repeated_character_classes: yes # V-71917
+_accounts_pwquality_require_minimum_password_length: no # V-71935
+
+# Set minimum password lifetime to 1 day for interactive accounts.
+_accounts_security_set_minimum_password_lifetime: no # V-71927
+_accounts_security_set_maximum_password_lifetime: no # V-71931
+
+# How many old user password to remember to prevent password re-use.
+#_accounts_security_password_remember_password: 5                      # V-71933
+
+# Disable user accounts if the password expires.
+_accounts_security_disable_account_if_password_expires: no # V-71941
+
+# Ensure passwords are stored using SHA512.
+_accounts_security_password_encrypt_method: SHA512 # V-71921
+# Ensure user/group admin utilities only store encrypted passwords.
+_accounts_security_libuser_crypt_style_sha512: yes # V-71923
+# Set a minimum/maximum lifetime limit for user passwords.
+#_accounts_security_password_min_lifetime_days: 1                      # V-71925
+#_accounts_security_password_max_lifetime_days: 60                     # V-71929
+# Set a umask for all authenticated users.
+# security_shadow_utils_umask: '077'                         # V-71995
+# Create home directories for new users by default.
+_accounts_security_shadow_utils_create_home: yes # V-72013
+# Set a delay (in seconds) between failed login attempts.
+_accounts_security_shadow_utils_fail_delay: 4 # V-71951
+
+#>> auth.yml
+#The default password for grub authentication is 'secrete'.
+_auth_security_grub_password_hash: grub.pbkdf2.sha512.10000.7B21785BEAFEE3AC71459D8210E3FB42EC0F5011C24A2DF31A8127D43A0BB4F1563549DF443791BE8EDA3AE4E4D4E04DB78D4CA35320E4C646CF38320CBE16EC.4B46176AAB1405D97BADB696377C29DE3B3266188D9C3D2E57F3AE851815CCBC16A275B0DBF6F79D738DAD8F598BEE64C73AE35F19A28C5D1E7C7D96FF8A739Ba # skip-ansible-lint
+
+#>> fileperm.yml
+# Set user/group owners on each home directory and set mode to 0750.
+_fileperm_security_set_home_directory_permissions_and_owners: yes # V-72017 / V-72019 / V-72021
+
+#############
+# RUN CHECK #
+#############
+#>> apt.yml
+_run_apt_check_package_checksums: yes
+
+#>> aide.yml
+_run_initialize_aide: yes
+
+#>> fileperm.yml
+# Search for files/directories owned by invalid users or groups.
+_run_fileperm_security_search_for_invalid_owner: no # V-72007
+_run_fileperm_security_search_for_invalid_group_owner: yes # V-72007
+
+# Find all world-writable directories and display them.
+_run_fileperm_security_find_world_writable_dirs: yes # V-72047
+# Find all directory/files with no user, change them to root
+_run_fileperm_withnouser: yes
+# Find all directory/files with no group, change them to root
+_run_fileperm_withnogroup: yes
+
+###################
+# REMOVE / DELETE #
+###################
+
+#>> system.users.yml
+# Remove .shosts and shosts.equiv files.
+_run_auth_security_remove_shosts_files: no
+
 ###################
 # IPTABLES        #
 ###################
