@@ -11,6 +11,6 @@
     # - name: "Include prolang"
     #   include_role:
     #     name: "prolang"
-    # - name: "Include windowmanager"
-    #   include_role:
-    #     name: "windowmanager"
+    - name: "Include windowmanager"
+      include_role:
+        name: "windowmanager"

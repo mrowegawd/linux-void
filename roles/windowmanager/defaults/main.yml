@@ -1,5 +1,10 @@
 ---
-#>bspwm.yml ===================================================================
+##############################
+#
+# WM VARIAN
+#
+##############################
+# BSPWM --------------------------------------------------------- {{{
 bspwm_version: 0.9.10
 bspwm_git:
   - repo: "https://github.com/baskerville/bspwm.git"
@@ -13,7 +18,9 @@ bspwm_git:
   - repo: "https://github.com/baskerville/xdo.git"
     dest: "{{ temp_dir }}/xdo"
 
-#>awesome.yml =================================================================
+#
+# }}}
+# AWESOME --------------------------------------------------------- {{{
 awesome_git:
   - repo: "https://github.com/awesomewm/awesome"
     dest: "{{ temp_dir }}/awesome"
@@ -26,39 +33,55 @@ awesome_git:
   - repo: "https://github.com/baskerville/xdo.git"
     dest: "{{ temp_dir }}/xdo"
 
-lua_version: "{{ _install_programming.lua.lua_version }}"
-
-#>dwm.yml =====================================================================
+#
+# }}}
+# DWM --------------------------------------------------------- {{{
 dwm_git:
   - repo: "https://github.com/sunilRF9/Custom-DWM-Build"
     dest: "{{ temp_dir }}/dwm"
 
-#>wm_tools.yml ================================================================
-#> rofi
+#
+# }}}
+
+lua_version: "{{ _install_programming.lua.lua_version }}"
+
+##############################
+#
+# WM_TOOLS
+#
+##############################
+
+# ROFI --------------------------------------------------------- {{{
 rofi_version: 1.7.2
 rofi_download:
   - url: "https://github.com/davatorium/rofi/releases/download/{{ rofi_version }}/rofi-{{ rofi_version }}.tar.gz"
     dest: "{{ temp_dir }}/rofi"
     name: "rofi-{{ rofi_version }}"
 
-# kita tidak perlu lagi, rofi check, hanya untuk testing bukan functionally check:
-# https://github.com/davatorium/rofi/blob/next/INSTALL.md
-# rofi_check_version: "0.15.2"
-# rofi_check_name: "check-{{ rofi_check_version }}"
-# rofi_check_url_git: "https://github.com/libcheck/check/releases/download"
-# rofi_check_url_download: "{{ rofi_check_url_git }}/0.15.2/{{ rofi_check_name }}.tar.gz"
-# https://github.com/libcheck/check/archive/refs/tags/0.15.2.tar.gz
-
-#> polybar
+#
+# }}}
+# POLYBAR --------------------------------------------------------- {{{
 polybar_version: 3.5.7
 polybar_download:
   - url: "https://github.com/polybar/polybar/releases/download/{{ polybar_version }}/polybar-{{ polybar_version }}.tar.gz"
     dest: "{{ temp_dir }}/polybar"
     name: "polybar-{{ polybar_version }}"
 
-#>dunst
+#
+# }}}
+# DUNST --------------------------------------------------------- {{{
 dunst_version: "1.7.3"
 dunst_download:
   - url: "https://github.com/dunst-project/dunst/archive/refs/tags/v{{ dunst_version }}.tar.gz"
     dest: "{{ temp_dir }}/dunst"
     name: "dunst-{{ dunst_version }}"
+#
+# }}}
+# PICOM --------------------------------------------------------- {{{
+
+# Tidak diperlukan config untuk picom
+
+#
+# }}}
+
+# vim: foldmethod=marker

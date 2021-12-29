@@ -1,5 +1,11 @@
 ---
-#>bspwm.yml ===================================================================
+##############################
+#
+# WM VARIAN
+#
+##############################
+
+# BSPWM --------------------------------------------------------- {{{
 __bspwm_deps:
   - gcc
   - git
@@ -16,8 +22,9 @@ __bspwm_deps:
   - make
   - xcb
   - xdotool
-
-#>awesome.yml =================================================================
+#
+# }}}
+# AWESOME --------------------------------------------------------- {{{
 __awesome_deps:
   - asciidoctor
   - unzip
@@ -80,7 +87,9 @@ __awesome_deps:
   # - unzip
   # - imagemagick
 
-#>dwm.yml =====================================================================
+#
+# }}}
+# DWM --------------------------------------------------------- {{{
 __dwm_deps:
   - make
   - gcc
@@ -90,8 +99,16 @@ __dwm_deps:
   - xorg
   - suckless-tools
 
-#>wm_tools.yml ================================================================
-#> dunst
+#
+# }}}
+
+##############################
+#
+# WM_TOOLS
+#
+##############################
+
+# DUNST --------------------------------------------------------- {{{
 __dunst_deps:
   - libdbus-1-dev
   - libnotify-dev
@@ -103,8 +120,9 @@ __dunst_deps:
   - libpango1.0-dev
   - libgtk-3-dev
   - libxdg-basedir-dev
-
-#> rofi
+#
+# }}}
+# ROFI --------------------------------------------------------- {{{
 __rofi_deps:
   - gcc
   - flex
@@ -127,7 +145,9 @@ __rofi_deps:
   - automake
   - libxcb-cursor-dev
 
-#> polybar
+#
+# }}}
+# POLYBAR --------------------------------------------------------- {{{
 __polybar_deps:
   - build-essential
   - git
@@ -158,3 +178,35 @@ __polybar_deps:
   - libmpdclient-dev
   - libcurl4-openssl-dev
   - libnl-genl-3-dev
+#
+# }}}
+# PICOM --------------------------------------------------------- {{{
+__picom_deps:
+  - libxext-dev
+  - libxcb1-dev
+  - libxcb-damage0-dev
+  - libxcb-xfixes0-dev
+  - libxcb-shape0-dev
+  - libxcb-render-util0-dev
+  - libxcb-render0-dev
+  - libxcb-randr0-dev
+  - libxcb-composite0-dev
+  - libxcb-image0-dev
+  - libxcb-present-dev
+  - libxcb-xinerama0-dev
+  - libxcb-glx0-dev
+  - libpixman-1-dev
+  - libdbus-1-dev
+  - libconfig-dev
+  - libgl1-mesa-dev
+  - libpcre2-dev
+  - libpcre3-dev
+  - libevdev-dev
+  - uthash-dev
+  - libev-dev
+  - libx11-xcb-dev
+  - meson
+#
+# }}}
+
+# vim: foldmethod=marker
