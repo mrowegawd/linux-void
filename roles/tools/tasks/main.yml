@@ -22,6 +22,7 @@
     - import_tasks: dropbox.yml
     - import_tasks: neovim.yml
     - import_tasks: alacritty.yml
+    - import_tasks: vscode.yml
     - import_tasks: maim_slop.yml
     - import_tasks: mpv.yml
     - import_tasks: tools.yml

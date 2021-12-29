@@ -1,0 +1,31 @@
+---
+- name: VSCODE | Install vscode deps
+  include_role:
+    name: _0package
+  vars:
+    _apt_packages: "{{ __vscode_shared_dep }}"
+  tags:
+    - install
+    - vscode
+
+- name: VSCODE | Ensure vscode repo is present
+  include_role:
+    name: _0package
+    tasks_from: ppa
+  vars:
+    apt_repo_keys:
+      - "{{ vscode_apt_key }}"
+    apt_repo_repositories:
+      - "{{ vscode_apt_repo }}"
+  tags:
+    - install
+    - vscode
+
+- name: VSCODE | Install VS Code (apt)
+  include_role:
+    name: _0package
+  vars:
+    _apt_packages: '{{ visual_studio_code_package }}{{ (visual_studio_code_version | length > 0) | ternary("=" + visual_studio_code_version, "") }}'
+  tags:
+    - install
+    - vscode

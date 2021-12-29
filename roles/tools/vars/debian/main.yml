@@ -1,4 +1,21 @@
 ---
+# vscode.yml ==================================================================
+__vscode_shared_dep:
+  - software-properties-common
+  - curl
+  - gnupg
+  - wget
+  - ca-certificates
+  - apt-transport-https
+  - gconf2
+  - libasound2
+  - libgtk2.0-0
+  - libxss1
+  - libxcb-dri3-0
+  - libdrm2
+  - libgbm1
+  - libxshmfence1
+
 # alacritty.yml ===============================================================
 __alacritty_pkg:
   - cmake
