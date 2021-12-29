@@ -1,0 +1,36 @@
+---
+- name: FOLDERS | Create misc folders
+  become: yes
+  become_user: "{{ user_admin }}"
+  file:
+    mode: "{{ item.mode }}"
+    path: "/home/{{ user_admin }}/{{ item.foldername }}"
+    group: "{{ user_admin }}"
+    state: directory
+  with_items:
+    - foldername: "Downloads/screenshot"
+      mode: "0755"
+    - foldername: "Downloads/screenshot/video"
+      mode: "0755"
+    - foldername: ".local/src"
+      mode: "0755"
+    - foldername: "moxconf/development/project-testing"
+      mode: "0755"
+    - foldername: "moxconf/development/project-testing/python"
+      mode: "0755"
+    - foldername: "moxconf/development/project-testing/typescript"
+      mode: "0755"
+    - foldername: "moxconf/development/project-testing/golang"
+      mode: "0755"
+    - foldername: "moxconf/development/project-testing/javascript"
+      mode: "0755"
+    - foldername: "moxconf/development/project-testing/rust"
+      mode: "0755"
+    - foldername: "moxconf/development/project-testing/dart"
+      mode: "0755"
+    - foldername: "moxconf/development/project-testing/docker"
+      mode: "0755"
+    - foldername: "moxconf/development/project-testing/lua"
+      mode: "0755"
+    - foldername: "moxconf/development/project-testing/misc"
+      mode: "0755"
