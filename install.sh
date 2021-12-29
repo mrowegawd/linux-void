@@ -19,8 +19,8 @@ sudo apt install --no-install-recommends -y \
   sshpass \
   python3-pip \
 
-pip3 install -U ansible
-pip3 install -U paramiko
+sudo pip3 install -U ansible
+sudo pip3 install -U paramiko
 
 _mkpass() {
   read -r -p "your password? " getvar
