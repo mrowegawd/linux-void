@@ -100,6 +100,8 @@ install_tools_from_asdf:
       - fd-find
       # alternative cat command
       - "--locked bat"
+      # for git
+      - git-delta
   - pkg_name: "nodejs"
     pkg_install_with: "asdf"
     pkg_shell_install: "npm install -g"

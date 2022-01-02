@@ -126,6 +126,16 @@ __tools:
   # pdf
   - zathura
 
+  # file manager
+  - ranger 
+  - caca-utils 
+  - highlight 
+  - atool 
+  - w3m 
+  - poppler-utils 
+  - mediainfo 
+  - nautilus
+
 __tools_extensions:
   # zahtura
   - zathura-cb
