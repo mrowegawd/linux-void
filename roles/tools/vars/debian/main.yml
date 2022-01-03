@@ -72,33 +72,32 @@ __tools_base_pkg:
 
 __tools:
   # basic
-  - htop
-  - grc
-  - vim
-  - snapd
-  - unzip
-  - p7zip-full
-  - gzip
   - ccze
-  - pv
-  - unrar
-  - xz-utils # extract tar ext .xz
-  - whois
-  - expect
-  # - universal-ctags
-  - ccze
-  - jq
-  - task-spooler # task spooler
-  - pdfgrep
-  - feh
   - cmatrix
-  - sxiv # tool for show image or gif
+  - dos2unix
+  - expect
+  - feh
+  - git
+  - grc
+  - gzip
+  - htop
+  - jq
   - lxappearance
   - multitail
+  - p7zip-full
+  - pdfgrep
+  - pv
   - rsync
-  - dos2unix
+  - snapd
   - stow
-  - git
+  - sxiv # tool for show image or gif
+  - task-spooler # task spooler
+  - tree
+  - unrar
+  - unzip
+  - vim
+  - whois
+  - xz-utils # extract tar ext .xz
 
   # music
   - mpc

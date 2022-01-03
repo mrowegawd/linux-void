@@ -76,7 +76,6 @@ install_tools_from_asdf:
     pkg_shell_install: "pip install -U"
     pkg_lists:
       - yt-dlp # youtube-dl are dead now
-
   - pkg_name: "ruby"
     pkg_install_with: "asdf"
     pkg_shell_install: "gem install"
@@ -96,27 +95,22 @@ install_tools_from_asdf:
     pkg_lists:
       - ripgrep
       - exa
-      # fd find
-      - fd-find
-      # alternative cat command
-      - "--locked bat"
-      # for git
-      - git-delta
+      - fd-find # fd find
+      - "--locked bat" # alternative cat command
+      - git-delta # for git
+      - stylua # lua formatter (lsp)
   - pkg_name: "nodejs"
     pkg_install_with: "asdf"
     pkg_shell_install: "npm install -g"
     pkg_lists:
-      # https://github.com/tldr-pages/tldr
-      - tldr
-      # Make any web page a desktop application
-      - nativefier
+      - tldr # https://github.com/tldr-pages/tldr
+      - nativefier # Make any web page a desktop application
   - pkg_name: "apt"
     pkg_install_with: "apt"
     pkg_shell_install: ""
     pkg_lists:
-      - shellcheck
-      # for plantuml dependencies
-      - graphviz
+      - shellcheck # bash linter (lsp)
+      - graphviz # for plantuml dependencies
 
 #>vscode.yml ==================================================================
 # Visual Studio Code version number (defaults to the latest version)
