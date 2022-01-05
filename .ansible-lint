@@ -1,5 +1,7 @@
 # .ansible-lint
-
 warn_list:
-  - meta-no-info
-  - role-name
+  - 'meta-no-info'
+  - 'role-name'
+
+skip_list:
+  - 'role-name'

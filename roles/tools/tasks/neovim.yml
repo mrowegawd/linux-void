@@ -1,7 +1,6 @@
 ---
 # install neovim
 # install st
-# install termite
 
 - become: yes
   block:

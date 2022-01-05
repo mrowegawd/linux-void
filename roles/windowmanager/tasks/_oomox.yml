@@ -1,0 +1,15 @@
+---
+- become: yes
+  block:
+
+    - name: OOMOX | Install dependencies oomox
+      include_role:
+        name: _0package
+      vars:
+        _apt_packages: "{{ __oomox_deps }}"
+      tags:
+        - install
+        - oomox
+
+    # 1. step git clone oomox from github (harus recursive!!)
+    # 2. step git clone oomox from github

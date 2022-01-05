@@ -1,4 +1,20 @@
 ---
+__cava_deps:
+  - g++
+  - gcc
+  - gettext
+  - software-properties-common
+  - curl
+  - gnupg
+  - wget
+
+  - libfftw3-dev 
+  - libasound2-dev 
+  - libncursesw5-dev 
+  - libpulse-dev 
+  - libtool 
+  - automake
+
 # vscode.yml ==================================================================
 __vscode_shared_dep:
   - software-properties-common

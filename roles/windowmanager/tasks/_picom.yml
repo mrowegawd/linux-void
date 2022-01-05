@@ -32,6 +32,7 @@
     - name: PICOM | Ensure path {{ temp_dir }}/picom are exists
       file:
         path: "{{ temp_dir }}/{{ item }}"
+        mode: "0755"
         state: directory
       with_items:
         - picom

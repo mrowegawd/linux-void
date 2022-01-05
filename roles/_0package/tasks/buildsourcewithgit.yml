@@ -1,0 +1,46 @@
+---
+- name: Install {{ item.pkg_name | upper }} | Check {{ item.pkg_name }} last installed version if exists
+  shell: |
+    {{ item.pkg_cmd_check_version }}
+  args:
+    warn: no
+  changed_when: false
+  register: check_pkg_command
+
+# - name: Debug version pkg {{ item.pkg_name }}
+#   debug:
+#     msg: "{{ check_pkg_command.stdout }}"
+
+- name: Install {{ item.pkg_name | upper }} | Remove the old {{ item.pkg_name }}
+  apt:
+    name: "{{ item.pkg_name }}"
+    state: absent
+  when: item.pkg_version not in check_pkg_command.stdout or check_pkg_command.stdout.find('not found') != -1
+
+- name: Install {{ item.pkg_name | upper }} | Install dependencies {{ item.pkg_name }}
+  include_role:
+    name: _0package
+  vars:
+    _apt_packages: "{{ item.pkg_deps }}"
+  when: item.pkg_version not in check_pkg_command.stdout or check_pkg_command.stdout.find('not found') != -1
+
+- name: Install {{ item.pkg_name | upper }} | Ensure path {{ item.pkg_url_download.0.dest_temp_dir }}/{{ item.pkg_name }} are exists
+  file:
+    path: "{{ item.pkg_url_download.0.dest_temp_dir }}"
+    mode: 0755
+    state: directory
+  when: item.pkg_version not in check_pkg_command.stdout or check_pkg_command.stdout.find('not found') != -1
+
+- name: Install | Git clone {{ item.pkg_name }}
+  git:
+    repo: "{{ item.pkg_url_download.0.repo }}"
+    dest: "{{ item.pkg_url_download.0.dest_temp_dir }}"
+    version: "{{ item.pkg_url_download.0.version | default('master') }}"
+  when: item.pkg_version not in check_pkg_command.stdout or check_pkg_command.stdout.find('not found') != -1
+
+- name: Install {{ item.pkg_name | upper }} | Run make install for {{ item.pkg_name }}
+  shell: |
+    {{ item.pkg_cmd_make }}
+  args:
+    chdir: "{{ item.pkg_url_download.0.dest_temp_dir }}"
+  when: item.pkg_version not in check_pkg_command.stdout or check_pkg_command.stdout.find('not found') != -1

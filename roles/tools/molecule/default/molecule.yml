@@ -57,6 +57,8 @@ provisioner:
     ANSIBLE_ROLES_PATH: "../../../_init"
 verifier:
   name: ansible
+
+# ansible-lint -c ../../.ansible-lint
 lint: |
   set -e
   yamllint .
