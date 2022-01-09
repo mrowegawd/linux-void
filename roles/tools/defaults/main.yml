@@ -179,6 +179,11 @@ visual_studio_code_package: "{{ (visual_studio_code_build == 'insiders') | terna
 alacritty_url_download: https://api.github.com/repos/alacritty/alacritty/releases/latest
 #
 # }}}
+# KITTY ------------------------------------------------------- {{{
+kitty_version: "0.24.1"
+kitty_url_download: https://sw.kovidgoyal.net/kitty/installer.sh 
+#
+# }}}
 # MPV ------------------------------------------------------------- {{{
 mpv_version: "0.34.0"
 mpv_build:
