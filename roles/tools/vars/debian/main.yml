@@ -66,6 +66,7 @@ __tools:
 
   # file manager
   - ranger 
+  - ffmpegthumbnailer
   - caca-utils 
   - highlight 
   - atool 
