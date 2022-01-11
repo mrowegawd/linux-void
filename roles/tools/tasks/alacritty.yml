@@ -17,7 +17,7 @@
         - nvim
 
     - name: ALACRITTY | Install alacritty with cargo
-      become: yes
+      become: True
       become_user: "{{ user_admin }}"
       shell: |
         source ~/.asdf/asdf.sh && cargo install alacritty
@@ -26,7 +26,7 @@
       register: installed_alacritty
 
     - name: ALACRITTY | Reshim rust after install alacritty
-      become: yes
+      become: True
       become_user: "{{ user_admin }}"
       shell: |
         source ~/.asdf/asdf.sh && asdf reshim rust

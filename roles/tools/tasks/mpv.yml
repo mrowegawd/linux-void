@@ -1,7 +1,7 @@
 ---
 # set -o pipefail;
 - name: MPV | Check mpv installed version
-  become: yes
+  become: True
   become_user: "{{ user_admin }}"
   shell: |
     if command -v mpv &> /dev/null; 
@@ -12,7 +12,7 @@
   changed_when: false
   register: check_mpv_version
 
-- become: yes
+- become: True
   block:
     # Untuk install mpv butuh dependencies
     - name: MPV | Clone mpv-build from github

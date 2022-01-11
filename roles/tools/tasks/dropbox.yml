@@ -1,14 +1,14 @@
 ---
 - name: Install DROPBOX | Check path .dropbox-dist if exists
-  become: yes
+  become: True
   become_user: "{{ user_admin }}"
   stat:
     path: "~/.dropbox-dist"
   register: check_dropbox
-  check_mode: no
+  check_mode: False
 
 - name: Install DROPBOX | Start download dropbox and extract them
-  become: yes
+  become: True
   become_user: "{{ user_admin }}"
   shell: |
     wget -O - "https://www.dropbox.com/download?plat=lnx.x86_64" | tar xzf -

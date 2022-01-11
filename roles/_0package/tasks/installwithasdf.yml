@@ -14,7 +14,7 @@
   when: item.pkg_install_with == "asdf"
 
 - name: TOOLSPROGRAM | Install tools {{ item.pkg_name }} via asdf
-  become: yes
+  become: True
   become_user: "{{ user_admin }}"
   shell: |
     source ~/.asdf/asdf.sh && {{ pkg_install }}
@@ -28,7 +28,7 @@
   when: item.pkg_install_with == "asdf"
 
 - name: TOOLSPROGRAM | Reshim the plugin {{ item.pkg_name }}
-  become: yes
+  become: True
   become_user: "{{ user_admin }}"
   shell: |
     source ~/.asdf/asdf.sh && asdf reshim {{ item.pkg_name }}

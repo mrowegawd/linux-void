@@ -1,5 +1,5 @@
 ---
-- become: yes
+- become: True
   block:
     - name: DWM | Ensure dwm dependencies installed
       include_role:

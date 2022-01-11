@@ -1,5 +1,6 @@
 ---
 - name: 00PACKAGE | Ensure apt packages are managed | {{ ansible_distribution }} {{ ansible_distribution_version }}
+  become: True
   apt:
     name: "{{ packages }}"
     state: present
@@ -16,7 +17,6 @@
   vars:
     packages: "{{ _apt_packages }}"
     state: '{{ _apt_state | default("present") }}'
-  become: yes
   when: ansible_os_family | lower == 'debian'
   tags:
     - always
@@ -28,7 +28,7 @@
   vars:
     packages: "{{ _apt_packages }}"
     state: '{{ _apt_state | default("present") }}'
-  become: yes
+  become: True
   when: ansible_os_family | lower == 'redhat'
   tags:
     - always

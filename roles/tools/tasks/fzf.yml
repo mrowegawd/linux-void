@@ -1,6 +1,6 @@
 ---
 - name: FZF | Check folder .fzf if exists
-  become: yes
+  become: True
   become_user: "{{ user_admin }}"
   stat:
     path: "/home/{{ user_admin }}/.fzf"
@@ -8,10 +8,10 @@
   tags:
     - always
 
-- become: yes
+- become: True
   block:
     - name: FZF | Git Clone FZF ke home user
-      become: yes
+      become: True
       become_user: "{{ user_admin }}"
       git:
         repo: "{{ item.repo }}"
@@ -26,7 +26,7 @@
         - fzf
 
     - name: FZF | Install FZF
-      become: yes
+      become: True
       become_user: "{{ user_admin }}"
       command: |
         /home/{{ user_admin }}/.fzf/install
@@ -36,7 +36,7 @@
         - fzf
 
     - name: FZF | Set permisson folder.FZF di homedir
-      become: yes
+      become: True
       become_user: "{{ user_admin }}"
       file:
         path: "/home/{{ user_admin }}/.fzf"

@@ -1,6 +1,6 @@
 ---
 - name: DOCKER | Check docker if exis
-  become: yes
+  become: True
   become_user: "{{ user_admin }}"
   shell: |
     if command -v docker &> /dev/null;
@@ -46,7 +46,7 @@
     - docker
 
 - name: DOCKER | Ensure user is added to docker group
-  become: yes
+  become: True
   user:
     name: "{{ user_admin }}"
     groups: docker

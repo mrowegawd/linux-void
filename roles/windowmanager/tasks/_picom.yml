@@ -10,7 +10,7 @@
   tags:
     - always
 
-- become: yes
+- become: True
   block:
     - name: PICOM | Remove old picom
       apt:

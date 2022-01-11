@@ -1,5 +1,6 @@
+---
 - name: AUTOENV | Register, check path home/user/.autoenv jika exists
-  become: yes
+  become: True
   become_user: "{{ user_admin }}"
   stat:
     path: "/home/{{ user_admin }}/.autoenv"
@@ -9,7 +10,7 @@
     - autoenv
 
 - name: AUTOENV | Install autoenv
-  become: yes
+  become: True
   become_user: "{{ user_admin }}"
   git:
     repo: "{{ item.repo }}"

@@ -1,5 +1,5 @@
 ---
-- become: yes
+- become: True
   block:
     - name: AWESOME | Ensure file awesome {{ temp_dir }} exists
       file:

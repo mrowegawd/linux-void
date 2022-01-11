@@ -1,5 +1,5 @@
 ---
-- become: yes
+- become: True
   block:
 
     - name: OOMOX | Install dependencies oomox

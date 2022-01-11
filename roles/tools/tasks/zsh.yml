@@ -8,7 +8,7 @@
   tags:
     - always
 
-- become: yes
+- become: True
   block:
     - name: ZSH | Install package zsh
       include_role:
@@ -20,7 +20,7 @@
         - zsh
 
     - name: ZSH | Ensure dir path ~/.zsh/plugins exists
-      become: yes
+      become: True
       become_user: "{{ user_admin }}"
       file:
         path: "/home/{{ user_admin }}/.zsh/plugins"
@@ -31,7 +31,7 @@
         - zsh
 
     - name: ZSH | Git clone oh-my-zsh and their plugins
-      become: yes
+      become: True
       become_user: "{{ user_admin }}"
       git:
         repo: "{{ item.repo }}"

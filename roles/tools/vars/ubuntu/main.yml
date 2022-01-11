@@ -1,5 +1,4 @@
 ---
-
 # TOOLS PKG --------------------------------------------------------- {{{
 __tools_base_pkg:
   - build-essential
@@ -67,14 +66,14 @@ __tools:
   - zathura
 
   # file manager
-  - ranger 
+  - ranger
   - ffmpegthumbnailer
-  - caca-utils 
-  - highlight 
-  - atool 
-  - w3m 
-  - poppler-utils 
-  - mediainfo 
+  - caca-utils
+  - highlight
+  - atool
+  - w3m
+  - poppler-utils
+  - mediainfo
   - nautilus
 
   # drawing monitor
@@ -93,7 +92,7 @@ __tools_from_snapd: []
 __tools_ppa_keys: []
 
 __tools_ppa: []
- 
+
 #
 # }}}
 
@@ -113,11 +112,11 @@ __cava_deps:
   - gnupg
   - wget
 
-  - libfftw3-dev 
-  - libasound2-dev 
-  - libncursesw5-dev 
-  - libpulse-dev 
-  - libtool 
+  - libfftw3-dev
+  - libasound2-dev
+  - libncursesw5-dev
+  - libpulse-dev
+  - libtool
   - automake
 
 #
@@ -138,7 +137,7 @@ __vscode_shared_dep:
   - libdrm2
   - libgbm1
   - libxshmfence1
- 
+
 #
 # }}}
 # ALACRITTY --------------------------------------------------------- {{{
@@ -150,7 +149,7 @@ __alacritty_pkg:
   - libxcb-xfixes0-dev
   - libxkbcommon-dev
   - python3
- 
+
 #
 # }}}
 # NEOVIM ------------------------------------------------------------ {{{
@@ -187,7 +186,7 @@ __neovim_dependencies_pkg:
   - vim
   - xcb
   - xutils-dev
- 
+
 #
 # }}}
 # TORRENT ----------------------------------------------------------- {{{
@@ -207,7 +206,7 @@ __torrent_deps:
   - libssl-dev
   - libtool
   - pkg-config
- 
+
 #
 # }}}
 # NEWSBOAT ---------------------------------------------------------- {{{
@@ -240,7 +239,7 @@ __newsboat_deps:
   - pkg-config
   - wget
   - xsltproc
- 
+
 #
 # }}}
 # MPV --------------------------------------------------------------- {{{
@@ -324,7 +323,7 @@ __mpv_deps:
   - x11proto-core-dev
   - yasm
   - zlib1g-dev
- 
+
 #
 # }}}
 # TMUX -------------------------------------------------------------- {{{
@@ -335,14 +334,13 @@ __tmux_deps:
   - autoconf
   - gcc
   - pkg-config
- 
+
 #
 # }}}
 # TELEGRAM ---------------------------------------------------------- {{{
 __telegram_deps:
   - xz-utils
   - pulseaudio
-
 #
 # }}}
 

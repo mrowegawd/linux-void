@@ -1,5 +1,4 @@
 ---
-
 # INSTALL BUILD SOURCE -------------------------------------------- {{{
 tmux_version: "3.2a"
 newsboat_version: "2.25"
@@ -110,7 +109,6 @@ install_tools_from_asdf:
       - shellcheck # bash linter (lsp)
       - graphviz # for plantuml dependencies
 
-
 #
 # }}}
 # INSTALL BUILD GIT ----------------------------------------------- {{{
@@ -181,7 +179,7 @@ alacritty_url_download: https://api.github.com/repos/alacritty/alacritty/release
 # }}}
 # KITTY ------------------------------------------------------- {{{
 kitty_version: "0.24.1"
-kitty_url_download: https://sw.kovidgoyal.net/kitty/installer.sh 
+kitty_url_download: https://sw.kovidgoyal.net/kitty/installer.sh
 #
 # }}}
 # MPV ------------------------------------------------------------- {{{
@@ -216,7 +214,6 @@ zsh_plugins:
     dest: ".cache/zsh/plugins/zsh-syntax-highlighting"
   - repo: "https://github.com/urbainvaes/fzf-marks.git"
     dest: ".cache/zsh/plugins/fzf-marks"
-
 #
 # }}}
 

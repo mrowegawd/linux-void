@@ -4,7 +4,7 @@
   tags:
     - always
 
-- become: yes
+- become: True
   block:
     - import_tasks: iptables.yml
     - import_tasks: disable-firewalld.yml

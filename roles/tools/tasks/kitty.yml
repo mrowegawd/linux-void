@@ -2,7 +2,7 @@
 # Check install: https://sw.kovidgoyal.net/kitty/binary/
 
 - name: KITTY | Check kitty if exis
-  become: yes
+  become: True
   become_user: "{{ user_admin }}"
   shell: |
     set -o pipefail;
@@ -21,14 +21,14 @@
 
 - block:
     - name: KITTY | Install kitty deps
-      become: yes
+      become: True
       become_user: "{{ user_admin }}"
       file:
         path: '/home/{{ user_admin }}/.local/bin/kitty'
         state: 'absent'
 
     - name: KITTY | Download kitty from url
-      become: yes
+      become: True
       become_user: '{{ user_admin }}'
       get_url:
         url: '{{ kitty_url_download }}'
@@ -41,7 +41,7 @@
       delay: 10
 
     - name: KITTY | Install kitty there
-      become: yes
+      become: True
       become_user: "{{ user_admin }}"
       shell: |
         bash /home/{{ user_admin }}/installer.sh
@@ -51,7 +51,7 @@
       when: kitty_download_task is success
 
     - name: KITTY | Create symlink kitty /home/{{ user_admin }}/.local/bin/kitty
-      become: yes
+      become: True
       become_user: "{{ user_admin }}"
       file:
         src: "/home/{{ user_admin }}/.local/kitty.app/bin/kitty"
@@ -62,7 +62,7 @@
         state: link
 
     - name: KITTY | Cleaning up
-      become: yes
+      become: True
       become_user: "{{ user_admin }}"
       file:
         path: "{{ item.path }}"
@@ -74,7 +74,7 @@
           state: absent
 
     - name: KITTY | Copy kitty application.desktop
-      become: yes
+      become: True
       become_user: "{{ user_admin }}"
       copy:
         src: "/home/{{ user_admin }}/.local/kitty.app/share/applications/kitty.desktop"

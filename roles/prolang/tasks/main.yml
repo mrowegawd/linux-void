@@ -4,7 +4,7 @@
   tags:
     - always
 
-- become: yes
+- become: True
   block:
     - import_tasks: asdf.yml
 

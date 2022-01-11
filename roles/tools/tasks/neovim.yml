@@ -2,7 +2,7 @@
 # install neovim
 # install st
 
-- become: yes
+- become: True
   block:
     - name: NEOVIM | Install neovim dependencies
       include_role:

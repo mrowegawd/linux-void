@@ -1,6 +1,6 @@
 ---
 - name: FOLDERS | Create misc folders
-  become: yes
+  become: True
   become_user: "{{ user_admin }}"
   file:
     mode: "{{ item.mode }}"

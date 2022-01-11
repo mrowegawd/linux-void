@@ -5,6 +5,7 @@
     - always
 
 - name: APT_REPO | Ensure apt keys are managed
+  become: True
   apt_key:
     state: present
     id: "{{ item.id | default(omit) }}"
@@ -16,7 +17,6 @@
   until: task_result is succeeded
   retries: 30
   delay: 10
-  become: yes
   with_items:
     - "{{ apt_repo_keys }}"
   notify: update apt repository cache
@@ -26,6 +26,7 @@
     - always
 
 - name: APT_REPO | Ensure apt repositories are managed
+  become: True
   apt_repository:
     state: present
     repo: "{{ item.repo }}"
@@ -36,7 +37,6 @@
   until: task_result is succeeded
   retries: 30
   delay: 10
-  become: yes
   with_items:
     - "{{ apt_repo_repositories }}"
   notify: update apt repository cache

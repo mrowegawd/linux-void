@@ -1,6 +1,6 @@
 ---
 - name: DOCKER | Check docker if exis
-  become: yes
+  become: True
   become_user: "{{ user_admin }}"
   shell: |
     set -o pipefail;
@@ -13,7 +13,7 @@
   register: check_docker_compose_version
 
 - name: DOCKER-COMPOSE | Install Docker Compose | Debian
-  become: yes
+  become: True
   get_url:
     url: "{{ docker_compose_repo_format }}/docker-compose-Linux-x86_64"
     dest: "/usr/local/bin/docker-compose"
