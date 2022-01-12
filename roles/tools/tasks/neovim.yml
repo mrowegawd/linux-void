@@ -1,6 +1,4 @@
 ---
-# install neovim
-# install st
 
 - become: True
   block:
@@ -13,45 +11,109 @@
         - install
         - nvim
 
-    # - name: NEOVIM | Ensure neovim folder temp exists
-    #   file:
-    #     path: '{{ temp_dir }}/neovim'
-    #     state: directory
-    #   tags:
-    #     - install
-    #     - nvim
+- name: NEOVIM.PROVIDER | Install provider neovim for Nodejs
+  become: True
+  become_user: '{{ user_admin }}'
+  shell: |
+    source ~/.asdf/asdf.sh && npm install -g neovim
+  args:
+    executable: /bin/bash
+  changed_when: false
+  register: neovim_provider_nodejs
+  tags:
+    - install
+    - nvim
+    - nvimprovider
 
-    # - name: NEOVIM | Git clone neovim
-    #   git:
-    #     repo: '{{ __neovim_github }}'
-    #     dest: '{{ temp_dir }}/neovim'
-    #     force: yes
-    #     version: 'master'
-    #     update: yes
-    #     recursive: yes
-    #   tags:
-    #     - install
-    #     - nvim
+- name: NEOVIM.PROVIDER | Reshim nodejs asdf
+  become: True
+  become_user: '{{ user_admin }}'
+  shell: |
+    source ~/.asdf/asdf.sh && asdf reshim nodejs
+  args:
+    executable: /bin/bash
+  when: neovim_provider_nodejs is success
+  tags:
+    - install
+    - nvim
+    - nvimprovider
 
-    # - name: NEOVIM | Luarocks build install
-    #   shell: |
-    #     luarocks build {{ item }}
-    #   args:
-    #     chdir: '{{ temp_dir }}/neovim'
-    #     warn: no
-    #   with_items: ['mpack', 'lpeg', 'inspect']
-    #   changed_when: false
-    #   failed_when: false
-    #   tags:
-    #     - install
-    #     - nvim
+- name: NEOVIM.PROVIDER | Install provider neovim for Ruby
+  become: True
+  become_user: '{{ user_admin }}'
+  shell: |
+    source ~/.asdf/asdf.sh && gem install neovim
+  args:
+    executable: /bin/bash
+  changed_when: false
+  register: neovim_provider_ruby
+  tags:
+    - install
+    - nvim
+    - nvimprovider
 
-    # - name: NEOVIM | Install neovim
-    #   shell: 'make CMAKE_BUILD_TYPE=RelWithDebInfo && sudo make install'
-    #   args:
-    #     chdir: '{{ temp_dir }}/neovim'
-    #     warn: no
-    #   changed_when: false
-    #   tags:
-    #     - install
-    #     - nvim
+- name: NEOVIM.PROVIDER | Reshim ruby asdf
+  become: True
+  become_user: '{{ user_admin }}'
+  shell: |
+    source ~/.asdf/asdf.sh && asdf reshim ruby
+  args:
+    executable: /bin/bash
+  when: neovim_provider_ruby is success
+  tags:
+    - install
+    - nvim
+    - nvimprovider
+
+- name: NEOVIM.PROVIDER | Create virtualenv for neovim python provider
+  become: True
+  become_user: '{{ user_admin }}'
+  shell: |
+    source ~/.asdf/asdf.sh && {{ item }}
+  args:
+    executable: /bin/bash
+    chdir: ~/.config
+    warn: no
+  changed_when: false
+  failed_when: false
+  with_items:
+    - 'python3 -m venv neovim3'
+    - 'python2 -m pip install virtualenv'
+    - 'python2 -m virtualenv neovim2'
+  tags:
+    - install
+    - nvim
+    - nvimprovider
+
+- name: NEOVIM.PROVIDER | Install neovim for python3/python2 virtualenv
+  become: True
+  become_user: '{{ user_admin }}'
+  shell: |
+    source ~/.asdf/asdf.sh && {{ item }} install neovim
+  args:
+    executable: /bin/bash
+    chdir: ~/.config
+    warn: no
+  changed_when: false
+  failed_when: false
+  register: neovim_provider_python
+  with_items:
+    - '~/.config/neovim3/bin/pip'
+    - '~/.config/neovim2/bin/pip'
+  tags:
+    - install
+    - nvim
+    - nvimprovider
+
+- name: NEOVIM.PROVIDER | Reshim python asdf
+  become: True
+  become_user: '{{ user_admin }}'
+  shell: |
+    source ~/.asdf/asdf.sh && asdf reshim python
+  args:
+    executable: /bin/bash
+  when: neovim_provider_python is success
+  tags:
+    - install
+    - nvim
+    - nvimprovider
