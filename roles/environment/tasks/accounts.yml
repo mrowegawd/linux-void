@@ -2,7 +2,7 @@
 - name: ACCOUNTS | Check if /etc/security/pwquality.conf exists
   stat:
     path: /etc/security/pwquality.conf
-  check_mode: no
+  check_mode: False
   register: pwquality_config_check
   tags:
     - always
@@ -26,7 +26,7 @@
     grep pam_unix.so {{ __pam_password_file }}
   register: password_sha512_check
   changed_when: False
-  check_mode: no
+  check_mode: False
   tags:
     - always
 
@@ -136,7 +136,7 @@
   command: |
     awk -F: '$3 == 0 {print $1}' /etc/passwd
   changed_when: False
-  check_mode: no
+  check_mode: False
   register: root_user_check
   tags:
     - accounts

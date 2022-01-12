@@ -8,7 +8,7 @@
     - install
 
 - name: DOTFILES | Git clone my dotfiles from github
-  become: yes
+  become: True
   become_user: "{{ user_admin }}"
   git:
     repo: "https://github.com/mrowegawd/dotfiles.git"
@@ -19,8 +19,9 @@
     - install
     - programming
     - asdf
+
 - name: DOTFILES | Install the dotfiles
-  become: yes
+  become: True
   become_user: "{{ user_admin }}"
   shell: |
     ./install.sh

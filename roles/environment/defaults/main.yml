@@ -138,3 +138,9 @@ default_folders:
     mode: "0755"
     owner: "{{ user_admin }}"
     group: "{{ user_admin }}"
+
+dotfiles_for_root:
+  - .bashrc
+  - .inputrc
+  - .lesskey
+  - .vimrc

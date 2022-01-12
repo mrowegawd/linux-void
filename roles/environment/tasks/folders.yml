@@ -1,6 +1,6 @@
 ---
 - name: FOLDERS | Create folders
-  become: yes
+  become: True
   become_user: "{{ user_admin }}"
   file:
     state: directory

@@ -4,7 +4,7 @@
   tags:
     - always
 
-- become: yes
+- become: True
   block:
     - name: USERS | Check for .shosts or shosts.equiv files
       find:
@@ -35,5 +35,7 @@
       import_tasks: folders.yml
     - name: Importing task dotfiles
       import_tasks: dotfiles.yml
+    - name: Importing task dotfiles root
+      import_tasks: dotfiles_root.yml
     - name: Importing task lolcale
       import_tasks: locale.yml
