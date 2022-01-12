@@ -1,0 +1,51 @@
+---
+
+- name: DOTFILES ROOT | Ensure folder .config/bashrc at /home/root exists | Root
+  become: True
+  become_user: root
+  file:
+    path: '/root/.config/bashrc'
+    state: directory
+    mode: "700"
+  changed_when: false
+  tags:
+    - install
+    - dotlols
+
+- name: DOTFILES ROOT | Copy folder bashconfig to /root/.config | Root
+  become: True
+  become_user: root
+  shell: |
+    cp -rv {{ item }}
+  changed_when: false
+  with_items:
+    - "/home/{{ user_admin }}/moxconf/development/dotfiles/bashconfig/.config/bashrc /root/.config"
+    - "/home/{{ user_admin }}/moxconf/development/dotfiles/vimlocal/.config/vimlocal /root/.config"
+  tags:
+    - install
+    - dotlols
+    - skip_ansible_lint
+
+- name: DOTFILES ROOT | Copy file dots to root | Root
+  become: True
+  become_user: root
+  shell: |
+    cp /home/{{ user_admin }}/moxconf/development/dotfiles/home/{{ item }} /root
+  changed_when: false
+  with_items: '{{ dotfiles_for_root }}'
+  tags:
+    - install
+    - dotlols
+    - skip_ansible_lint
+
+- name: DOTFILES ROOT | Ensure file permission is correct | Root
+  become: True
+  file:
+    path: '/root/{{ item }}'
+    owner: root
+    group: root
+    mode: 0644
+  with_items: '{{ dotfiles_for_root }}'
+  tags:
+    - install
+    - dotlols

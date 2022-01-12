@@ -114,17 +114,18 @@
   stat:
     path: /etc/sssd/sssd.conf
   register: sssd_conf_check
-  check_mode: no
+  check_mode: False
   tags:
     - always
 
 # NOTE(mhayden): Some systems, such as ARM, don't have grub at all. This task
 # should be skipped on those systems.
+
 - name: AUTH | Check if GRUB2 custom file exists
   stat:
     path: "{{ auth_grub_custom_file }}"
   register: grub_custom_file_check
-  check_mode: no
+  check_mode: False
   tags:
     - always
 
@@ -182,7 +183,7 @@
   register: pam_lastlog_check
   changed_when: False
   failed_when: False
-  check_mode: no
+  check_mode: False
   tags:
     - always
 
