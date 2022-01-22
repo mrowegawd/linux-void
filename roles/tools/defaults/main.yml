@@ -106,6 +106,7 @@ install_tools_from_asdf:
     pkg_install_with: "apt"
     pkg_shell_install: ""
     pkg_lists:
+      - fd-find # fd find
       - shellcheck # bash linter (lsp)
       - graphviz # for plantuml dependencies
 
