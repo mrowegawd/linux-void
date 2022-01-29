@@ -21,7 +21,7 @@
     - install
     - vscode
 
-- name: VSCODE | Install VS Code (apt)
+- name: VSCODE | Install vscode (apt)
   include_role:
     name: _0package
   vars:

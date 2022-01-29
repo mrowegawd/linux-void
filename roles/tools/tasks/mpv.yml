@@ -4,7 +4,7 @@
   become: True
   become_user: "{{ user_admin }}"
   shell: |
-    if command -v mpv &> /dev/null; 
+    if command -v mpv &> /dev/null;
     then mpv --version | head -1 | cut -d" " -f2 ; else echo "not found"; fi
   args:
     chdir: "/home/{{ user_admin }}"

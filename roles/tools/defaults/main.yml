@@ -190,6 +190,13 @@ mpv_build:
     dest: "{{ temp_dir }}/mpv_build"
 #
 # }}}
+# VIFM ------------------------------------------------------------ {{{
+# vifm_version: "0.10.1"
+# vifm_build:
+#   - repo: https://github.com/mpv-player/mpv-build.git
+#     dest: "{{ temp_dir }}/mpv_build"
+#
+# }}}
 # AUTOENV --------------------------------------------------------- {{{
 autoenv_git:
   - repo: "https://github.com/kennethreitz/autoenv.git"

@@ -37,5 +37,6 @@
     - import_tasks: tools.yml
     - import_tasks: fzf.yml
     - import_tasks: zsh.yml
+    - import_tasks: vifm.yml
 
   when: ansible_os_family | lower == 'debian'
