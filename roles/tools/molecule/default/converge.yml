@@ -8,9 +8,9 @@
     - name: "Include environment"
       include_role:
         name: "environment"
-    # - name: "Include prolang"
-    #   include_role:
-    #     name: "prolang"
+    - name: "Include prolang"
+      include_role:
+        name: "prolang"
     - name: "Include tools"
       include_role:
         name: "tools"
