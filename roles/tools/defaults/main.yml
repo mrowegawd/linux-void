@@ -106,6 +106,7 @@ install_tools_from_asdf:
     pkg_install_with: "apt"
     pkg_shell_install: ""
     pkg_lists:
+      - fd-find # fd find
       - shellcheck # bash linter (lsp)
       - graphviz # for plantuml dependencies
 
@@ -187,6 +188,13 @@ mpv_version: "0.34.0"
 mpv_build:
   - repo: https://github.com/mpv-player/mpv-build.git
     dest: "{{ temp_dir }}/mpv_build"
+#
+# }}}
+# VIFM ------------------------------------------------------------ {{{
+# vifm_version: "0.10.1"
+# vifm_build:
+#   - repo: https://github.com/mpv-player/mpv-build.git
+#     dest: "{{ temp_dir }}/mpv_build"
 #
 # }}}
 # AUTOENV --------------------------------------------------------- {{{

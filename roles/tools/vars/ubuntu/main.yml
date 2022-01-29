@@ -118,6 +118,9 @@ __cava_deps:
   - libpulse-dev
   - libtool
   - automake
+  - libiniparser-dev
+  - libsdl2-2.0-0
+  - libsdl2-dev
 
 #
 # }}}
@@ -323,6 +326,16 @@ __mpv_deps:
   - x11proto-core-dev
   - yasm
   - zlib1g-dev
+
+#
+# }}}
+# VIFM --------------------------------------------------------------- {{{
+__vifm_deps:
+  - vifm
+  - wkhtmltopdf
+  - imagemagick
+  - atool
+  - ffmpegthumbnailer
 
 #
 # }}}

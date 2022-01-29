@@ -1,0 +1,22 @@
+---
+
+- name: VIFM | Check mpv installed version
+  become: True
+  become_user: "{{ user_admin }}"
+  shell: |
+    if command -v vifm &> /dev/null;
+    then echo "found" ; else echo "not found"; fi
+  args:
+    chdir: "/home/{{ user_admin }}"
+    executable: /bin/bash
+  changed_when: False
+  register: check_vifm_version
+
+- become: True
+  block:
+    - name: VIFM | Ensure deps installed when open vifm
+      include_role:
+        name: _0package
+      vars:
+        _apt_packages: "{{ __vifm_deps }}"
+  when: check_vifm_version.stdout.find('not found') != -1

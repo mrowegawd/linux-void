@@ -20,7 +20,7 @@
     source ~/.asdf/asdf.sh && {{ pkg_install }}
   args:
     executable: /bin/bash
-  changed_when: false
+  changed_when: False
   loop: "{{ pkg_lists_to_install }}"
   loop_control:
     loop_var: pkg_install
@@ -34,7 +34,7 @@
     source ~/.asdf/asdf.sh && asdf reshim {{ item.pkg_name }}
   args:
     executable: /bin/bash
-  changed_when: false
+  changed_when: False
   when:
     - item.pkg_install_with == "asdf"
     - pkg_asdf_installed is success
