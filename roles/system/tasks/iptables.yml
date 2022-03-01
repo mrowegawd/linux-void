@@ -8,7 +8,7 @@
     - install
     - iptables
 
-- name: Check ansible_service_mgr 
+- name: Check ansible_service_mgr
   debug:
     msg: "{{ ansible_service_mgr }}"
 

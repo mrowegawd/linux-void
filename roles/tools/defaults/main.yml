@@ -73,6 +73,7 @@ install_tools_from_asdf:
     pkg_lists:
       - yt-dlp # youtube-dl are dead now
       - poetry
+      - ueberzug
   - pkg_name: "ruby"
     pkg_install_with: "asdf"
     pkg_shell_install: "gem install"
@@ -92,7 +93,7 @@ install_tools_from_asdf:
     pkg_lists:
       - ripgrep
       - exa
-      - fd-find # fd find
+        # fd find
       - "--locked bat" # alternative cat command
       - git-delta # for git
       - stylua # lua formatter (lsp)
