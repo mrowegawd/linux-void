@@ -112,7 +112,7 @@ auth_grub_custom_file: /etc/grub.d/40_custom
 auth_grub_linux_file: /etc/grub.d/10_linux
 
 # Require authentication in GRUB to boot into single-user or maintenance modes.
-auth_security_require_grub_authentication: yes # V-71961 / V-71963
+auth_security_require_grub_authentication: false # V-71961 / V-71963
 
 # Limit the number of concurrent connections per account.
 #auth_security_concurrent_session_limit: 10
