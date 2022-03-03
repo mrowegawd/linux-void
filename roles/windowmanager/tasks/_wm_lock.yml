@@ -1,0 +1,98 @@
+---
+- name: WM_LOCK | Before install betterlock we need deps i3lockColor, we check now
+  shell: >
+    if command -v i3lock &> /dev/null;
+    then echo "found"; else echo "not found"; fi
+  args:
+    warn: no
+    executable: /bin/bash
+  changed_when: false
+  register: check_i3lock_color_command
+  tags:
+    - always
+
+- block:
+    - name: WM_LOCK | Install dependencies i3lockColor
+      include_role:
+        name: _0package
+      vars:
+        _apt_packages: "{{ __wm_i3lock_color_deps }}"
+      tags:
+        - install
+        - i3lockColor
+
+    - name: WM_LCOK | Clone i3lockColor
+      git:
+        repo: "https://github.com/Raymo111/i3lock-color.git"
+        dest: "{{ temp_dir }}/i3lock-color"
+        update: yes
+        version: master
+      register: jobi3lockcolordownload
+      until: jobi3lockcolordownload is succeeded
+      retries: 10
+      delay: 10
+      tags:
+        - install
+        - i3lockColor
+
+    - name: WM_LOCK | Install i3lockColor
+      shell: |
+        ./install-i3lock-color.sh
+      args:
+        warn: no
+        chdir: "{{ temp_dir }}/i3lock-color"
+        executable: /bin/bash
+      changed_when: false
+      tags:
+        - always
+
+  when: check_i3lock_color_command.stdout.find('not found') != -1
+
+- name: WM_LOCK | Check betterlockscreen
+  shell: >
+    if command -v betterlockscreen &> /dev/null;
+    then echo "found"; else echo "not found"; fi
+  args:
+    warn: no
+    executable: /bin/bash
+  changed_when: false
+  register: check_betterlockscreen_command
+  tags:
+    - always
+
+- block:
+    - name: WM_LOCK | Install dependencies betterlockscreen
+      include_role:
+        name: _0package
+      vars:
+        _apt_packages: "{{ __wm_betterlockscreen_deps }}"
+      tags:
+        - install
+        - betterlockscreen
+
+    - name: WM_LCOK | Clone betterlockscreen
+      git:
+        repo: "https://github.com/betterlockscreen/betterlockscreen.git"
+        dest: "{{ temp_dir }}/betterlockscreen"
+        update: yes
+        version: next
+      register: jobbetterlockscreendownload
+      until: jobbetterlockscreendownload is succeeded
+      retries: 10
+      delay: 10
+      tags:
+        - install
+        - i3lockColor
+
+    - name: WM_LOCK | Install betterlockscreen
+      shell: |
+        ./install.sh system
+      args:
+        warn: no
+        chdir: "{{ temp_dir }}/betterlockscreen"
+        executable: /bin/bash
+      changed_when: false
+      tags:
+        - always
+
+  when: check_betterlockscreen_command.stdout.find('not found') != -1

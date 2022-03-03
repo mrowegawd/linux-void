@@ -6,15 +6,16 @@
 
 - become: True
   block:
-    # WM VARIAN
+    # WM VARIAN ---------------------------------------------------------------
     - import_tasks: bspwm.yml
     # - import_tasks: awesome.yml
     # - import_tasks: dwm.yml
 
-    # WM Tools
+    # WM Tools ----------------------------------------------------------------
     - import_tasks: _dunst.yml
     - import_tasks: _picom.yml
     - import_tasks: _polybar.yml
     - import_tasks: _rofi.yml
     - import_tasks: _oomox.yml
+    - import_tasks: _wm_lock.yml
   when: ansible_os_family | lower == 'debian'

@@ -242,5 +242,36 @@ __oomox_deps:
   - libgtk-3-dev
 #
 # }}}
+# WM_LOCK ------------------------------------------------------- {{{
+__wm_i3lock_color_deps:
+  - autoconf
+  - gcc
+  - make
+  - automake
+  - pkg-config
+  - libpam0g-dev
+  - libcairo2-dev
+  - libfontconfig1-dev
+  - libxcb-composite0-dev
+  - libev-dev
+  - libx11-xcb-dev
+  - libxcb-xkb-dev
+  - libxcb-xinerama0-dev
+  - libxcb-randr0-dev
+  - libxcb-image0-dev
+  - libxcb-util0-dev
+  - libxcb-xrm-dev
+  - libxkbcommon-dev
+  - libxcb-util-dev
+  - libxkbcommon-x11-dev
+  - libjpeg-dev
+
+__wm_betterlockscreen_deps:
+  - x11-utils
+  - imagemagick
+  - feh
+# }}
+
+# vim: foldmethod=marker
 
 # vim: foldmethod=marker
