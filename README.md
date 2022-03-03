@@ -35,10 +35,12 @@
   Install `poetry` and friends
 
   ```bash
+  # fast deps install
   $poetry install
-
   $poetry init
   $poetry shell
+
+  # build manual
   $poetry add ansible paramiko "molecule[docker,lint]"
   $poetry add -D "ansible-lint[core,yamllint]"
   ```

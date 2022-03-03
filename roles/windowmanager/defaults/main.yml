@@ -79,7 +79,7 @@ dunst_download:
 # }}}
 # PICOM --------------------------------------------------------- {{{
 
-# Tidak diperlukan config untuk picom
+# Config picom di sini tidak diperlukan
 
 #
 # }}}
