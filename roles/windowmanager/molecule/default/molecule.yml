@@ -33,7 +33,6 @@ platforms:
     #   - /sys/fs/cgroup:/sys/fs/cgroup:ro
     # privileged: true
     # pre_build_image: true
-
   - name: ubuntu2004
     image: "ubuntu:20.04"
     # command: ""
@@ -44,6 +43,18 @@ platforms:
 
 provisioner:
   name: ansible
+  config_options:
+    defaults:
+      timeout: 60
+      stdout_callback: yaml
+      bin_ansible_callbacks: True
+      interpreter_python: auto_silent
+      callback_enabled: profile_tasks, timer, yaml
+      remote_tmp: /tmp/${USER}/ansible
+    ssh_connection:
+      pipelining: True
+      ssh_args: -C -o ControlMaster=auto -o ControlPersist=60s -o IdentitiesOnly=yes -o PreferredAuthentications=publickey
+      retries: 3
   # https://molecule.readthedocs.io/en/stable/configuration.html#id22
   # targeting group_vars global
   inventory:

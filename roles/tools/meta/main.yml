@@ -2,8 +2,8 @@ galaxy_info:
   author: Mr XXX
   description: Another xxx
   company: Kebac
-  role_name: madsf
-  namespace: madsf
+  role_name: tools
+  namespace: tools_
 
   # If the issue tracker for your role is not on github, uncomment the
   # next line and provide a value
@@ -30,10 +30,10 @@ galaxy_info:
   # https://galaxy.ansible.com/api/v1/platforms/
   #
   platforms:
-  - name: Debian
-    versions:
-    - all
-    - 25
+    - name: Debian
+      versions:
+        - all
+        - 25
   # - name: SomePlatform
   #   versions:
   #   - all
