@@ -1,7 +1,8 @@
 ---
+# USER VAR -------------------------------------------------------------------- {{{
+#
 _new_port_ssh: "2134"
 _myhomeland_rc: "localhost"
-# Main group for sudo command and allowing 'ssh' client
 
 _group_admin: "{{ 'admin' if ansible_os_family == 'Debian' else 'wheel' }}"
 
@@ -12,13 +13,10 @@ _mypass_user_password: '{{ lookup("file", "~/moxconf/development/linux-void/tmp/
 _mypass_sshkey: ""
 _mypass_sshkey_pub: ""
 _mypass_sshkey_pub_renew: ""
-
-###############################
 #
-# USERS ASSETS
+# }}}
+# USER ASSETS ----------------------------------------------------------------- {{{
 #
-###############################
-
 _user_admin:
   - name: "{{ _mypass_user_sudo }}"
     password: "{{ _mypass_user_password_md5 }}"
@@ -28,6 +26,7 @@ _user_admin:
       primary: "{{ _mypass_user_sudo }}"
       secondary:
         - "{{ _group_admin }}"
+        - "libvirt" # use for role virtualwindows
     authorized:
       new: "{{ _mypass_sshkey_pub }}"
       renew: "{{ _mypass_sshkey_pub_renew }}"
@@ -39,7 +38,10 @@ _user_common: []
 #   home: 'no'
 #   group:
 #     secondary: ''
-
+#
+# }}}
+# VISUDO RULES ---------------------------------------------------------------- {{{
+#
 _visudo_rules:
   - admin:
       add:
@@ -52,12 +54,10 @@ _visudo_rules:
 _os_ignore_users:
   - "vagrant"
   - "kicthen"
-
-###############################
 #
-# CRONJOB
+#  }}}
+# CRONJOB --------------------------------------------------------------------- {{{
 #
-###############################
 # Ingat untuk cron jalan tiap 2 menit = */2
 # jika mau menjalankan cron tiap 3 jam maka, set menit ke 0 dan jam ke */2
 
@@ -98,11 +98,10 @@ _cronjob_add:
 
 _cronjob_del: []
 
-###############################
 #
-# REMOVE CALL
+#  }}}
+# REMOVE PKG OR PPA ----------------------------------------------------------- {{{
 #
-###############################
 # Meremove jika apa saja jika dikehendaki
 # EXAMPLE:
 #   _remove_call_ppa:
@@ -114,3 +113,7 @@ _cronjob_del: []
 _remove_call_deb: []
 _remove_call_ppa: []
 _remove_call_pkg_apt: []
+# vim: foldmethod=marker
+
+#
+#  }}}
