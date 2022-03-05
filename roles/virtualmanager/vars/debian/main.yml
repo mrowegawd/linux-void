@@ -18,3 +18,4 @@ __qemu_pkgs:
   - qemu-system
   - virt-manager
   - virtinst
+  - gir1.2-spiceclientgtk-3.0
