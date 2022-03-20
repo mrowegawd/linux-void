@@ -1,8 +1,8 @@
 ---
 - name: restart firewall
-  become: yes
+  become: True
   service: name=firewall state=restarted
 
 - name: restart rsyslog
-  become: yes
+  become: True
   service: name=rsyslog state=restarted

@@ -1,6 +1,7 @@
 ---
+
 - name: update apt repository cache
-  become: yes
+  become: True
   apt:
     cache_valid_time: 1
     update_cache: true

@@ -38,7 +38,7 @@
 #   tags:
 #     - always
 
-# - become: yes
+# - become: True
 #   block:
 #     - name: MAIM | Ensure maim folder temp exists
 #       file:
@@ -65,7 +65,7 @@
 #         - maimslop
 
 #     - name: MAIM | Clone maim from github
-#       become: yes
+#       become: True
 #       git:
 #         repo: 'https://github.com/naelstrof/maim.git'
 #         dest: '{{ temp_dir }}/maim'
@@ -78,7 +78,7 @@
 #         - maimslop
 
 #     - name: MAIM | Install maim
-#       become: yes
+#       become: True
 #       shell: |
 #         {{ item }}
 #       args:
