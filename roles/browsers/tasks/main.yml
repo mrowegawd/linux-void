@@ -5,7 +5,7 @@
   tags:
     - always
 
-- become: yes
+- become: True
   include_vars: ""
   block:
     - import_tasks: firefox.yml

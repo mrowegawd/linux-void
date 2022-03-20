@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # TODO: install paramiko, python3 untuk menjalankan minimal ansible
-# echo "yes"
 
 sudo apt update -y && sudo apt upgrade -y
 

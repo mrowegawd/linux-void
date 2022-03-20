@@ -63,7 +63,7 @@
       when: found_locale.rc != 0
   when: ansible_os_family | lower == "debian"
 
-- become: yes
+- become: True
   block:
     - name: Define needed locales (for example, can be set in vars or inventory)
       set_fact:
