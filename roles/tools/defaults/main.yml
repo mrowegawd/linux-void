@@ -82,10 +82,10 @@ install_tools_from_asdf:
   - pkg_name: "golang"
     pkg_install_with: "asdf"
     pkg_shell_install: "go get -u"
-    pkg_lists: []
+    pkg_lists:
       # - "mvdan.cc/sh/cmd/shfmt"
       # - "github.com/jesseduffield/lazydocker"
-      # - "github.com/jesseduffield/lazygit"
+      - "github.com/jesseduffield/lazygit"
       # - "github.com/shurcooL/markdownfmt" # markdownfmt for vim
   - pkg_name: "rust"
     pkg_install_with: "asdf"
