@@ -1,0 +1,23 @@
+---
+- name: WARPCLI | Ensure warpcli deb repo is present
+  include_role:
+    name: _0package
+    tasks_from: ppa
+  vars:
+    apt_repo_keys:
+      - "{{ warp_apt_key }}"
+    apt_repo_repositories:
+      - "{{ warp_apt_repo }}"
+  tags:
+    - install
+    - vscode
+
+- name: VSCODE | Install warpcli (apt)
+  include_role:
+    name: _0package
+  vars:
+    _apt_packages: 'warp_cli_package'
+  tags:
+    - install
+    - vscode
+...

@@ -32,6 +32,7 @@
     - import_tasks: alacritty.yml
     - import_tasks: kitty.yml
     - import_tasks: vscode.yml
+    - import_tasks: warp_cli.yml
     - import_tasks: maim_slop.yml
     - import_tasks: mpv.yml
     - import_tasks: tools.yml

@@ -155,6 +155,20 @@ install_tools_from_git:
 ###
 ######
 
+# WARP-CLI--------------------------------------------------------- {{{
+#
+warp_apt_key:
+  url: "https://pkg.cloudflareclient.com/pubkey.gpg"
+  id: ""
+
+warp_apt_repo:
+  file: cloudflare-client
+  repo: |
+    deb [arch=amd64 signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ bullseye main
+
+warp_cli_package: "cloudflare-warp"
+#
+#  }}}
 # VSCODE ---------------------------------------------------------- {{{
 # Visual Studio Code version number (defaults to the latest version)
 visual_studio_code_version: ""
@@ -179,7 +193,7 @@ visual_studio_code_package: "{{ (visual_studio_code_build == 'insiders') | terna
 alacritty_url_download: https://api.github.com/repos/alacritty/alacritty/releases/latest
 #
 # }}}
-# KITTY ------------------------------------------------------- {{{
+# KITTY ----------------------------------------------------------- {{{
 kitty_version: "0.24.1"
 kitty_url_download: https://sw.kovidgoyal.net/kitty/installer.sh
 #
