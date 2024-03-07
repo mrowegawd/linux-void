@@ -155,20 +155,6 @@ install_tools_from_git:
 ###
 ######
 
-# WARP-CLI--------------------------------------------------------- {{{
-#
-warp_apt_key:
-  url: "https://pkg.cloudflareclient.com/pubkey.gpg"
-  id: ""
-
-warp_apt_repo:
-  file: cloudflare-client
-  repo: |
-    deb [arch=amd64 signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ bullseye main
-
-warp_cli_package: "cloudflare-warp"
-#
-#  }}}
 # VSCODE ---------------------------------------------------------- {{{
 # Visual Studio Code version number (defaults to the latest version)
 visual_studio_code_version: ""
@@ -205,13 +191,6 @@ mpv_build:
     dest: "{{ temp_dir }}/mpv_build"
 #
 # }}}
-# VIFM ------------------------------------------------------------ {{{
-# vifm_version: "0.10.1"
-# vifm_build:
-#   - repo: https://github.com/mpv-player/mpv-build.git
-#     dest: "{{ temp_dir }}/mpv_build"
-#
-# }}}
 # AUTOENV --------------------------------------------------------- {{{
 autoenv_git:
   - repo: "https://github.com/kennethreitz/autoenv.git"
@@ -240,4 +219,4 @@ zsh_plugins:
 #
 # }}}
 
-# vim: foldmethod=marker
+# vim: foldmethod=marker foldlevel=0

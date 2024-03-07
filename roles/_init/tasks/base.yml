@@ -2,17 +2,17 @@
 - name: INIT | Get the username running the deploy
   become: false
   delegate_to: localhost
-  command: whoami
+  ansible.builtin.command: whoami
   register: username_on_the_host
   changed_when: false
 
 - name: INIT | Set_fact user_admin
-  set_fact:
+  ansible.builtin.set_fact:
     user_admin: "{{ username_on_the_host.stdout_lines[0] }}"
   when: username_on_the_host is defined
 
 - name: INIT | Create tmp dir to hold any temporary files
-  tempfile:
+  ansible.builtin.tempfile:
     state: directory
     suffix: build
   register: mktemp_result
@@ -21,13 +21,14 @@
     - always
 
 - name: INIT | Set_fact temp dir path
-  set_fact:
+  ansible.builtin.set_fact:
     temp_dir: "{{ mktemp_result.path }}"
   changed_when: False
   tags:
     - always
 
-- block:
+- name: Dont know
+  block:
     - name: INIT | Yum Update | Redhat
       yum:
         name: "*"
@@ -39,7 +40,7 @@
         - skip_ansible_lint
 
     - name: INIT | Remove apt source.list | Debian
-      file:
+      ansible.builtin.file:
         state: absent
         path: "/etc/apt/sources.list"
       changed_when: false
@@ -50,7 +51,7 @@
         - install
 
     - name: INIT | Upload new source_list for | Debian
-      template:
+      ansible.builtin.template:
         src: "{{ ansible_distribution | lower }}/{{ ansible_distribution_major_version }}/source.list.j2"
         dest: "/etc/apt/sources.list"
         owner: "root"
@@ -63,11 +64,11 @@
         - install
 
     - name: INIT | Apt update | Debian
-      apt:
+      ansible.builtin.apt:
         upgrade: dist
         update-cache: yes
         cache_valid_time: 3200
-      changed_when: 0
+      changed_when: false
       when: ansible_os_family | lower == 'debian'
       tags:
         - always
@@ -75,7 +76,7 @@
         - updatesync
 
     - name: INIT | Installing pre-reqs
-      include_role:
+      ansible.builtin.include_role:
         name: _0package
       vars:
         _apt_packages:

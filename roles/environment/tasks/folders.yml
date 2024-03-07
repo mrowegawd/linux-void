@@ -1,8 +1,8 @@
 ---
 - name: FOLDERS | Create folders
-  become: True
+  become: true
   become_user: "{{ user_admin }}"
-  file:
+  ansible.builtin.file:
     state: directory
     path: "{{ item.path }}"
     owner: "{{ item.owner }}"

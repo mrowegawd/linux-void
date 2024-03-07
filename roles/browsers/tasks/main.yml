@@ -1,11 +1,13 @@
 ---
 # tasks file for browsers
 - name: BROWSERS | Include vars for specific os
-  include_vars: "{{ ansible_distribution | lower }}/main.yml"
+  ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
   tags:
     - always
 
-- become: True
-  include_vars: ""
+- name: BROWSERS | Fasdf
+  ansible.builtin.include_vars: ""
+  become: True
   block:
-    - import_tasks: firefox.yml
+    - name: Import task firefox.yml
+      ansible.builtin.import_tasks: firefox.yml

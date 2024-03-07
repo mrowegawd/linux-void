@@ -1,5 +1,5 @@
 ---
-- name: AUTH | Set pam_faildelay configuration | Debian
+- name: AUTH | Set PAM delay configuration | Debian
   lineinfile:
     dest: /etc/pam.d/login
     regexp: '^(auth[\s]+optional[\s]+pam_faildelay.so).*$'

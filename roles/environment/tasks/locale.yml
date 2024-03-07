@@ -1,8 +1,10 @@
 ---
-- become: True
+- name: Install debian
+  become: true
+  when: ansible_os_family | lower == "debian"
   block:
     - name: ASDF | Ensure git exists
-      include_role:
+      ansible.builtin.include_role:
         name: _0package
       vars:
         _apt_packages: "{{ item }}"
@@ -28,11 +30,11 @@
     #   changed_when: false
 
     # - name: LOCALE | Parse 'LANG' from current locale and language configuration
-    #   set_fact:
+    #   ansible.builtin.set_fact:
     #     locale_lang: "{{ locale_status.stdout | regex_search('LANG=([^\n]+)', '\\1') | first }}"
 
     # - name: LOCALE | Parse 'LANGUAGE' from current locale and language configuration
-    #   set_fact:
+    #   ansible.builtin.set_fact:
     #     locale_language: "{{ locale_status.stdout | regex_search('LANGUAGE=([^\n]+)', '\\1') | default([locale_lang], true) | first }}"
 
     # - name: Configure locale to '{{ config_system_locale }}' and language to '{{ config_system_language }}'
@@ -49,37 +51,39 @@
 
     # taken from: https://github.com/ansible/ansible/issues/44708
     - name: LOCALE | Set fact for system_settings_locale
-      set_fact:
+      ansible.builtin.set_fact:
         system_settings_locale: en_US.UTF-8
 
     - name: LOCALE | check if locale exists
-      shell: "locale -a | grep -i {{ system_settings_locale | regex_replace('-', '') | quote }}"
+      ansible.builtin.shell: "locale -a | grep -i {{ system_settings_locale | regex_replace('-', '') | quote }}"
       register: found_locale
-      changed_when: no
-      failed_when: no
+      changed_when: false
+      failed_when: false
 
     - name: LOCALE | create locale
-      command: "localedef -i {{ system_settings_locale | regex_replace('(.*)\\..*', '\\1') | quote }} -f {{ system_settings_locale | regex_replace('.*\\.(.*)', '\\1') | quote }} {{ system_settings_locale | quote }}"
+      ansible.builtin.command: "localedef -i {{ system_settings_locale | regex_replace('(.*)\\..*', '\\1') | quote }} -f {{ system_settings_locale | regex_replace('.*\\.(.*)', '\\1') | quote }} {{ system_settings_locale | quote }}"
       when: found_locale.rc != 0
-  when: ansible_os_family | lower == "debian"
+      changed_when: false
 
-- become: True
+- name: Set Redhat
+  become: true
+  when: ansible_os_family | lower == "redhat"
   block:
     - name: Define needed locales (for example, can be set in vars or inventory)
-      set_fact:
+      ansible.builtin.set_fact:
         system_settings_locales:
           - en_US.UTF-8
           - de_DE.UTF-8
 
     - name: Check existing locales
-      shell: "locale -a | grep -i {{ item | regex_replace('-', '') | quote }}"
+      ansible.builtin.shell: "locale -a | grep -i {{ item | regex_replace('-', '') | quote }}"
       register: found_locales
       changed_when: false
       failed_when: false
       loop: "{{ system_settings_locales }}"
 
     - name: Create missing locales
-      command: "localedef -i {{ item.item | regex_replace('(.*)\\..*', '\\1') | quote }} -f {{ item.item | regex_replace('.*\\.(.*)', '\\1') | quote }} {{ item.item | quote }}"
+      ansible.builtin.command: "localedef -i {{ item.item | regex_replace('(.*)\\..*', '\\1') | quote }} -f {{ item.item | regex_replace('.*\\.(.*)', '\\1') | quote }} {{ item.item | quote }}"
       when: item.rc != 0
       loop: "{{ found_locales.results }}"
-  when: ansible_os_family | lower == "redhat"
+      changed_when: false

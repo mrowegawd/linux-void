@@ -1,10 +1,13 @@
 ---
 - name: Tools | Include vars for specific os
-  include_vars: "{{ ansible_distribution | lower }}/main.yml"
+  ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
   tags:
     - always
 
-- become: True
+- name: Install iptables and disable firewalld
+  become: True
   block:
-    - import_tasks: iptables.yml
-    - import_tasks: disable-firewalld.yml
+    - name: Import iptables.yml
+      ansible.builtin.import_tasks: iptables.yml
+    - name: Import disable-firewalld.yml
+      ansible.builtin.import_tasks: disable-firewalld.yml

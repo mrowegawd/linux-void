@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Converge install tool-tmux"
+      ansible.builtin.include_role:
+        name: "tool-tmux"

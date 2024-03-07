@@ -2,7 +2,7 @@
 - name: FOLDERS | Create misc folders
   become: True
   become_user: "{{ user_admin }}"
-  file:
+  ansible.builtin.file:
     mode: "{{ item.mode }}"
     path: "/home/{{ user_admin }}/{{ item.foldername }}"
     group: "{{ user_admin }}"

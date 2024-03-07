@@ -1,22 +1,22 @@
 - name: TOOLSPROGRAM | Install tools via apt
-  include_role:
+  ansible.builtin.include_role:
     name: _0package
   vars:
     _apt_packages: "{{ item.pkg_lists }}"
   when: item.pkg_install_with == "apt"
 
 - name: TOOLSPROGRAM | Set fact for join string
-  set_fact:
-    pkg_lists_to_install: "{{ pkg_lists_to_install | default([]) + [ ' '.join((item.pkg_shell_install, mypkgs ))] }}"
+  ansible.builtin.set_fact:
+    pkg_lists_to_install: "{{ pkg_lists_to_install | default([]) + [' '.join((item.pkg_shell_install, mypkgs))] }}"
   loop: "{{ item.pkg_lists }}"
   loop_control:
     loop_var: mypkgs
   when: item.pkg_install_with == "asdf"
 
-- name: TOOLSPROGRAM | Install tools {{ item.pkg_name }} via asdf
+- name: TOOLSPROGRAM | Install tools via asdf
   become: True
   become_user: "{{ user_admin }}"
-  shell: |
+  ansible.builtin.shell: |
     source ~/.asdf/asdf.sh && {{ pkg_install }}
   args:
     executable: /bin/bash
@@ -30,7 +30,7 @@
 - name: TOOLSPROGRAM | Reshim the plugin {{ item.pkg_name }}
   become: True
   become_user: "{{ user_admin }}"
-  shell: |
+  ansible.builtin.shell: |
     source ~/.asdf/asdf.sh && asdf reshim {{ item.pkg_name }}
   args:
     executable: /bin/bash

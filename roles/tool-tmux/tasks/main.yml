@@ -1,0 +1,100 @@
+---
+#
+## Link: https://github.com/tmux/tmux
+#
+
+- name: TMUX | Include vars for specific os
+  ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
+  tags:
+    - tmux
+
+- name: TMUX | Check tmux current version
+  become: true
+  ansible.builtin.shell: |
+    {{ item.pkg_cmd_check_version }}
+  args:
+    executable: /bin/bash
+  changed_when: false
+  # ignore_errors: true
+  register: tmux_current_version
+  with_items:
+    - "{{ build_from_source_tmux }}"
+  tags:
+    - tmux
+
+# - name: TMUX | Debug tmux_current_version!
+#   ansible.builtin.debug:
+#     msg: "{{ tmux_current_version }}"
+
+- name: TMUX | Setup tmux {{ tmux_version }}
+  tags:
+    - tmux
+  when:
+    - tmux_current_version.results.0.stdout.find(tmux_version) == -1
+  block:
+    - name: INIT | Ensure tmp dir to hold any temporary files for tmux
+      ansible.builtin.tempfile:
+        state: directory
+        suffix: build
+      register: temp_dir_tmux
+      changed_when: false
+
+    - name: TMUX | Install dependencies | Debian
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+      when: ansible_os_family | lower == 'debian'
+      with_items:
+        - "{{ __apt_packages }}"
+        - "{{ __tools_base_pkg }}"
+
+    - name: TMUX | Install dependencies | Redhat
+      ansible.builtin.yum:
+        name: "{{ packages }}"
+        state: present
+      vars:
+        packages: "{{ __yum_packages }}"
+        state: '{{ _yum_state | default("present") }}'
+      become: true
+      when: ansible_os_family | lower == 'redhat'
+
+    # - name: TMUX | Debug temp_dir_tmux!
+    #   ansible.builtin.debug:
+    #     msg: "{{ temp_dir_tmux }}"
+    - name: TMUX | Get download tar gz from github tmux release
+      become: true
+      ansible.builtin.get_url:
+        url: "{{ item.link.0.url }}"
+        dest: "{{ temp_dir_tmux.path }}"
+        mode: 0755
+        force: true
+        timeout: 30
+      register: download_job_tmux
+      until: download_job_tmux is succeeded
+      retries: 3
+      delay: 3
+      with_items:
+        - "{{ build_from_source_tmux }}"
+      # when: item.pkg_version not in check_pkg_command.stdout or check_pkg_command.stdout.find('not found') != -1
+
+    - name: TMUX | Extract tar file tmux-{{ tmux_version }}
+      ansible.builtin.unarchive:
+        src: "{{ temp_dir_tmux.path }}/{{ item.link.0.tar_file }}"
+        dest: "{{ temp_dir_tmux.path }}"
+        copy: no # this `no` means, will delete for sure
+      with_items:
+        - "{{ build_from_source_tmux }}"
+      #   - item.pkg_url_download.0.tar_file is defined
+
+    - name: TMUX | Build tmux {{ tmux_version }}
+      become: true
+      ansible.builtin.shell: |
+        {{ item.pkg_cmd_make }}
+      args:
+        chdir: "{{ temp_dir_tmux.path }}/{{ item.link.0.dest_tar_file }}"
+        executable: /bin/bash
+      changed_when: false
+      # ignore_errors: true
+      with_items:
+        - "{{ build_from_source_tmux }}"

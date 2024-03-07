@@ -2,9 +2,9 @@
 # Check install: https://sw.kovidgoyal.net/kitty/binary/
 
 - name: KITTY | Check kitty if exis
-  become: True
+  become: true
   become_user: "{{ user_admin }}"
-  shell: |
+  ansible.builtin.shell: |
     set -o pipefail;
     if command -v kitty &> /dev/null; then kitty --version | awk -F" " '{print $2}' ; else echo "not found"; fi
   args:
@@ -19,20 +19,22 @@
 #   debug:
 #     msg: "{{ check_kitty_version }}"
 
-- block:
+- name: Install kitty terminal if not exists
+  when: kitty_version not in check_kitty_version.stdout or check_kitty_version.stdout.find('not found') != -1
+  block:
     - name: KITTY | Install kitty deps
-      become: True
+      become: true
       become_user: "{{ user_admin }}"
-      file:
-        path: '/home/{{ user_admin }}/.local/bin/kitty'
-        state: 'absent'
+      ansible.builtin.file:
+        path: "/home/{{ user_admin }}/.local/bin/kitty"
+        state: "absent"
 
     - name: KITTY | Download kitty from url
-      become: True
-      become_user: '{{ user_admin }}'
-      get_url:
-        url: '{{ kitty_url_download }}'
-        dest: '/home/{{ user_admin }}'
+      become: true
+      become_user: "{{ user_admin }}"
+      ansible.builtin.get_url:
+        url: "{{ kitty_url_download }}"
+        dest: "/home/{{ user_admin }}"
         mode: 0664
         timeout: 30
       register: kitty_download_task
@@ -41,30 +43,31 @@
       delay: 10
 
     - name: KITTY | Install kitty there
-      become: True
+      become: true
       become_user: "{{ user_admin }}"
-      shell: |
+      ansible.builtin.shell: |
         bash /home/{{ user_admin }}/installer.sh
       args:
         warn: no
         executable: /bin/bash
+      changed_when: false
       when: kitty_download_task is success
 
-    - name: KITTY | Create symlink kitty /home/{{ user_admin }}/.local/bin/kitty
-      become: True
+    - name: KITTY | Create symlink for kitty at ~/.local/bin
+      become: true
       become_user: "{{ user_admin }}"
-      file:
+      ansible.builtin.file:
         src: "/home/{{ user_admin }}/.local/kitty.app/bin/kitty"
-        dest: '/home/{{ user_admin }}/.local/bin/kitty'
-        owner: '{{ user_admin }}'
+        dest: "/home/{{ user_admin }}/.local/bin/kitty"
+        owner: "{{ user_admin }}"
         mode: 0755
         force: yes
         state: link
 
     - name: KITTY | Cleaning up
-      become: True
+      become: true
       become_user: "{{ user_admin }}"
-      file:
+      ansible.builtin.file:
         path: "{{ item.path }}"
         mode: "{{ item.mode }}"
         state: "{{ item.state }}"
@@ -74,13 +77,11 @@
           state: absent
 
     - name: KITTY | Copy kitty application.desktop
-      become: True
+      become: true
       become_user: "{{ user_admin }}"
-      copy:
+      ansible.builtin.copy:
         src: "/home/{{ user_admin }}/.local/kitty.app/share/applications/kitty.desktop"
         dest: "/home/{{ user_admin }}/.local/share/applications"
         owner: "{{ user_admin }}"
         group: "{{ user_admin }}"
         mode: "0644"
-
-  when: kitty_version not in check_kitty_version.stdout or check_kitty_version.stdout.find('not found') != -1

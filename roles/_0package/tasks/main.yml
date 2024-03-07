@@ -1,7 +1,7 @@
 ---
-- name: 00PACKAGE | Ensure apt packages are managed | {{ ansible_distribution }} {{ ansible_distribution_version }}
+- name: 00PACKAGE | Ensure apt packages are managed | Debian
   become: True
-  apt:
+  ansible.builtin.apt:
     name: "{{ packages }}"
     state: present
     autoclean: yes
@@ -21,8 +21,8 @@
   tags:
     - always
 
-- name: 00PACKAGE | Ensure yum packages are managed | {{ ansible_distribution }} {{ ansible_distribution_version }}
-  yum:
+- name: 00PACKAGE | Ensure yum packages are managed | Redhat
+  ansible.builtin.yum:
     name: "{{ packages }}"
     state: present
   vars:

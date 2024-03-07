@@ -1,6 +1,6 @@
 ---
 - name: Install {{ item.pkg_name | upper }} | Check {{ item.pkg_name }} last installed version if exists
-  shell: |
+  ansible.builtin.shell: |
     {{ item.pkg_cmd_check_version }}
   args:
     warn: no
@@ -12,27 +12,27 @@
 #     msg: "{{ check_pkg_command.stdout }}"
 
 - name: Install {{ item.pkg_name | upper }} | Remove the old {{ item.pkg_name }}
-  apt:
+  ansible.builtin.apt:
     name: "{{ item.pkg_name }}"
     state: absent
   when: item.pkg_version not in check_pkg_command.stdout or check_pkg_command.stdout.find('not found') != -1
 
 - name: Install {{ item.pkg_name | upper }} | Install dependencies {{ item.pkg_name }}
-  include_role:
+  ansible.builtin.include_role:
     name: _0package
   vars:
     _apt_packages: "{{ item.pkg_deps }}"
   when: item.pkg_version not in check_pkg_command.stdout or check_pkg_command.stdout.find('not found') != -1
 
 - name: Install {{ item.pkg_name | upper }} | Ensure path {{ item.pkg_url_download.0.dest_temp_dir }}/{{ item.pkg_name }} are exists
-  file:
+  ansible.builtin.file:
     path: "{{ item.pkg_url_download.0.dest_temp_dir }}"
     mode: 0755
     state: directory
   when: item.pkg_version not in check_pkg_command.stdout or check_pkg_command.stdout.find('not found') != -1
 
 - name: Install {{ item.pkg_name | upper }} | Download {{ item.pkg_name }}-{{ item.pkg_version }}
-  get_url:
+  ansible.builtin.get_url:
     url: "{{ item.pkg_url_download.0.url }}"
     dest: "{{ item.pkg_url_download.0.dest_temp_dir }}"
     mode: 0755
@@ -46,7 +46,7 @@
   when: item.pkg_version not in check_pkg_command.stdout or check_pkg_command.stdout.find('not found') != -1
 
 - name: Install {{ item.pkg_name | upper }} | Extract {{ item.pkg_url_download.0.tar_file }}
-  unarchive:
+  ansible.builtin.unarchive:
     src: "{{ item.pkg_url_download.0.dest_temp_dir }}/{{ item.pkg_url_download.0.tar_file }}"
     dest: "{{ item.pkg_url_download.0.dest_temp_dir }}"
     copy: no # with no will not copy or will deleted
@@ -55,14 +55,14 @@
     - item.pkg_url_download.0.tar_file is defined
 
 - name: Install {{ item.pkg_name | upper }} | Run make install for {{ item.pkg_name }}
-  shell: |
+  ansible.builtin.shell: |
     {{ item.pkg_cmd_make }}
   args:
     chdir: "{{ item.pkg_url_download.0.dest_temp_dir }}/{{ item.pkg_url_download.0.after_extract_filename }}"
   when: item.pkg_version not in check_pkg_command.stdout or check_pkg_command.stdout.find('not found') != -1
 
 - name: Install {{ item.pkg_name | upper }} | Set symlink /opt/{{ item.pkg_name }} to /usr/local/bin/{{ item.pkg_name }}
-  file:
+  ansible.builtin.file:
     src: "/opt/Telegram/Telegram"
     dest: "/usr/local/bin/Telegram"
     state: link

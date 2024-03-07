@@ -3,14 +3,14 @@
   hosts: all
   tasks:
     - name: "Include my init"
-      include_role:
+      ansible.builtin.include_role:
         name: "_init"
     - name: "Include environment"
-      include_role:
+      ansible.builtin.include_role:
         name: "environment"
     - name: "Include prolang"
-      include_role:
+      ansible.builtin.include_role:
         name: "prolang"
     - name: "Include tools"
-      include_role:
+      ansible.builtin.include_role:
         name: "tools"

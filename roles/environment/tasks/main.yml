@@ -1,13 +1,14 @@
 ---
 - name: Environment | Include vars for specific os
-  include_vars: "{{ ansible_distribution | lower }}/main.yml"
+  ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
   tags:
     - always
 
-- become: True
+- name: Environment set
+  become: True
   block:
     - name: USERS | Check for .shosts or shosts.equiv files
-      find:
+      ansible.builtin.find:
         paths: /
         recurse: yes
         hidden: yes
@@ -24,18 +25,18 @@
         - auth
 
     - name: Importing task accounts
-      import_tasks: accounts.yml
+      ansilbe.builtin.import_tasks: accounts.yml
     - name: Importing task auth
-      import_tasks: auth.yml
+      ansilbe.builtin.import_tasks: auth.yml
     - name: Importing task create
-      import_tasks: create.yml
+      ansilbe.builtin.import_tasks: create.yml
     - name: Importing task visido
-      import_tasks: visudo.yml
+      ansilbe.builtin.import_tasks: visudo.yml
     - name: Importing task folders
-      import_tasks: folders.yml
+      ansilbe.builtin.import_tasks: folders.yml
     - name: Importing task dotfiles
-      import_tasks: dotfiles.yml
+      ansilbe.builtin.import_tasks: dotfiles.yml
     - name: Importing task dotfiles root
-      import_tasks: dotfiles_root.yml
+      ansilbe.builtin.import_tasks: dotfiles_root.yml
     - name: Importing task lolcale
-      import_tasks: locale.yml
+      ansilbe.builtin.import_tasks: locale.yml

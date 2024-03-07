@@ -1,6 +1,6 @@
 ---
 - name: DOTFILES | Ensure minimal pkg's exists
-  include_role:
+  ansible.builtin.include_role:
     name: _0package
   vars:
     _apt_packages: ["git", "stow", "vim", "rsync"]
@@ -10,7 +10,7 @@
 - name: DOTFILES | Git clone my dotfiles from github
   become: True
   become_user: "{{ user_admin }}"
-  git:
+  ansible.builtin.git:
     repo: "https://github.com/mrowegawd/dotfiles.git"
     dest: "/home/{{ user_admin }}/moxconf/development/dotfiles"
     version: "test-plugin"
@@ -23,7 +23,7 @@
 - name: DOTFILES | Install the dotfiles
   become: True
   become_user: "{{ user_admin }}"
-  shell: |
+  ansible.builtin.shell: |
     ./install.sh
   args:
     warn: no

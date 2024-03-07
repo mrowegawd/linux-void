@@ -2,7 +2,7 @@
 - name: AUTOENV | Register, check path home/user/.autoenv jika exists
   become: True
   become_user: "{{ user_admin }}"
-  stat:
+  ansible.builtin.stat:
     path: "/home/{{ user_admin }}/.autoenv"
   register: check_autoenv_path
   tags:
@@ -12,7 +12,7 @@
 - name: AUTOENV | Install autoenv
   become: True
   become_user: "{{ user_admin }}"
-  git:
+  ansible.builtin.git:
     repo: "{{ item.repo }}"
     dest: "/home/{{ user_admin }}/.autoenv"
     version: "{{ item.version }}"

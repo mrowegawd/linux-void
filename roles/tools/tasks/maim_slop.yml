@@ -1,6 +1,6 @@
 ---
 - name: SLOP | Check installed slop version
-  shell: >
+  ansible.builtin.shell: >
     if command -v slop &> /dev/null;
     then echo "found"; else echo "not found"; fi
   args:
@@ -13,7 +13,7 @@
     - always
 
 - name: SLOP | Install slop with deps
-  include_role:
+  ansible.builtin.include_role:
     name: _0package
   when: check_slop.stdout.find('not found') != -1
   vars:

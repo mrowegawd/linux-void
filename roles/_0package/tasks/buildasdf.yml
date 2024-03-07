@@ -12,7 +12,7 @@
   ignore_errors: True
 
 - name: Install {{ item.lang_name | upper }} | Set_fact check_lang_version_filter
-  set_fact:
+  ansible.builtin.set_fact:
     check_lang_version_result: "{{ check_lang_version.stderr }} {{ check_lang_version.stdout }}"
   when: check_lang_version is defined
 

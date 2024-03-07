@@ -1,43 +1,52 @@
 ---
-
 - name: TOOLS | Include vars for specific os
-  include_vars: "{{ ansible_distribution | lower }}/main.yml"
+  ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
   tags:
     - always
 
-- become: True
+- name: TOOLS asfd
+  become: true
+  when: ansible_os_family | lower == 'debian'
   block:
     - name: TOOLS | Install tools from build source
-      include_role:
+      ansible.builtin.include_role:
         name: _0package
         tasks_from: buildsource
       with_items: "{{ install_tools_from_buildsource }}"
 
     - name: TOOLS | Install tools with asdf source with lang
-      include_role:
+      ansible.builtin.include_role:
         name: _0package
         tasks_from: installwithasdf
       with_items: "{{ install_tools_from_asdf }}"
 
     - name: TOOLS | Install tools with build from source git
-      include_role:
+      ansible.builtin.include_role:
         name: _0package
         tasks_from: buildsourcewithgit
       with_items: "{{ install_tools_from_git }}"
 
-    - import_tasks: folders.yml
-    - import_tasks: autoenv.yml
-    - import_tasks: dropbox.yml
-    - import_tasks: neovim.yml
-    - import_tasks: alacritty.yml
-    - import_tasks: kitty.yml
-    - import_tasks: vscode.yml
-    - import_tasks: warp_cli.yml
-    - import_tasks: maim_slop.yml
-    - import_tasks: mpv.yml
-    - import_tasks: tools.yml
-    - import_tasks: fzf.yml
-    - import_tasks: zsh.yml
-    - import_tasks: vifm.yml
-
-  when: ansible_os_family | lower == 'debian'
+    - name: Import task folders.yml
+      ansible.builtin.import_tasks: folders.yml
+    - name: Import task autoenv.yml
+      ansible.builtin.import_tasks: autoenv.yml
+    - name: Import task dropbox.yml
+      ansible.builtin.import_tasks: dropbox.yml
+    - name: Import task neovim.yml
+      ansible.builtin.import_tasks: neovim.yml
+    - name: Import task alacritty.yml
+      ansible.builtin.import_tasks: alacritty.yml
+    - name: Import task kitty.yml
+      ansible.builtin.import_tasks: kitty.yml
+    - name: Import task vscode.yml
+      ansible.builtin.import_tasks: vscode.yml
+    - name: Import task maim_slop.yml
+      ansible.builtin.import_tasks: maim_slop.yml
+    - name: Import task mpv.yml
+      ansible.builtin.import_tasks: mpv.yml
+    - name: Import task tools.yml
+      ansible.builtin.import_tasks: tools.yml
+    - name: Import task task.yml
+      ansible.builtin.import_tasks: fzf.yml
+    - name: Import task zsh.yml
+      ansible.builtin.import_tasks: zsh.yml
