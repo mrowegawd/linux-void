@@ -5,7 +5,7 @@
     - always
 
 - name: Environment set
-  become: True
+  become: true
   block:
     - name: USERS | Check for .shosts or shosts.equiv files
       ansible.builtin.find:

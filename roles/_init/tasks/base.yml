@@ -28,6 +28,7 @@
     - always
 
 - name: Dont know
+  when: _dev_mode | bool
   block:
     - name: INIT | Yum Update | Redhat
       yum:
@@ -86,5 +87,3 @@
         - install
 
       when: ansible_os_family | lower == 'debian'
-
-  when: _dev_mode | bool

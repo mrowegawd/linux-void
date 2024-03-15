@@ -5,7 +5,7 @@
     - always
 
 - name: Install iptables and disable firewalld
-  become: True
+  become: true
   block:
     - name: Import iptables.yml
       ansible.builtin.import_tasks: iptables.yml

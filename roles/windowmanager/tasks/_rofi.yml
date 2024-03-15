@@ -1,6 +1,6 @@
-# rofi
+---
 - name: ROFI | Check rofi installed version
-  shell: >
+  ansible.builtin.shell: |
     set -o pipefail;
     if command -v rofi &> /dev/null;
     then rofi -V | cut -d":" -f2 | cut -d" " -f2 |xargs ; else echo "not found"; fi
@@ -12,11 +12,14 @@
   tags:
     - always
 
-- become: True
+- name: ROFI | Install rofi when conditional are defined
+  become: true
+  when: rofi_version not in check_rofi_version.stdout or check_rofi_version.stdout.find('not found') != -1
   block:
     - name: ROFI | Ensure rofi folder temp exists
-      file:
+      ansible.builtin.file:
         path: "{{ item }}"
+        mode: 0755
         state: directory
       with_items:
         - "{{ temp_dir }}/rofi"
@@ -26,7 +29,7 @@
         - rofi
 
     - name: ROFI | Install build dependencies for rofi
-      include_role:
+      ansible.builtin.include_role:
         name: _0package
       vars:
         _apt_packages: "{{ __rofi_deps }}"
@@ -34,9 +37,9 @@
         - install
         - rofi
 
-    - name: ROFI | Download rofi-{{ rofi_version }}.tar.gz
-      become: True
-      get_url:
+    - name: ROFI | Download tar rofi-{{ rofi_version }}
+      become: true
+      ansible.builtin.get_url:
         url: "{{ item.url }}"
         dest: "{{ item.dest }}"
         mode: 0755
@@ -51,22 +54,21 @@
         - install
         - rofi
 
-    - name: ROFI | Extract rofi-{{ rofi_version }}.tar.gz
-      unarchive:
+    - name: ROFI | Extract tar rofi-{{ rofi_version }}
+      ansible.builtin.unarchive:
         src: "{{ item.dest }}/{{ item.name }}.tar.gz"
         dest: "{{ item.dest }}"
         copy: no # with no will not copy or will deleted
       with_items: "{{ rofi_download }}"
 
     - name: ROFI | Install rofi
-      shell: |
+      ansible.builtin.shell: |
         ./configure --disable-check && make && sudo make install
       args:
-        warn: no
         chdir: "{{ item.dest }}/{{ item.name }}"
         executable: /bin/bash
+      changed_when: false
       with_items: "{{ rofi_download }}"
       tags:
         - install
         - rofi
-  when: rofi_version not in check_rofi_version.stdout or check_rofi_version.stdout.find('not found') != -1

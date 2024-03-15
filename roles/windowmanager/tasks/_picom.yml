@@ -10,7 +10,7 @@
   tags:
     - always
 
-- become: True
+- become: true
   block:
     - name: PICOM | Remove old picom
       apt:
@@ -51,7 +51,7 @@
       until: jobpicomdownload is succeeded
       retries: 10
       delay: 10
-      become: True
+      become: true
       tags:
         - install
         - picom

@@ -3,11 +3,13 @@
   gather_facts: "true"
   hosts: localhost
   roles:
-    - _init
-    - environment
-    - system
-    # - browsers
-    - prolang
-    - virtualmanager
-    - windowmanager
-    - tools
+    # - _init
+    # - environment
+    # - system
+    # # - browsers
+    # - prolang
+    # - virtualmanager
+    # - windowmanager
+    # - tools
+    - tool-fzf
+    - tool-tmux

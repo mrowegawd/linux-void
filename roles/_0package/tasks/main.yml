@@ -1,6 +1,6 @@
 ---
 - name: 00PACKAGE | Ensure apt packages are managed | Debian
-  become: True
+  become: true
   ansible.builtin.apt:
     name: "{{ packages }}"
     state: present
@@ -9,7 +9,7 @@
     force_apt_get: yes
     update_cache: yes
     # cache_valid_time: 50000
-    install_recommends: False
+    install_recommends: false
   retries: 5
   delay: 5
   register: jobcommon
@@ -28,7 +28,7 @@
   vars:
     packages: "{{ _apt_packages }}"
     state: '{{ _apt_state | default("present") }}'
-  become: True
+  become: true
   when: ansible_os_family | lower == 'redhat'
   tags:
     - always

@@ -1,6 +1,6 @@
 ---
 - name: ZSH | Check zsh installed version
-  shell: |
+  ansible.builtin.shell: |
     if [[ ! -z $(command -v zsh) ]];
     then echo "good" ; else echo "not found"; fi
   changed_when: false
@@ -8,10 +8,12 @@
   tags:
     - always
 
-- become: True
+- name: Tes
+  become: true
+  when: check_zsh_version.stdout.find('not found') != -1
   block:
     - name: ZSH | Install package zsh
-      include_role:
+      ansible.builtin.include_role:
         name: _0package
       vars:
         _apt_packages: zsh
@@ -20,9 +22,9 @@
         - zsh
 
     - name: ZSH | Ensure dir path ~/.zsh/plugins exists
-      become: True
+      become: true
       become_user: "{{ user_admin }}"
-      file:
+      ansible.builtin.file:
         path: "/home/{{ user_admin }}/.zsh/plugins"
         state: directory
         mode: 0755
@@ -31,9 +33,9 @@
         - zsh
 
     - name: ZSH | Git clone oh-my-zsh and their plugins
-      become: True
+      become: true
       become_user: "{{ user_admin }}"
-      git:
+      ansible.builtin.git:
         repo: "{{ item.repo }}"
         dest: "/home/{{ user_admin }}/{{ item.dest }}"
         version: master
@@ -44,5 +46,3 @@
         - install
         - zsh
         - updatesync
-
-  when: check_zsh_version.stdout.find('not found') != -1

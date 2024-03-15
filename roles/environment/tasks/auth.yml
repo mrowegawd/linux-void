@@ -1,6 +1,6 @@
 ---
 - name: AUTH | Set PAM delay configuration | Debian
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/pam.d/login
     regexp: '^(auth[\s]+optional[\s]+pam_faildelay.so).*$'
     line: '\1 delay={{ (auth_security_shadow_utils_fail_delay | int) * 10**6 }}'
@@ -14,7 +14,7 @@
     - medium
 
 - name: AUTH | Prevent users with blank or null passwords from authenticating | Debian
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: "{{ __pam_auth_file }}"
     state: present
     regexp: "^(.*)nullok_secure(.*)$"
@@ -28,7 +28,7 @@
     - auth
 
 - name: AUTH | Prevent users with blank or null passwords from authenticating | Debian
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: "{{ __pam_auth_file }}"
     state: present
     regexp: "^({{ item }}.*sufficient.*)nullok(.*)$"
@@ -46,7 +46,7 @@
     - high
 
 - name: AUTH | Lock accounts after three failed login attempts a 15 minute period | Redhat
-  blockinfile:
+  ansible.builtin.blockinfile:
     dest: "{{ __pam_password_file }}"
     state: present
     marker: "# {mark} MANAGED BY ANSIBLE-HARDENING"
@@ -60,10 +60,11 @@
     - medium
 
 - name: AUTH | Check for 'nopasswd' in sudoers files
-  shell: |
-    grep -ir nopasswd /etc/sudoers /etc/sudoers.d/ | egrep -v "^([[:space:]]*)?(#|$)" || echo "not found"
+  ansible.builtin.shell: grep -ir nopasswd /etc/sudoers /etc/sudoers.d/ | egrep -v "^([[:space:]]*)?(#|$)" || echo "not found"
+  args:
+    warn: no
   register: sudoers_nopasswd_check
-  changed_when: False
+  changed_when: false
   when:
     - auth_security_sudoers_nopasswd_check_enable | bool
   tags:
@@ -89,7 +90,7 @@
     - skip_ansible_lint
 
 - name: AUTH | Check for '!authenticate' in sudoers files
-  shell: grep -ir '\!authenticate' /etc/sudoers /etc/sudoers.d/ || echo 'not found'
+  ansible.builtin.shell: grep -ir '\!authenticate' /etc/sudoers /etc/sudoers.d/ || echo 'not found'
   register: sudoers_authenticate_check
   changed_when: False
   tags:
@@ -111,7 +112,7 @@
     - skip_ansible_lint
 
 - name: AUTH | Check if sssd.conf exists
-  stat:
+  ansible.builtin.stat:
     path: /etc/sssd/sssd.conf
   register: sssd_conf_check
   check_mode: False
@@ -122,7 +123,7 @@
 # should be skipped on those systems.
 
 - name: AUTH | Check if GRUB2 custom file exists
-  stat:
+  ansible.builtin.stat:
     path: "{{ auth_grub_custom_file }}"
   register: grub_custom_file_check
   check_mode: False
@@ -130,6 +131,12 @@
     - always
 
 - name: AUTH | Set a GRUB 2 password for single-user/maintenance modes
+  when:
+    - grub_custom_file_check.stat.exists | bool
+    - auth_security_require_grub_authentication | bool
+  tags:
+    - auth
+    - high
   block:
     - name: AUTH | Set {{ auth_grub_custom_file }}
       blockinfile:
@@ -156,15 +163,9 @@
         - update grub config
       tags:
         - skip_ansible_lint
-  when:
-    - grub_custom_file_check.stat.exists | bool
-    - auth_security_require_grub_authentication | bool
-  tags:
-    - auth
-    - high
 
 - name: AUTH | The operating system must limit the number of concurrent sessions to 10 for all accounts and/or account types.
-  blockinfile:
+  ansible.builtin.blockinfile:
     dest: /etc/security/limits.d/ansible-hardening-maxlogins.conf
     create: yes
     block: |
@@ -178,7 +179,7 @@
     - low
 
 - name: AUTH | Check for pam_lastlog in PAM configuration
-  command: |
+  ansible.builtin.command: |
     grep pam_lastlog {{ __pam_postlogin_file }}
   register: pam_lastlog_check
   changed_when: False
@@ -188,7 +189,7 @@
     - always
 
 - name: AUTH | Display date/time of last logon after logon
-  debug:
+  ansible.builtin.debug:
     msg: >
       The 'pam_lastlog' directive is missing in {{ __pam_postlogin_file }}.
   when:
@@ -198,7 +199,7 @@
     - auth
 
 - name: AUTH | Ensure .shosts find has finished
-  async_status:
+  ansible.builtin.async_status:
     jid: "{{ shosts_find.ansible_job_id }}"
   failed_when: False
   changed_when: False
@@ -212,7 +213,7 @@
     - auth
 
 - name: AUTH | Remove .shosts or shosts.equiv files
-  file:
+  ansible.builtin.file:
     path: "{{ item.path }}"
     state: absent
   with_items: "{{ job_result.files }}"

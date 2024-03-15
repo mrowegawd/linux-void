@@ -20,7 +20,7 @@
 #   pause:
 #     seconds: 10
 
-- become: True
+- become: true
   block:
     - name: DUNST | Remove old dunst
       apt:
@@ -61,7 +61,7 @@
       until: jobdunstdownload is succeeded
       retries: 10
       delay: 10
-      become: True
+      become: true
       with_items:
         - "{{ dunst_download }}"
       tags:

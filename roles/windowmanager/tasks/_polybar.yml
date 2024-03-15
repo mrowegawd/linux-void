@@ -12,7 +12,7 @@
   tags:
     - always
 
-- become: True
+- become: true
   block:
     - name: POLYBAR | Install polybar deps
       include_role:
@@ -32,7 +32,7 @@
         - polybar
 
     - name: POLYBAR | Download polybar-{{ polybar_version }}.tar.gz
-      become: True
+      become: true
       get_url:
         url: "{{ item.url }}"
         dest: "{{ item.dest }}"

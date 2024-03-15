@@ -42,7 +42,7 @@
   until: jobdownloading is succeeded
   retries: 10
   delay: 10
-  become: True
+  become: true
   when: item.pkg_version not in check_pkg_command.stdout or check_pkg_command.stdout.find('not found') != -1
 
 - name: Install {{ item.pkg_name | upper }} | Extract {{ item.pkg_url_download.0.tar_file }}

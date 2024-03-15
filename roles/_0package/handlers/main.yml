@@ -1,6 +1,6 @@
 ---
 - name: update apt repository cache
-  become: True
+  become: true
   ansible.builtin.apt:
     cache_valid_time: 1
     update_cache: true

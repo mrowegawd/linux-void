@@ -1,0 +1,13 @@
+---
+- name: SETVARS | Include vars for specific os
+  ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
+  tags:
+    - always
+
+- name: SETVARS | Import task setvars.yml
+  ansible.builtin.import_tasks: setvars.yml
+
+- name: SETVARS | Install base packaje.yml
+  ansible.builtin.import_tasks: pkgs.yml
+# - name: Tools | Import task misc.yml
+#   ansible.builtin.import_tasks: misc.yml

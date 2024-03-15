@@ -4,7 +4,7 @@
   tags:
     - always
 
-- become: True
+- become: true
   block:
     # WM VARIAN ---------------------------------------------------------------
     - import_tasks: bspwm.yml

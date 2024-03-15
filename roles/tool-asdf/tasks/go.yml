@@ -1,0 +1,77 @@
+---
+- name: ASDF-Go | Check plugin-list if spesific our lang is exists
+  become: true
+  become_user: "{{ user_admin }}"
+  ansible.builtin.shell: |
+    source ~/.asdf/asdf.sh && asdf plugin-list
+  args:
+    executable: /bin/bash
+  register: plugin_go_exists
+  changed_when: false
+  failed_when: false
+  ignore_errors: true
+  tags:
+    - go
+
+# - name: ASDF-Go | Debug plugin_go_exists!
+#   ansible.builtin.debug:
+#     msg: "{{ plugin_go_exists.stdout.find('golang') }}"
+
+- name: ASDF-Go | Install plugin asdf for golang
+  become: true
+  become_user: "{{ user_admin }}"
+  ansible.builtin.shell: |
+    source ~/.asdf/asdf.sh && {{ go_lang.plugin_asdf_install }}
+  args:
+    executable: /bin/bash
+  changed_when: false
+  when:
+    # jika plugin sama sekali belum diinstall, masih berupa plugin kosong
+    - (plugin_go_exists.stderr.find('No plugins installed') != 0) or (plugin_go_exists.stderr.find('golang') == -1)
+  tags:
+    - go
+
+- name: ASDF-Go | Check go version if exists
+  become: true
+  become_user: "{{ user_admin }}"
+  ansible.builtin.shell: |
+    source ~/.asdf/asdf.sh && go version
+  args:
+    executable: /bin/bash
+  register: go_version_cur_version
+  changed_when: false
+  failed_when: false
+  ignore_errors: true
+  tags:
+    - go
+
+# - name: ASDF-Go | Debug go_version_cur_version!
+#   ansible.builtin.debug:
+#     msg: "{{ go_version_cur_version.stderr.find('command not found') }}"
+
+- name: ASDF-Go | Install go version
+  become: true
+  become_user: "{{ user_admin }}"
+  ansible.builtin.shell: |
+    source ~/.asdf/asdf.sh && asdf install golang {{ go_lang.plugin_asdf_go_version }}
+  args:
+    executable: /bin/bash
+  changed_when: false
+  register: go_version_installed
+  when:
+    - go_version_cur_version.stderr.find('command not found') != -1
+  tags:
+    - go
+
+- name: ASDF-Go | Ensure global version are defined
+  become: true
+  become_user: "{{ user_admin }}"
+  ansible.builtin.shell: |
+    source ~/.asdf/asdf.sh && {{ go_lang.plugin_asdf_set_global_version }}
+  args:
+    executable: /bin/bash
+  changed_when: false
+  when:
+    - go_version_installed is success
+  tags:
+    - go

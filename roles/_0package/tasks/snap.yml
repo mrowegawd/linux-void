@@ -1,6 +1,6 @@
 ---
 - name: 00SNAP | Ensure snapd packages are managed | Debian
-  become: True
+  become: true
   snap:
     name: "{{ packages }}"
     state: present

@@ -1,6 +1,6 @@
 ---
 - name: FOLDERS | Create misc folders
-  become: True
+  become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.file:
     mode: "{{ item.mode }}"

@@ -1,10 +1,9 @@
 ---
 - name: VISUDO | Check visudo rule for admin user /etc/sudoers
-  command: |
+  ansible.builtin.command: |
     bash -c "if grep '{{ item }}' /etc/sudoers;
             then echo 'found';
             else echo 'not found'; fi"
-    warn=no
   register: check_group_admin_sudoers
   changed_when: false
   no_log: true
@@ -15,7 +14,7 @@
     - admin
 
 - name: VISUDO | Add new rules for admin group user
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/sudoers
     # regexp: "{{ item[0].regexp }}"
     insertafter: "{{ item[0].insertafter }}"

@@ -1,6 +1,6 @@
 ---
 - name: ACCOUNTS | Check if /etc/security/pwquality.conf exists
-  stat:
+  ansible.builtin.stat:
     path: /etc/security/pwquality.conf
   check_mode: False
   register: pwquality_config_check
@@ -8,7 +8,7 @@
     - always
 
 - name: ACCOUNTS | Set password quality requirements
-  blockinfile:
+  ansible.builtin.blockinfile:
     dest: /etc/security/pwquality.conf
     backup: yes
     insertbefore: EOF
@@ -22,7 +22,7 @@
     - medium
 
 - name: ACCOUNTS | Check for SHA512 password storage in PAM
-  command: |
+  ansible.builtin.command: |
     grep pam_unix.so {{ __pam_password_file }}
   register: password_sha512_check
   changed_when: False
@@ -31,7 +31,7 @@
     - always
 
 - name: ACCOUNTS | Print warning if PAM is not using SHA512 for password storage
-  debug:
+  ansible.builtin.debug:
     msg: >
       PAM is not using SHA512 for password storage. This is a security issue.
   when:
@@ -56,8 +56,9 @@
     - medium
 
 - name: ACCOUNTS | Set minimum password lifetime limit to 24 hours for interactive accounts
-  command: |
+  ansible.builtin.command: |
     chage -m 1 {{ item.name }}
+  changed_when: false
   when:
     - item.shadow is mapping
     - item.shadow.min_days != 1
@@ -69,8 +70,9 @@
     - medium
 
 - name: ACCOUNTS | Set maximum password lifetime limit to 60 days for interactive accounts
-  command: |
+  ansible.builtin.command: |
     chage -M 60 {{ item.name }}
+  changed_when: false
   when:
     - item.shadow is mapping
     - item.shadow.max_days > 60
@@ -82,7 +84,7 @@
     - medium
 
 - name: ACCOUNTS | Ensure that users cannot reuse one of their last 5 passwords
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: "{{ __pam_password_file }}"
     regexp: '^(password\s+[a-z0-9\=\[\] ]+\s+pam_unix\.so.+?)\s+(?:remember=\d+)?$'
     line: '\1 remember={{ security_password_remember_password }}'
@@ -95,7 +97,7 @@
     - medium
 
 - name: ACCOUNTS | Ensure accounts are disabled if the password expires
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/default/useradd
     regexp: '^[#\s]*INACTIVE'
     line: "INACTIVE=0"
@@ -106,7 +108,7 @@
     - medium
 
 - name: ACCOUNTS | Apply shadow-utils configurations
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/login.defs
     regexp: "^{{ item.parameter }}"
     line: "{{ item.parameter }} {{ item.value }}"
@@ -121,7 +123,7 @@
     - medium
 
 - name: ACCOUNTS | Print warning for groups in /etc/passwd that are not in /etc/group
-  debug:
+  ansible.builtin.debug:
     msg: >
       The following users have GIDs in /etc/passwd that do not exist in /etc/group:
       {{ user_list.users | selectattr('group', 'equalto', False) | map(attribute='name') | join(', ') }}
@@ -133,7 +135,7 @@
     - low
 
 - name: ACCOUNTS | Get all accounts with UID 0
-  command: |
+  ansible.builtin.command: |
     awk -F: '$3 == 0 {print $1}' /etc/passwd
   changed_when: False
   check_mode: False
@@ -143,7 +145,7 @@
     - high
 
 - name: ACCOUNTS | Print warnings for non-root users with UID 0
-  fail:
+  ansible.builtin.fail:
     msg: |
       Only the 'root' user should have UID 0. Other users were found:
       {{ root_user_check.stdout_lines | join(', ') }}"
@@ -154,7 +156,7 @@
     - high
 
 - name: ACCOUNTS | Print warning for local interactive users without a home directory assigned
-  debug:
+  ansible.builtin.debug:
     msg: |
       The following users do not have a home directory assigned:
       {{ user_list.users | selectattr('dir', 'equalto', '') | map(attribute='name') | join(', ') }}
@@ -166,7 +168,7 @@
     - medium
 
 - name: ACCOUNTS | Check each user to see if its home directory exists on the filesystem
-  stat:
+  ansible.builtin.stat:
     path: '{{ item["dir"] }}'
   when:
     - user_list is defined
@@ -179,7 +181,7 @@
     - medium
 
 - name: ACCOUNTS | Print warning for users with an assigned home directory that does not exist
-  debug:
+  ansible.builtin.debug:
     msg: |
       These users have a home directory assigned, but the directory does not exist:
       {% for check in home_directory_checks.results %}
@@ -195,7 +197,7 @@
     - medium
 
 - name: ACCOUNTS | Use pwquality when passwords are changed or created
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/pam.d/passwd
     line: "password required pam_pwquality.so retry=3"
     state: present

@@ -7,7 +7,7 @@
 
 - name: BROWSERS | Fasdf
   ansible.builtin.include_vars: ""
-  become: True
+  become: true
   block:
     - name: Import task firefox.yml
       ansible.builtin.import_tasks: firefox.yml

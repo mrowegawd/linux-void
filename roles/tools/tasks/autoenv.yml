@@ -1,6 +1,6 @@
 ---
 - name: AUTOENV | Register, check path home/user/.autoenv jika exists
-  become: True
+  become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.stat:
     path: "/home/{{ user_admin }}/.autoenv"
@@ -10,7 +10,7 @@
     - autoenv
 
 - name: AUTOENV | Install autoenv
-  become: True
+  become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.git:
     repo: "{{ item.repo }}"

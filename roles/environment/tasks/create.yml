@@ -10,31 +10,34 @@
 
 - name: USER | Get the username running the deploy
   become: False
-  local_action: command whoami
+  delegate_to: command whoami
   register: username_on_the_host
   changed_when: false
 
 - name: USER | Check current path /home/user if exists
-  stat:
+  ansible.builtin.stat:
     path: "/home/{{ username_on_the_host.stdout_lines[0] }}"
   register: check_user_home
   tags:
     - install
     - autoenv
 
-- block:
+- name: USER | Create step user
+  when:
+    - not check_user_home.stat.exists
+  block:
     - name: USER | Create admin group
-      group:
+      ansible.builtin.group:
         name: "{{ item }}"
         state: present
       with_items:
-        - "{{ [ _group_admin ] }}"
+        - "{{ [_group_admin] }}"
       tags:
         - install
         - groupadd
 
     - name: USER | Create admin user
-      user:
+      ansible.builtin.user:
         name: "{{ item.name }}"
         password: "{{ item.password }}"
         shell: "{{ item.shell }}"
@@ -53,18 +56,16 @@
         - useradd
 
     - name: USER | Check facts list home users
-      command: ls /home
+      ansible.builtin.command: ls /home
       register: user_create_dir_list_home
       changed_when: false
       tags:
         - always
 
     - name: USER | Hardening permission home users
-      file:
+      ansible.builtin.file:
         path: "/home/{{ item }}"
         mode: 0700
       with_items: "{{ user_create_dir_list_home.stdout_lines }}"
       tags:
         - medium
-
-  when: check_user_home.stat.exists != true

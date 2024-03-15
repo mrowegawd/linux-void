@@ -1,0 +1,39 @@
+---
+__dep_pkgs_asdf:
+  - dirmngr
+  - gpg
+  - curl
+  - gawk
+
+__dep_pkgs_asdf_python:
+  - build-essential
+  - git
+  - make
+  - g++
+  - gcc
+  - cmake
+  - make
+  - libssl-dev
+  - zlib1g-dev
+  - libbz2-dev
+  - libreadline-dev
+  - libsqlite3-dev
+  - llvm
+  - libncursesw5-dev
+  - xz-utils
+  - tk-dev
+  - libxml2-dev
+  - libxmlsec1-dev
+  - libffi-dev
+  - liblzma-dev
+  - curl
+  - wget
+
+__dep_nodejs_pkgs:
+  - gpg
+  - curl
+  - dirmngr
+  - gawk
+
+__dep_lua_pkgs:
+  - unzip

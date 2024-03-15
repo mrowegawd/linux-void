@@ -14,13 +14,13 @@
   when: item.pkg_install_with == "asdf"
 
 - name: TOOLSPROGRAM | Install tools via asdf
-  become: True
+  become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
     source ~/.asdf/asdf.sh && {{ pkg_install }}
   args:
     executable: /bin/bash
-  changed_when: False
+  changed_when: false
   loop: "{{ pkg_lists_to_install }}"
   loop_control:
     loop_var: pkg_install
@@ -28,13 +28,13 @@
   when: item.pkg_install_with == "asdf"
 
 - name: TOOLSPROGRAM | Reshim the plugin {{ item.pkg_name }}
-  become: True
+  become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
     source ~/.asdf/asdf.sh && asdf reshim {{ item.pkg_name }}
   args:
     executable: /bin/bash
-  changed_when: False
+  changed_when: false
   when:
     - item.pkg_install_with == "asdf"
     - pkg_asdf_installed is success

@@ -1,14 +1,18 @@
 ---
 - name: VIRTUALMANAGER | Include vars for specific os
-  include_vars: "{{ ansible_distribution | lower }}/main.yml"
+  ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
   tags:
     - always
 
-- become: True
+- name: VIRTUALMANAGER | Start install virtualmanager
+  become: true
   block:
-    - import_tasks: docker.yml
-    - import_tasks: docker_compose.yml
+    - name: Import task docker.yml
+      ansible.builtin.import_tasks: docker.yml
+    - name: Import task docker_compose.yml
+      ansible.builtin.import_tasks: docker_compose.yml
 
     # Alternative virualbox?
     # for test jangan di docker di vm saja
-    - import_tasks: qemu.yml
+    - name: Import task qemu.yml
+      ansible.builtin.import_tasks: qemu.yml

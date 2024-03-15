@@ -1,0 +1,42 @@
+---
+- name: SYSTEM-USER | Include vars for specific os
+  ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
+  tags:
+    - always
+
+- name: SYSTEM-USER | Import task accounts.yml
+  ansible.builtin.import_tasks: accounts.yml
+- name: SYSTEM-USER | Import task create.yml
+  ansible.builtin.import_tasks: create.yml
+- name: SYSTEM-USER | Import task visido.yml
+  ansible.builtin.import_tasks: visudo.yml
+# TODO: taruh ini nanti nya dimana
+# - name: User
+#   become: true
+#   block:
+#     - name: USERS | Check for .shosts or shosts.equiv files
+#       ansible.builtin.find:
+#         paths: /
+#         recurse: yes
+#         hidden: yes
+#         patterns: ".shosts,shosts.equiv"
+#       changed_when: False
+#       register: shosts_find
+#       async: 300
+#       poll: 0
+#       when:
+#         # - not check_mode | bool
+#         - _run_auth_security_remove_shosts_files | bool
+#       tags:
+#         - high
+#         - auth
+# - name: Importing task auth
+#   ansilbe.builtin.import_tasks: auth.yml
+# - name: Importing task folders
+#   ansilbe.builtin.import_tasks: folders.yml
+# - name: Importing task dotfiles
+#   ansilbe.builtin.import_tasks: dotfiles.yml
+# - name: Importing task dotfiles root
+#   ansilbe.builtin.import_tasks: dotfiles_root.yml
+# - name: Importing task lolcale
+#   ansilbe.builtin.import_tasks: locale.yml

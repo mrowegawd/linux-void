@@ -1,6 +1,6 @@
 ---
 - name: KVM AND QEMU | Install qemu and kvm system
-  include_role:
+  ansible.builtin.include_role:
     name: _0package
   vars:
     _apt_packages: "{{ __qemu_pkgs }}"

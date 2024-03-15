@@ -19,7 +19,7 @@
         - nvim
 
     - name: ALACRITTY | Install alacritty with cargo
-      become: True
+      become: true
       become_user: "{{ user_admin }}"
       changed_when: false
       ansible.builtin.shell: |
@@ -29,7 +29,7 @@
       register: installed_alacritty
 
     - name: ALACRITTY | Reshim rust after install alacritty
-      become: True
+      become: true
       become_user: "{{ user_admin }}"
       changed_when: false
       ansible.builtin.shell: |

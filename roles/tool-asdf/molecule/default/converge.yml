@@ -1,0 +1,10 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Before running set-variables"
+      ansible.builtin.include_role:
+        name: "set-variables"
+    - name: "Converge asdf"
+      ansible.builtin.include_role:
+        name: "tool-asdf"

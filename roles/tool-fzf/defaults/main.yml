@@ -1,0 +1,6 @@
+# vim: foldmethod=marker foldlevel=0
+---
+fzf_repo:
+  - name: ".fzf"
+    repo: "https://github.com/junegunn/fzf.git"
+    version: master
