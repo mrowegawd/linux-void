@@ -10,7 +10,7 @@
     name: "{{ item }}"
     state: present
   with_items:
-    - "{{ __dep_pkgs_asdf }}"
+    - "{{ __dep_asdf_pkgs }}"
   when: ansible_os_family | lower == 'debian'
   tags:
     - asdf
@@ -21,13 +21,13 @@
     name: "{{ packages }}"
     state: "{{ _apt_state }}"
   vars:
-    packages: "{{ __dep_pkgs_asdf }}"
+    packages: "{{ __dep_asdf_pkgs }}"
     state: '{{ _apt_state | default("present") }}'
   when: ansible_os_family | lower == 'redhat'
   tags:
     - asdf
 
-- name: ASDF | clone asdf
+- name: ASDF | Clone asdf
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.git:
@@ -38,83 +38,32 @@
     - install
     - asdf
 
-- name: ASDF | import task go.yml
+- name: ASDF | Import task go.yml
   ansible.builtin.import_tasks: go.yml
   tags:
     - asdf
     - go
 
-- name: ASDF | import task rust.yml
+- name: ASDF | Import task rust.yml
   ansible.builtin.import_tasks: rust.yml
   tags:
     - asdf
     - rust
-# - name: ASDF | Install spesific language
-#   tags:
-#     - asdf
-#   block:
-#     - name: ASDF | Check plugin-list if spesific our lang is exists
-#       become: true
-#       become_user: "{{ user_admin }}"
-#       ansible.builtin.shell: |
-#         source ~/.asdf/asdf.sh && asdf plugin-list
-#       args:
-#         executable: /bin/bash
-#       register: check_asdf_plugin_lists
-#       changed_when: false
-#       failed_when: false
-#       ignore_errors: true
-#       # when: item.lang_version not in check_lang_version_result
-#
-#     - name: TMUX | Debug tmux_current_version!
-#       ansible.builtin.debug:
-#         msg: "{{ check_asdf_plugin_lists }}"
-#       # with_items: "{{ install_prolangs }}"
-#
-#     # - name: ASDF | Install plugin programming language
-#     #   become: true
-#     #   become_user: "{{ user_admin }}"
-#     #   ansible.builtin.shell: |
-#     #     source ~/.asdf/asdf.sh && {{ item.lang_plugin_install }}
-#     #   args:
-#     #     executable: /bin/bash
-#     #   changed_when: false
-#     #   when:
-#     #     - item.lang_version not in check_lang_version_result
-#     #     - item.lang_plugin_asdf_name not in check_asdf_plugin_lists.stdout
-#     #
-#     # - name: ASDF | Ensure dependencies prog lang are managed | Debian
-#     #   become: true
-#     #   ansible.builtin.apt:
-#     #     name: "{{ item }}"
-#     #     state: present
-#     #   with_items:
-#     #     - "{{ item.lang_deps }}"
-#     #   when: ansible_os_family | lower == 'debian'
-#     #   tags:
-#     #     - asdf
-#     #
-#     # - name: ASDF | Ensure dependencies prog lang are managed | Redhat
-#     #   become: true
-#     #   ansible.builtin.yum:
-#     #     name: "{{ packages }}"
-#     #     state: "{{ _apt_state }}"
-#     #   vars:
-#     #     packages: "{{ __dep_pkgs_asdf }}"
-#     #     state: '{{ _apt_state | default("present") }}'
-#     #   when: ansible_os_family | lower == 'redhat'
-#     #   tags:
-#     #     - asdf
-#
-#     # - name: Install programming language and check version if exists
-#     #   become: true
-#     #   become_user: "{{ user_admin }}"
-#     #   ansible.builtin.shell: |
-#     #     set -o pipefail;
-#     #     source ~/.asdf/asdf.sh && {{ item.lang_cmd_check_version }}
-#     #   args:
-#     #     warn: no
-#     #     executable: /bin/bash
-#     #   changed_when: false
-#     #   register: proglang_version_checked
-#     #   ignore_errors: true
+
+- name: ASDF | Import task nodejs.yml
+  ansible.builtin.import_tasks: nodejs.yml
+  tags:
+    - asdf
+    - nodejs
+
+- name: ASDF | Import task ruby.yml
+  ansible.builtin.import_tasks: ruby.yml
+  tags:
+    - asdf
+    - ruby
+
+- name: ASDF | Import task python.yml
+  ansible.builtin.import_tasks: python.yml
+  tags:
+    - asdf
+    - python

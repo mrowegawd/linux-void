@@ -1,0 +1,22 @@
+---
+__rofi_deps:
+  - gcc
+  - flex
+  - bison
+  - pkg-config
+  - libxkbcommon-x11-dev
+  - libglib2.0-0
+  - libxcb-util1
+  - libxcb-ewmh2
+  - libxcb-ewmh-dev
+  - libxcb-icccm4
+  - libxcb-icccm4-dev
+  - libxcb-xrm-dev
+  - libxcb-randr0-dev
+  - libxcb-xinerama0-dev
+  - libpangocairo-1.0-0
+  - libpango1.0-dev
+  - libstartup-notification0-dev
+  - librsvg2-dev
+  - automake
+  - libxcb-cursor-dev

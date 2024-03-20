@@ -3,7 +3,7 @@
   gather_facts: "true"
   hosts: localhost
   roles:
-    # - _init
+    - set-variables
     # - environment
     # - system
     # # - browsers
@@ -11,5 +11,9 @@
     # - virtualmanager
     # - windowmanager
     # - tools
+    - tool-asdf
     - tool-fzf
     - tool-tmux
+
+    # Window Manager
+    - wm-rofi

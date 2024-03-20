@@ -1,38 +1,60 @@
 ---
+- name: ROFI | Include vars for specific os
+  ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
+  tags:
+    - always
+    - rofi
+
 - name: ROFI | Check rofi installed version
   ansible.builtin.shell: |
     set -o pipefail;
     if command -v rofi &> /dev/null;
     then rofi -V | cut -d":" -f2 | cut -d" " -f2 |xargs ; else echo "not found"; fi
   args:
-    warn: no
     executable: /bin/bash
   changed_when: false
   register: check_rofi_version
   tags:
     - always
+    - rofi
 
 - name: ROFI | Install rofi when conditional are defined
   become: true
   when: rofi_version not in check_rofi_version.stdout or check_rofi_version.stdout.find('not found') != -1
   block:
+    - name: ROFI | Ensure tmp dir to hold any temporary files for rofi
+      ansible.builtin.tempfile:
+        state: directory
+        suffix: build
+      register: temp_dir_rofi
+      changed_when: false
+
+    # - name: ROFI | Debug temp_dir_rofi!
+    #   ansible.builtin.debug:
+    #     msg: "{{ temp_dir_rofi }}"
+
+    # - name: Try to pause
+    #   ansible.builtin.pause:
+    #     seconds: 10
+
     - name: ROFI | Ensure rofi folder temp exists
       ansible.builtin.file:
         path: "{{ item }}"
         mode: 0755
         state: directory
       with_items:
-        - "{{ temp_dir }}/rofi"
-        - "{{ temp_dir }}/check"
+        - "{{ temp_dir_rofi.path }}/rofi"
+        - "{{ temp_dir_rofi.path }}/check"
       tags:
         - install
         - rofi
 
-    - name: ROFI | Install build dependencies for rofi
-      ansible.builtin.include_role:
-        name: _0package
-      vars:
-        _apt_packages: "{{ __rofi_deps }}"
+    - name: ROFI | Ensure apt packages are managed | Debian
+      become: true
+      ansible.builtin.apt:
+        name: "{{ __rofi_deps }}"
+        state: present
+      when: ansible_os_family | lower == 'debian'
       tags:
         - install
         - rofi

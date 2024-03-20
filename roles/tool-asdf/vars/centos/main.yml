@@ -1,11 +1,12 @@
 ---
-__dep_pkgs_asdf:
+__dep_asdf_pkgs:
   - gnupg2
   - curl
   - gawk
 
-#>python.yml ==================================================================
-__dep_pkgs_asdf_python:
+__dep_python2_pkgs: []
+
+__dep_python3_pkgs:
   - "@Development Tools"
   - gcc
   - zlib-devel
@@ -21,7 +22,20 @@ __dep_pkgs_asdf_python:
   - curl
   - wget
 
-#>nodejs.yml ==================================================================
 __dep_nodejs_pkgs:
   - gpg
   - curl
+
+__dep_ruby_pkgs:
+  - autoconf
+  - gcc-6
+  - patch
+  - bzip2
+  - openssl-devel
+  - libyaml-devel
+  - libffi-devel
+  - readline-devel
+  - zlib-devel
+  - gdbm-devel
+  - ncurses-devel
+  - tar

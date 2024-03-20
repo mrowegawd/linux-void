@@ -2,7 +2,6 @@
 #
 ## Link: https://github.com/tmux/tmux
 #
-
 - name: TMUX | Include vars for specific os
   ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
   tags:
@@ -32,7 +31,7 @@
   when:
     - tmux_current_version.results.0.stdout.find(tmux_version) == -1
   block:
-    - name: INIT | Ensure tmp dir to hold any temporary files for tmux
+    - name: TMUX | Ensure tmp dir to hold any temporary files for tmux
       ansible.builtin.tempfile:
         state: directory
         suffix: build

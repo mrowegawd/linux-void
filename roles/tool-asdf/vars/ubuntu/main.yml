@@ -1,12 +1,13 @@
 ---
-__dep_pkgs_asdf:
+__dep_asdf_pkgs:
   - dirmngr
   - gpg
   - curl
   - gawk
 
-#>python.yml ==================================================================
-__dep_pkgs_asdf_python:
+__dep_python2_pkgs: []
+
+__dep_python3_pkgs:
   - build-essential
   - git
   - make
@@ -30,13 +31,27 @@ __dep_pkgs_asdf_python:
   - curl
   - wget
 
-#>nodejs.yml ==================================================================
 __dep_nodejs_pkgs:
   - gpg
   - curl
   - dirmngr
   - gawk
 
-#>lua.yml =====================================================================
 __dep_lua_pkgs:
   - unzip
+
+__dep_ruby_pkgs:
+  - autoconf
+  - patch
+  - build-essential
+  - libssl-dev
+  - libyaml-dev
+  - libreadline6-dev
+  - zlib1g-dev
+  - libgmp-dev
+  - libncurses5-dev
+  - libffi-dev
+  - libgdbm6
+  - libgdbm-dev
+  - libdb-dev
+  - uuid-dev

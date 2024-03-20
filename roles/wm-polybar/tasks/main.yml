@@ -1,6 +1,12 @@
-# polybar
+---
+- name: POLYBAR | Include vars for specific os
+  ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
+  tags:
+    - always
+    - polybar
+
 - name: POLYBAR | Check polybar installed version
-  shell: >
+  ansible.builtin.shell: >
     set -o pipefail;
     if command -v polybar &> /dev/null;
     then polybar --version | cut -d" " -f2 | head -1 ; else echo "not found"; fi
@@ -12,28 +18,33 @@
   tags:
     - always
 
-- become: true
+- name: POLYBAR | Set install polybar
+  become: true
+  when: polybar_version not in check_polybar_version.stdout or check_polybar_version.stdout.find('not found') != -1
   block:
-    - name: POLYBAR | Install polybar deps
-      include_role:
-        name: _0package
-      vars:
-        _apt_packages: "{{ __polybar_deps }}"
-      tags:
-        - install
-        - polybar
-
-    - name: POLYBAR | Ensure polybar folder temp exists
-      file:
-        path: "{{ temp_dir }}/polybar"
-        state: directory
-      tags:
-        - install
-        - polybar
-
-    - name: POLYBAR | Download polybar-{{ polybar_version }}.tar.gz
+    - name: POLYBAR | Ensure apt packages are managed | Debian
       become: true
-      get_url:
+      ansible.builtin.apt:
+        name: "{{ __polybar_deps }}"
+        state: present
+      when: ansible_os_family | lower == 'debian'
+      tags:
+        - install
+        - polybar
+
+    - name: POLYBAR | Ensure tmp dir to hold any temporary files for polybar
+      ansible.builtin.tempfile:
+        state: directory
+        suffix: build
+      register: temp_dir_polybar
+      changed_when: false
+      tags:
+        - install
+        - polybar
+
+    - name: POLYBAR | Download polybar version
+      become: true
+      ansible.builtin.get_url:
         url: "{{ item.url }}"
         dest: "{{ item.dest }}"
         mode: 0755
@@ -48,26 +59,28 @@
         - install
         - polybar
 
-    - name: POLYBAR | Extract polybar-{{ polybar_version }}.tar.gz
-      unarchive:
+    - name: POLYBAR | Extract polybar tar.gz
+      ansible.builtin.unarchive:
         src: "{{ item.dest }}/{{ item.name }}.tar.gz"
         dest: "{{ item.dest }}"
         copy: no # with no will not copy or will deleted
       with_items: "{{ polybar_download }}"
+      tags:
+        - install
+        - polybar
 
     - name: POLYBAR | Install polybar
-      shell: |
+      ansible.builtin.shell: |
         mkdir build
         cd build
         cmake ..
         make -j$(nproc)
         sudo make install
       args:
-        warn: no
         chdir: "{{ item.dest }}/{{ item.name }}"
         executable: /bin/bash
+      changed_when: false
       with_items: "{{ polybar_download }}"
       tags:
         - install
         - polybar
-  when: polybar_version not in check_polybar_version.stdout or check_polybar_version.stdout.find('not found') != -1
