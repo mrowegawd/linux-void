@@ -1,0 +1,6 @@
+---
+dunst_version: "1.10.0"
+dunst_download:
+  - url: "https://github.com/dunst-project/dunst/archive/refs/tags/v{{ dunst_version }}.tar.gz"
+    dest: "{{ temp_dir_dunst.path }}"
+    name: "dunst-{{ dunst_version }}"

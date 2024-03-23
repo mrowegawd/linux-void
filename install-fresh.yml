@@ -17,3 +17,5 @@
 
     # Window Manager
     - wm-rofi
+    - wm-polybar
+    - wm-dunst

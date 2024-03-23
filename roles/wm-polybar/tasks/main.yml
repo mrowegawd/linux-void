@@ -11,7 +11,6 @@
     if command -v polybar &> /dev/null;
     then polybar --version | cut -d" " -f2 | head -1 ; else echo "not found"; fi
   args:
-    warn: no
     executable: /bin/bash
   changed_when: false
   register: check_polybar_version
@@ -36,11 +35,15 @@
       ansible.builtin.tempfile:
         state: directory
         suffix: build
-      register: temp_dir_polybar
+      register: temp_dir_dunst
       changed_when: false
       tags:
         - install
         - polybar
+
+    # - name: POLYBAR | Debug temp_dir_polybar!
+    #   ansible.builtin.debug:
+    #     msg: "{{ temp_dir_polybar }}"
 
     - name: POLYBAR | Download polybar version
       become: true

@@ -1,0 +1,121 @@
+---
+- name: BSPWM | Check bspwm installed version
+  ansible.builtin.shell: >
+    if command -v bspwm &> /dev/null;
+    then bspwm -version; else echo "not found"; fi
+  args:
+    executable: /bin/bash
+  changed_when: false
+  register: check_bspwm_version
+  tags:
+    - always
+    - bspwm
+
+# - name: Test debug
+#   debug:
+#     msg: "{{ check_bspwm_version.stdout.find(bspwm_version) }}"
+#   when: bspwm_version not in check_bspwm_version.stdout or check_bspwm_version.stdout.find('not found') != -1
+
+# - name: Test Pause
+#   pause:
+#     seconds: 10
+
+- name: BSPWM | Start install bspwm
+  become: true
+  when: bspwm_version not in check_bspwm_version.stdout or check_bspwm_version.stdout.find('not found') != -1
+  block:
+    - name: BSPWM | Ensure apt packages are managed | Debian
+      become: true
+      ansible.builtin.apt:
+        name: "{{ __bspwm_deps }}"
+        state: present
+      when: ansible_os_family | lower == 'debian'
+      tags:
+        - install
+        - bspwm
+
+    - name: BSPWM | Ensure tmp dir to hold any temporary files for bspwm
+      ansible.builtin.tempfile:
+        state: directory
+        suffix: build
+      register: temp_dir_bspwm
+      changed_when: false
+      tags:
+        - install
+        - bspwm
+
+    - name: BSPWM | Ensure folders bspwm are exists
+      ansible.builtin.file:
+        path: "{{ temp_dir_bspwm.path }}/{{ item }}"
+        state: directory
+        mode: 0700
+      with_items:
+        - bspwm
+        - sxhkd
+        - sutils
+        - xtitle
+        - xdo
+      tags:
+        - install
+        - bspwm
+
+    - name: BSPWM | Clone bspwm from github
+      ansible.builtin.git:
+        repo: "{{ item.repo }}"
+        dest: "{{ item.dest }}"
+        clone: yes
+        version: master
+        update: no
+        force: yes
+        recursive: false
+      retries: 3
+      delay: 3
+      register: bspwmdlgit
+      until: bspwmdlgit is success
+      with_items:
+        - "{{ bspwm_git }}"
+      tags:
+        - install
+        - bspwm
+
+    - name: BSPWM | Install bspwm
+      ansible.builtin.shell: |
+        make
+        make install
+      args:
+        executable: /bin/bash
+        chdir: "{{ temp_dir }}/{{ item }}"
+      changed_when: false
+      with_items:
+        - bspwm
+        - sxhkd
+        - sutils
+        - xtitle
+        - xdo
+      tags:
+        - install
+        - bspwm
+
+    - name: BSPWM | Copy bspwm-session to /usr/bin
+      ansible.builtin.shell: |
+        cp contrib/freedesktop/bspwm.desktop /usr/share/xsessions
+      args:
+        executable: /bin/bash
+        chdir: "{{ temp_dir }}/{{ item }}"
+      changed_when: false
+      with_items:
+        - bspwm
+        # - xdo
+      tags:
+        - install
+        - bspwm
+
+    - name: BSPWM | Ensure file executable bspwmrc perm 0755
+      ansible.builtin.file:
+        path: "/home/{{ user_admin }}/.config/bspwm/bspwmrc"
+        owner: "{{ user_admin }}"
+        group: "{{ user_admin }}"
+        mode: 0755
+      tags:
+        - install
+        - bspwm

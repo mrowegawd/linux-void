@@ -5,6 +5,6 @@
     - name: "Before running set-variables"
       ansible.builtin.include_role:
         name: "set-variables"
-    - name: "Converge polybar"
+    - name: "Converge dunst"
       ansible.builtin.include_role:
-        name: "wm-polybar"
+        name: "wm-dunst"

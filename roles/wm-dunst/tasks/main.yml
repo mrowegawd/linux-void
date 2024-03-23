@@ -1,15 +1,21 @@
 ---
+- name: DUNST | Include vars for specific os
+  ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
+  tags:
+    - always
+    - dunst
+
 - name: DUNST | Check dunst installed version
-  shell: >
+  ansible.builtin.shell: >
     if command -v dunst &> /dev/null;
     then dunst --version; else echo "not found"; fi
   args:
-    warn: no
     executable: /bin/bash
   changed_when: false
   register: check_dunst_version
   tags:
     - always
+    - dunst
 
 # - name: Test debug
 #   debug:
@@ -20,38 +26,40 @@
 #   pause:
 #     seconds: 10
 
-- become: true
+- name: DUNST
+  become: true
+  when: dunst_version not in check_dunst_version.stdout or check_dunst_version.stdout.find('not found') != -1
   block:
     - name: DUNST | Remove old dunst
-      apt:
+      ansible.builtin.apt:
         name: dunst
         state: absent
       tags:
         - install
         - dunst
 
-    - name: DUNST | Install dependencies dunst
-      include_role:
-        name: _0package
-      vars:
-        _apt_packages: "{{ __dunst_deps }}"
+    - name: DUNST | Ensure apt packages are managed | Debian
+      become: true
+      ansible.builtin.apt:
+        name: "{{ __dunst_deps }}"
+        state: present
+      when: ansible_os_family | lower == 'debian'
       tags:
         - install
         - dunst
 
-    - name: DUNST | Ensure path {{ temp_dir }}/dunst are exists
-      file:
-        path: "{{ temp_dir }}/{{ item }}"
+    - name: DUNST | Ensure tmp dir to hold any temporary files for dunst
+      ansible.builtin.tempfile:
         state: directory
-        mode: "0755"
-      with_items:
-        - dunst
+        suffix: build
+      register: temp_dir_dunst
+      changed_when: false
       tags:
         - install
         - dunst
 
-    - name: DUNST | Download dunst-{{ dunst_version }}.tar.gz
-      get_url:
+    - name: DUNST | Download dunst tar .gz
+      ansible.builtin.get_url:
         url: "{{ item.url }}"
         dest: "{{ item.dest }}"
         mode: 0755
@@ -68,21 +76,24 @@
         - install
         - dunst
 
-    - name: DUNST | Extract dunst-{{ dunst_version }}.tar.gz
-      unarchive:
+    - name: DUNST | Extract dunst tar .gz
+      ansible.builtin.unarchive:
         src: "{{ item.dest }}/{{ item.name }}.tar.gz"
         dest: "{{ item.dest }}"
         copy: no # with no will not copy or will deleted
       with_items: "{{ dunst_download }}"
+      tags:
+        - install
+        - dunst
 
     - name: DUNST | Install dunst
-      shell: |
+      ansible.builtin.shell: |
         make && sudo make install
       args:
         chdir: "{{ item.dest }}/{{ item.name }}"
+      changed_when: false
       with_items:
         - "{{ dunst_download }}"
       tags:
         - install
-        - tmux
-  when: dunst_version not in check_dunst_version.stdout or check_dunst_version.stdout.find('not found') != -1
+        - dunst

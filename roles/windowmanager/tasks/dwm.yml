@@ -1,8 +1,9 @@
 ---
-- become: true
+- name: Install dwm
+  become: true
   block:
     - name: DWM | Ensure dwm dependencies installed
-      include_role:
+      ansible.builtin.include_role:
         name: _0package
       vars:
         _apt_packages: "{{ __dwm_deps }}"
@@ -10,10 +11,11 @@
         - install
         - dwm
 
-    - name: DWM | Ensure file dwm {{ temp_dir }} exists
-      file:
+    - name: DWM | Ensure file dwm temp_dir exists
+      ansible.builtin.file:
         path: "{{ temp_dir }}/{{ item }}"
         state: directory
+        mode: "700"
       with_items:
         - dwm
       tags:
@@ -21,7 +23,7 @@
         - dwm
 
     - name: DWM | Clone dwm from github
-      git:
+      ansible.builtin.git:
         repo: "{{ item.repo }}"
         dest: "{{ item.dest }}"
         clone: yes
@@ -39,11 +41,12 @@
         - dwm
 
     - name: DWM | Install dwm
-      shell: |
+      ansible.builtin.shell: |
         make && make install
       args:
         executable: /bin/bash
         chdir: "{{ temp_dir }}/{{ item }}"
+      changed_when: false,
       with_items:
         - dwm
       tags:
