@@ -5,6 +5,8 @@
     update_cache: yes
     cache_valid_time: 3600
   when: ansible_os_family | lower == 'debian'
+  tags:
+    - always
 
 - name: SETVARS PKGS | Ensure apt packages are managed | Debian
   become: true
@@ -14,6 +16,8 @@
   with_items:
     - "{{ __tools_base_pkg }}"
   when: ansible_os_family | lower == 'debian'
+  tags:
+    - always
 
 - name: SETVARS PKGS | Ensure yum packages are managed | Redhat
   become: true
@@ -24,3 +28,5 @@
     packages: "{{ __tools_base_pkg }}"
     state: '{{ _apt_state | default("present") }}'
   when: ansible_os_family | lower == 'redhat'
+  tags:
+    - always

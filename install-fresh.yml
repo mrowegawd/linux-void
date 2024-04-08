@@ -10,7 +10,8 @@
     # - prolang
     # - virtualmanager
     # - windowmanager
-    # - tools
+
+    # Tools
     - tool-asdf
     - tool-fzf
     - tool-tmux
@@ -18,4 +19,5 @@
     # Window Manager
     - wm-rofi
     - wm-polybar
+    - wm-eww # (alternative polybar)
     - wm-dunst

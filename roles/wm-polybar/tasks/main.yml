@@ -2,7 +2,6 @@
 - name: POLYBAR | Include vars for specific os
   ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
   tags:
-    - always
     - polybar
 
 - name: POLYBAR | Check polybar installed version
@@ -15,10 +14,12 @@
   changed_when: false
   register: check_polybar_version
   tags:
-    - always
+    - polybar
 
 - name: POLYBAR | Set install polybar
   become: true
+  tags:
+    - polybar
   when: polybar_version not in check_polybar_version.stdout or check_polybar_version.stdout.find('not found') != -1
   block:
     - name: POLYBAR | Ensure apt packages are managed | Debian

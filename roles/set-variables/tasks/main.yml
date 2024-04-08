@@ -6,8 +6,12 @@
 
 - name: SETVARS | Import task setvars.yml
   ansible.builtin.import_tasks: setvars.yml
+  tags:
+    - always
 
 - name: SETVARS | Install base packaje.yml
   ansible.builtin.import_tasks: pkgs.yml
+  tags:
+    - always
 # - name: Tools | Import task misc.yml
 #   ansible.builtin.import_tasks: misc.yml

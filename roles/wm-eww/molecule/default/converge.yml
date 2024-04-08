@@ -1,0 +1,13 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Before running set-variables"
+      ansible.builtin.include_role:
+        name: "set-variables"
+    - name: "Before running eww, eww needs rustup as dependencies"
+      ansible.builtin.include_role:
+        name: "tool-asdf"
+    - name: "Converge install wm-eww"
+      ansible.builtin.include_role:
+        name: "wm-eww"

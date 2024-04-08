@@ -2,7 +2,6 @@
 - name: ROFI | Include vars for specific os
   ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
   tags:
-    - always
     - rofi
 
 - name: ROFI | Check rofi installed version
@@ -15,11 +14,12 @@
   changed_when: false
   register: check_rofi_version
   tags:
-    - always
     - rofi
 
 - name: ROFI | Install rofi when conditional are defined
   become: true
+  tags:
+    - rofi
   when: rofi_version not in check_rofi_version.stdout or check_rofi_version.stdout.find('not found') != -1
   block:
     - name: ROFI | Ensure tmp dir to hold any temporary files for rofi

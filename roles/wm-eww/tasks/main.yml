@@ -1,0 +1,113 @@
+---
+#
+## Link: https://elkowar.github.io/eww
+#
+- name: EWW | Include vars for specific os
+  ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
+  tags:
+    - eww
+
+- name: EWW | Make sure path asdf are exists
+  become: true
+  become_user: "{{ user_admin }}"
+  ansible.builtin.stat:
+    path: "/home/{{ user_admin }}/.asdf"
+  register: eww_is_asdf_exists
+  tags:
+    - eww
+
+- name: EWW | Eww need rustup installed, so make sure it exists
+  become: true
+  become_user: "{{ user_admin }}"
+  ansible.builtin.shell: |
+    source ~/.asdf/asdf.sh &&
+    bash -c 'if command -v rustup &> /dev/null;
+    then rustup -V; else echo "not found"; fi'
+  args:
+    executable: /bin/bash
+  changed_when: false
+  register: eww_current_version
+  when: eww_is_asdf_exists.stat.exists
+  tags:
+    - eww
+
+# - name: EWW | Debug eww_current_version!
+#   ansible.builtin.debug:
+#     msg: "{{ eww_current_version.stdout.find('not found') == -1 }}"
+#   tags:
+#     - eww
+
+- name: EWW | Setup eww
+  tags:
+    - eww
+  when:
+    - eww_current_version.stdout.find('not found') == -1
+  block:
+    - name: EWW | Ensure apt dependencies eww are managed | Debian
+      become: true
+      ansible.builtin.apt:
+        name: "{{ __eww_deps }}"
+        state: present
+      when: ansible_os_family | lower == 'debian'
+      tags:
+        - eww
+
+    - name: EWW | Ensure apt dependencies eww are managed | Redhat
+      become: true
+      ansible.builtin.yum:
+        name: "{{ packages }}"
+        state: "{{ _apt_state }}"
+      vars:
+        packages: "{{ __eww_deps }}"
+        state: '{{ _apt_state | default("present") }}'
+      when: ansible_os_family | lower == 'redhat'
+      tags:
+        - eww
+
+    - name: EWW | Ensure ~/.local/src/eww are exists
+      become: true
+      become_user: "{{ user_admin }}"
+      ansible.builtin.file:
+        path: "{{ dest_eww }}"
+        state: directory
+        mode: "0755"
+      tags:
+        - eww
+
+    - name: EWW | Clone eww from github, so we can install with rustup
+      ansible.builtin.git:
+        repo: "{{ item.repo }}"
+        dest: "{{ item.dest }}"
+        clone: yes
+        version: master
+        update: no
+        force: yes
+        recursive: false
+      retries: 3
+      delay: 3
+      register: ewwdlgit
+      until: ewwdlgit is success
+      with_items:
+        - "{{ eww_git }}"
+      tags:
+        - eww
+
+    # - name: EWW | Debug eww_current_version!
+    #   ansible.builtin.debug:
+    #     msg: "yes"
+    #   tags:
+    #     - eww
+
+    - name: EWW | Install eww
+      become: true
+      become_user: "{{ user_admin }}"
+      ansible.builtin.shell: |
+        source ~/.asdf/asdf.sh &&
+        cargo build --release --no-default-features --features x11
+      args:
+        executable: /bin/bash
+        chdir: "{{ dest_eww }}"
+      changed_when: false
+      when: ewwdlgit is success
+      tags:
+        - eww
