@@ -1,0 +1,35 @@
+---
+__picom_deps:
+  - gcc
+  - libconfig-dev
+  - libdbus-1-dev
+  - libegl-dev
+  - libepoxy-dev
+  - libev-dev
+  - libgl-dev
+  - libpcre2-dev
+  - libpcre3-dev
+  - libpixman-1-dev
+  - libx11-xcb-dev
+  - libxcb-composite0-dev
+  - libxcb-damage0-dev
+  - libxcb-dpms0-dev
+  - libxcb-glx0-dev
+  - libxcb-image0-dev
+  - libxcb-present-dev
+  - libxcb-randr0-dev
+  - libxcb-render-util0-dev
+  - libxcb-render0-dev
+  - libxcb-shape0-dev
+  - libxcb-util-dev
+  - libxcb-xfixes0-dev
+  - libxcb-xinerama0-dev
+  - libxcb1-dev
+  - libxext-dev
+  - libxinerama-dev
+  - libxinerama1
+  - make
+  - meson
+  - ninja-build
+  - pkg-config
+  - uthash-dev

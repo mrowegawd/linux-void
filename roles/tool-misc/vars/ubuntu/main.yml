@@ -1,0 +1,11 @@
+---
+__deps_pamixer:
+  - cmake
+  - g++
+  - gcc
+  - libpulse-dev
+  - make
+  - meson
+  - ninja-build
+  - pkg-config
+  - uthash-dev

@@ -1,0 +1,13 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Before running set-variables"
+      ansible.builtin.include_role:
+        name: "set-variables"
+    # - name: "Before running tool-misc, we need some package language dependencies"
+    #   ansible.builtin.include_role:
+    #     name: "tool-asdf"
+    - name: "Converge tool misc"
+      ansible.builtin.include_role:
+        name: "tool-misc"
