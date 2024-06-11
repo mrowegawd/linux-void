@@ -1,0 +1,30 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Orchestrations: Run All Tail Task",
+      "type": "shell",
+      "dependsOn": ["Tail lsp.log", "Tail nvim log", "Tail noice.log"]
+    },
+    {
+      "label": "Tail lsp.log",
+      "type": "shell",
+      "command": "tail",
+      "args": ["-f", "$HOME/.local/state/nvim/lsp.log"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Tail nvim log",
+      "type": "shell",
+      "command": "tail",
+      "args": ["-f", "$HOME/.local/state/nvim/log"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Tail noice.log",
+      "type": "shell",
+      "command": "lazydocker",
+      "problemMatcher": []
+    }
+  ]
+}
