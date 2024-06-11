@@ -2,12 +2,13 @@
 
 > (Always on WIP )
 
-To run:
+## How to usage
 
 ```bash
 ./install.sh
-
 # or
-
 ansible-playbook install-fresh.yml --ask-become-pass
+
+# or install specific role
+ansible-playbook install-fresh.yml --ask-become-pass --tag "eww"
 ```
