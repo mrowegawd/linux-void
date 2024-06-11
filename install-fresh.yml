@@ -6,7 +6,7 @@
     - set-variables
     # - environment
     # - system
-    # # - browsers
+    # - browsers
     # - prolang
     # - virtualmanager
     # - windowmanager
@@ -15,9 +15,12 @@
     - tool-asdf
     - tool-fzf
     - tool-tmux
+    - tool-misc
 
     # Window Manager
     - wm-rofi
     - wm-polybar
-    - wm-eww # (alternative polybar)
+    #- wm-eww # (eww dont like this!)
+    #- wm-ags # (alternative polybar and eww but hard to install on docker lols)
     - wm-dunst
+    - wm-picom

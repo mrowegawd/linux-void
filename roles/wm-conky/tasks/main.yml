@@ -1,0 +1,108 @@
+---
+- name: CONKY | Include vars for specific os
+  ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
+  tags:
+    - conky
+
+- name: CONKY | Check conky installed version
+  ansible.builtin.shell: |
+    set -o pipefail;
+    if command -v conky &> /dev/null;
+    then conky --version | cut -d":" -f2 | cut -d" " -f2 |xargs ; else echo "not found"; fi
+  args:
+    executable: /bin/bash
+  changed_when: false
+  register: check_conky_version
+  tags:
+    - conky
+
+# - name: CONKY | Debug check_conky_version
+#   ansible.builtin.debug:
+#     msg: "{{ check_conky_version }}"
+#   when: conky_version not in check_conky_version.stdout or check_conky_version.stdout.find('not found') != -1
+
+- name: CONKY | Install conky when conditional are defined
+  become: true
+  tags:
+    - conky
+  when: conky_version not in check_conky_version.stdout or check_conky_version.stdout.find('not found') != -1
+  block:
+    - name: CONKY | Ensure tmp dir to hold any temporary files for conky
+      ansible.builtin.tempfile:
+        state: directory
+        suffix: build
+      register: temp_dir_conky
+      changed_when: false
+
+    - name: CONKY | Ensure conky folder temp exists
+      ansible.builtin.file:
+        path: "{{ item }}"
+        mode: 0755
+        state: directory
+      with_items:
+        - "{{ temp_dir_conky.path }}/conky"
+      tags:
+        - install
+        - conky
+
+    - name: CONKY | Ensure apt packages are managed | Debian
+      become: true
+      ansible.builtin.apt:
+        name: "{{ __conky_deps }}"
+        state: present
+      when: ansible_os_family | lower == 'debian'
+      tags:
+        - install
+        - conky
+
+    - name: CONKY | Clone conky from github
+      ansible.builtin.git:
+        repo: "{{ item.repo }}"
+        dest: "{{ item.dest }}"
+        clone: yes
+        version: master
+        update: no
+        force: yes
+        recursive: false
+      retries: 3
+      delay: 3
+      register: jobconkydownload
+      until: jobconkydownload is succeeded
+      with_items: "{{ conky_download }}"
+      tags:
+        - install
+        - conky
+
+    - name: CONKY | Ensure folder build are exists
+      ansible.builtin.file:
+        path: "{{ item.dest }}/build"
+        mode: 0755
+        state: directory
+      with_items: "{{ conky_download }}"
+      tags:
+        - install
+        - conky
+
+    - name: CONKY | Install conky
+      ansible.builtin.shell: |
+        cd build
+        cmake ../
+        sudo make install # if you want
+      args:
+        chdir: "{{ item.dest }}"
+        executable: /bin/bash
+      changed_when: false
+      with_items: "{{ conky_download }}"
+      tags:
+        - install
+        - conky
+
+    # Cara install conky tanpa `build from source` (the easy way)
+    # - name: CONKY | Insall conky
+    #   become: true
+    #   ansible.builtin.apt:
+    #     name: "conky-all"
+    #     state: present
+    #   tags:
+    #     - install
+    #     - conky

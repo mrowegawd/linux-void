@@ -1,0 +1,8 @@
+---
+# version di gihtub ditulis `v1.21.3`,
+# tapi disini harus di tulis `1.21.3`
+conky_version: 1.21.4
+conky_download:
+  - repo: "https://github.com/brndnmtthws/conky.git"
+    dest: "{{ temp_dir_conky.path }}/conky"
+    name: "conky-{{ conky_version }}"
