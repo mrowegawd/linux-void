@@ -1,29 +1,8 @@
 ---
-# defaults file for prolang
+# lua_version: "{{ _install_programming.lua.lua_version }}"
 
-python3_version: "{{ _install_programming.python3.python3_version }}"
-python2_version: "{{ _install_programming.python3.python2_version }}"
-
-rust_version: "{{ _install_programming.rust.rust_version }}"
-nodejs_version: "{{ _install_programming.nodejs.nodejs_version }}"
-ruby_version: "{{ _install_programming.ruby.ruby_version }}"
 go_version: "{{ _install_programming.golang.golang_version }}"
-lua_version: "{{ _install_programming.lua.lua_version }}"
 
-# install_prolangs:
-# - lang_name: "lua"
-#   lang_deps: "{{ __dep_lua_pkgs }}"
-#   lang_version: "{{ lua_version }}"
-#   lang_plugin_asdf_name: "lua"
-#   lang_plugin_install: |
-#     asdf plugin-add lua https://github.com/Stratus3D/asdf-lua.git
-#   lang_cmd_check_version: |
-#     if command -v lua &> /dev/null;
-#     then lua -v ; else echo "not found"; fi
-#   lang_set_global_version: |
-#     asdf global lua {{ lua_version }}
-
-# {{{
 go_lang:
   plugin_asdf_deps: []
   plugin_asdf_go_version: "{{ go_version }}"
@@ -36,6 +15,8 @@ go_lang:
   plugin_asdf_set_global_version: |
     asdf global golang {{ go_version }}
 
+rust_version: "{{ _install_programming.rust.rust_version }}"
+
 rust_lang:
   plugin_asdf_deps: []
   plugin_asdf_rust_version: "{{ rust_version }}"
@@ -47,6 +28,8 @@ rust_lang:
     then rustc --version ; else echo "not found"; fi
   plugin_asdf_set_global_version: |
     asdf global rust {{ rust_version }}
+
+nodejs_version: "{{ _install_programming.nodejs.nodejs_version }}"
 
 nodejs_lang:
   plugin_asdf_deps: "{{ __dep_nodejs_pkgs }}"
@@ -62,6 +45,8 @@ nodejs_lang:
   plugin_asdf_set_global_version: |
     asdf global nodejs {{ nodejs_version }}
 
+ruby_version: "{{ _install_programming.ruby.ruby_version }}"
+
 ruby_lang:
   plugin_asdf_deps: "{{ __dep_ruby_pkgs }}"
   plugin_asdf_version: "{{ ruby_version }}"
@@ -73,6 +58,9 @@ ruby_lang:
     then ruby --version ; else echo "not found"; fi
   plugin_asdf_set_global_version: |
     asdf global ruby {{ ruby_version }}
+
+python3_version: "{{ _install_programming.python3.python3_version }}"
+python2_version: "{{ _install_programming.python3.python2_version }}"
 
 python_lang:
   - plugin_asdf_name: "python3"
@@ -96,5 +84,3 @@ python_lang:
       then python2 --version ; else echo "not found"; fi
     plugin_asdf_set_global_version: |
       asdf global python {{ python3_version }} {{ python2_version }}
-
-# }}}

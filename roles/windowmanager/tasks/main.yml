@@ -17,8 +17,6 @@
     # WM Tools ----------------------------------------------------------------
     - name: Import task _dunst.yml
       ansible.builtin.import_tasks: _dunst.yml
-    - name: Import task _picom.yml
-      ansible.builtin.import_tasks: _picom.yml
     - name: Import task _polybar.yml
       ansible.builtin.import_tasks: _polybar.yml
     - name: Import task _oomox.yml
