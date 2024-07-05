@@ -212,39 +212,6 @@ __torrent_deps:
 
 #
 # }}}
-# NEWSBOAT ---------------------------------------------------------- {{{
-__newsboat_deps:
-  - asciidoc
-  - asciidoc-base
-  - asciidoctor
-  - bc
-  - build-essential
-  - cargo
-  - curl
-  - debhelper
-  - docbook-xml
-  - docbook-xsl
-  - elinks
-  - gettext
-  - git
-  - jq
-  - libcurl4-gnutls-dev
-  - libjson-c-dev
-  - libncursesw5-dev
-  - librtmp-dev
-  - libsqlite3-dev
-  - libssl-dev
-  - libstfl-dev
-  - libxml2-dev
-  - libxml2-utils
-  - ncurses-term
-  - perl
-  - pkg-config
-  - wget
-  - xsltproc
-
-#
-# }}}
 # MPV --------------------------------------------------------------- {{{
 __mpv_deps:
   # - debhelper (>= 7)

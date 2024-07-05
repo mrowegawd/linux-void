@@ -9,7 +9,7 @@
   tags:
     - always
 
-- name: SETVARS | Install base packaje.yml
+- name: SETVARS | Install base package.yml
   ansible.builtin.import_tasks: pkgs.yml
   tags:
     - always

@@ -1,0 +1,15 @@
+newsboat_version: "2.36"
+
+build_from_source_newsboat:
+  - pkg_name: "newsboat"
+    pkg_version: "{{ newsboat_version }}"
+    pkg_deps: "{{ __newsboat_deps }}"
+    pkg_cmd_check_version: |
+      bash -lc 'if command -v newsboat &> /dev/null;
+      then newsboat --version; else echo "not found"; fi'
+    link:
+      - url: "https://github.com/newsboat/newsboat/archive/refs/tags/r{{newsboat_version}}.tar.gz"
+        tar_file: "newsboat-r{{ newsboat_version }}.tar.gz"
+        after_extract_filename: "newsboat-r{{ newsboat_version }}"
+    pkg_cmd_make: |
+      make && make install
