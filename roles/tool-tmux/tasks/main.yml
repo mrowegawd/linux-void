@@ -39,6 +39,7 @@
       changed_when: false
 
     - name: TMUX | Install dependencies | Debian
+      become: true
       ansible.builtin.apt:
         name: "{{ item }}"
         state: present

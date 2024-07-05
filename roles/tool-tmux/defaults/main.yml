@@ -10,7 +10,6 @@ build_from_source_tmux:
       - url: "https://github.com/tmux/tmux/archive/refs/tags/{{ tmux_version }}.tar.gz"
         tar_file: "tmux-{{ tmux_version }}.tar.gz"
         dest_tar_file: "tmux-{{ tmux_version }}"
-        # dest_temp_dir: "{{ temp_dir }}/tmux"
     pkg_cmd_make: |
       sh ./autogen.sh && ./configure && make 
       sudo make install
