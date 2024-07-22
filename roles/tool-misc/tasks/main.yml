@@ -12,8 +12,8 @@
     - misc
     - mpdris
 
-- name: MISC | Import task pamixer for volume control
-  ansible.builtin.import_tasks: pamixer.yml
-  tags:
-    - misc
-    - pamixer
+# - name: MISC | Import task pamixer for volume control
+#   ansible.builtin.import_tasks: pamixer.yml
+#   tags:
+#     - misc
+#     - pamixer

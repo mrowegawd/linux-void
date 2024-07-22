@@ -74,7 +74,7 @@
       tags:
         - eww
 
-    - name: EWW | Clone eww from github, so we can install with rustup
+    - name: EWW | Clone eww from github
       ansible.builtin.git:
         repo: "{{ item.repo }}"
         dest: "{{ item.dest }}"

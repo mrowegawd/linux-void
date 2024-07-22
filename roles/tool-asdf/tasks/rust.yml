@@ -54,7 +54,7 @@
     - "{{ rust_lang.plugin_asdf_deps }}"
   when:
     - rust_lang.plugin_asdf_deps | length > 0
-    - rust_version_cur_version.stderr.find('command not found') != -1
+    - rust_version_cur_version.stderr.find(rust_version) == -1
     - ansible_os_family | lower == 'debian'
   tags:
     - rust
@@ -70,7 +70,7 @@
     - "{{ rust_lang.plugin_asdf_deps }}"
   when:
     - rust_lang.plugin_asdf_deps | length > 0
-    - rust_version_cur_version.stderr.find('command not found') != -1
+    - rust_version_cur_version.stderr.find(rust_version) == -1
     - ansible_os_family | lower == 'redhat'
   tags:
     - rust
@@ -85,7 +85,7 @@
   changed_when: false
   register: rust_version_installed
   when:
-    - rust_version_cur_version.stderr.find('command not found') != -1
+    - rust_version_cur_version.stderr.find(rust_version) == -1
   tags:
     - rust
 

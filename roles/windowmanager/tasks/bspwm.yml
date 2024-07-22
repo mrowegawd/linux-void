@@ -1,10 +1,10 @@
 ---
+
 - name: BSPWM | Check bspwm installed version
   shell: >
     if command -v bspwm &> /dev/null;
     then bspwm -version; else echo "not found"; fi
   args:
-    warn: no
     executable: /bin/bash
   changed_when: false
   register: check_bspwm_version
@@ -21,6 +21,7 @@
 #     seconds: 10
 
 - become: true
+  when: check_bspwm_version.stdout.find('not found') != -1
   block:
     - name: BSPWM | Ensure bspwm dependencies installed
       include_role:
@@ -103,4 +104,3 @@
       tags:
         - install
         - bspwm
-  when: bspwm_version not in check_bspwm_version.stdout or check_bspwm_version.stdout.find('not found') != -1

@@ -48,7 +48,6 @@
       ansible.builtin.shell: |
         bash /home/{{ user_admin }}/installer.sh
       args:
-        warn: no
         executable: /bin/bash
       changed_when: false
       when: kitty_download_task is success

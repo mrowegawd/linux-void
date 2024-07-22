@@ -35,6 +35,5 @@
       ansible.builtin.shell: |
         source ~/.asdf/asdf.sh && asdf reshim rust
       args:
-        warn: no
         executable: /bin/bash
       when: installed_alacritty is success

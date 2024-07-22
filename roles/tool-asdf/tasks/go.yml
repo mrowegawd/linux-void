@@ -15,7 +15,7 @@
 
 # - name: ASDF-Go | Debug plugin_go_exists!
 #   ansible.builtin.debug:
-#     msg: "{{ plugin_go_exists.stdout.find('golang') }}"
+#     msg: "{{ plugin_go_exists.stdout.find(go_version) }}"
 
 - name: ASDF-Go | Install plugin asdf for golang
   become: true
@@ -45,10 +45,10 @@
   tags:
     - go
 
-# - name: ASDF-Go | Debug go_version_cur_version!
+# - name: ASDF-Go | Debug check go version
 #   ansible.builtin.debug:
-#     msg: "{{ go_version_cur_version.stderr.find('command not found') }}"
-#
+#     msg: "{{ go_version_cur_version.stdout.find(go_version) }}"
+
 - name: ASDF-Go | Ensure apt packages are managed | Debian
   become: true
   ansible.builtin.apt:
@@ -58,7 +58,7 @@
     - "{{ go_lang.plugin_asdf_deps }}"
   when:
     - go_lang.plugin_asdf_deps | length > 0
-    - go_version_cur_version.stderr.find('command not found') != -1
+    - go_version_cur_version.stderr.find(go_version) == -1
     - ansible_os_family | lower == 'debian'
   tags:
     - go
@@ -74,7 +74,7 @@
     - "{{ go_lang.plugin_asdf_deps }}"
   when:
     - go_lang.plugin_asdf_deps | length > 0
-    - go_version_cur_version.stderr.find('command not found') != -1
+    - go_version_cur_version.stderr.find(go_version) == -1
     - ansible_os_family | lower == 'redhat'
   tags:
     - go
@@ -89,7 +89,7 @@
   changed_when: false
   register: go_version_installed
   when:
-    - go_version_cur_version.stderr.find('command not found') != -1
+    - go_version_cur_version.stderr.find(go_version) == -1
   tags:
     - go
 

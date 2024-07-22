@@ -1,4 +1,9 @@
 ---
+- name: ASDF-Nodejs | Include vars for specific os
+  ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
+  tags:
+    - nodejs
+
 - name: ASDF-Nodejs | Check plugin-list if spesific our lang is exists
   become: true
   become_user: "{{ user_admin }}"
@@ -54,7 +59,7 @@
     - "{{ nodejs_lang.plugin_asdf_deps }}"
   when:
     - nodejs_lang.plugin_asdf_deps | length > 0
-    - nodejs_version_cur_version.stderr.find('command not found') != -1
+    - nodejs_version_cur_version.stderr.find(nodejs_version) == -1
     - ansible_os_family | lower == 'debian'
   tags:
     - nodejs
@@ -70,7 +75,7 @@
     - "{{ nodejs_lang.plugin_asdf_deps }}"
   when:
     - nodejs_lang.plugin_asdf_deps | length > 0
-    - nodejs_version_cur_version.stderr.find('command not found') != -1
+    - nodejs_version_cur_version.stderr.find(nodejs_version) == -1
     - ansible_os_family | lower == 'redhat'
   tags:
     - nodejs
@@ -85,7 +90,7 @@
   changed_when: false
   register: nodejs_version_installed
   when:
-    - nodejs_version_cur_version.stderr.find('command not found') != -1
+    - nodejs_version_cur_version.stderr.find(nodejs_version) == -1
   tags:
     - nodejs
 

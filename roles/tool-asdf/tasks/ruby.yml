@@ -1,4 +1,9 @@
 ---
+- name: ASDF-Ruby | Include vars for specific os
+  ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
+  tags:
+    - ruby
+
 - name: ASDF-Ruby | Check plugin-list if spesific our lang is exists
   become: true
   become_user: "{{ user_admin }}"
