@@ -1,0 +1,124 @@
+---
+#
+## Link: https://github.com/newsboat/newsboat
+#
+- name: NEWSBOAT | Include vars for specific os
+  ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
+  tags:
+    - newsboat
+
+- name: NEWSBOAT | Check newsboat current version
+  become: true
+  ansible.builtin.shell: |
+    {{ item.pkg_cmd_check_version }}
+  args:
+    executable: /bin/bash
+  changed_when: false
+  register: newsboat_current_version
+  with_items:
+    - "{{ build_from_source_newsboat }}"
+  tags:
+    - newsboat
+
+# - name: NEWSBOAT | Debug newsboat_current_version!
+#   ansible.builtin.debug:
+#     msg: "{{ newsboat_current_version }}"
+
+- name: NEWSBOAT | Setup newsboat {{ newsboat_version }}
+  tags:
+    - newsboat
+  when:
+    - newsboat_current_version.results.0.stdout.find(newsboat_version) == -1
+  block:
+    - name: NEWSBOAT | Ensure tmp dir to hold any temporary files for newsboat
+      ansible.builtin.tempfile:
+        state: directory
+        suffix: build
+      register: temp_dir_newsboat
+      changed_when: false
+
+    - name: NEWSBOAT | Install dependencies | Debian
+      become: true
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+      when: ansible_os_family | lower == 'debian'
+      with_items:
+        - "{{ __newsboat_deps }}"
+
+    - name: NEWSBOAT | Install dependencies | Redhat
+      become: true
+      ansible.builtin.yum:
+        name: "{{ packages }}"
+        state: "{{ state }}"
+      vars:
+        packages: "{{ __newsboat_deps }}"
+        state: '{{ _yum_state | default("present") }}'
+      when: ansible_os_family | lower == 'redhat'
+
+      # - name: NEWSBOAT | Debug temp_dir_newsboat!
+      #   ansible.builtin.debug:
+      #     msg: "{{ temp_dir_newsboat }}"
+    - name: NEWSBOAT | Get download tar gz from github newsboat release
+      become: true
+      ansible.builtin.get_url:
+        url: "{{ item.link.0.url }}"
+        dest: "{{ temp_dir_newsboat.path }}"
+        mode: 0755
+        force: true
+        timeout: 30
+      register: download_job_newsboat
+      until: download_job_newsboat is succeeded
+      retries: 3
+      delay: 3
+      with_items:
+        - "{{ build_from_source_newsboat }}"
+      # when: item.pkg_version not in check_pkg_command.stdout or check_pkg_command.stdout.find('not found') != -1
+
+    - name: NEWSBOAT | Check if cargo is installed
+      become: true
+      ansible.builtin.shell: |
+        command -v cargo
+      changed_when: false
+      register: cargo_exists
+      ignore_errors: yes
+
+    - name: NEWSBOAT | Download Installer rust
+      ansible.builtin.get_url:
+        url: https://sh.rustup.rs
+        dest: /tmp/sh.rustup.rs
+        mode: "0755"
+        force: "yes"
+      when: cargo_exists is failed
+      tags:
+        - rust
+
+    - name: NEWSBOAT | Install rust/cargo for dependencies newsboat
+      become: true
+      ansible.builtin.shell: |
+        /tmp/sh.rustup.rs -y
+      when: cargo_exists is failed
+      changed_when: false
+      tags:
+        - rust
+
+    - name: NEWSBOAT | Extract tar file newsboat-{{ newsboat_version }}
+      ansible.builtin.unarchive:
+        src: "{{ temp_dir_newsboat.path }}/{{ item.link.0.tar_file }}"
+        dest: "{{ temp_dir_newsboat.path }}"
+        copy: no # this `no` means, will delete for sure
+      with_items:
+        - "{{ build_from_source_newsboat }}"
+
+    - name: NEWSBOAT | Build newsboat {{ newsboat_version }}
+      become: true
+      ansible.builtin.shell: |
+        {{ item.pkg_cmd_make }}
+      args:
+        chdir: "{{ temp_dir_newsboat.path }}/newsboat-r{{ newsboat_version }}"
+        executable: /bin/bash
+      changed_when: false
+      # ignore_errors: true
+      with_items:
+        - "{{ build_from_source_newsboat }}"

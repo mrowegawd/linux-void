@@ -1,0 +1,18 @@
+# Other configuration
+security_interactive_user_minimum_uid: 500
+
+grub_conf_file: /boot/grub/grub.cfg
+grub_conf_file_efi: /boot/efi/EFI/ubuntu/grub.cfg
+
+# Commands
+grub_update_cmd: "/usr/sbin/update-grub"
+
+__tools_base_pkg:
+  - build-essential
+  - automake
+  - curl
+  - git
+  - make
+  - g++
+  - gcc
+  - cmake

@@ -1,6 +1,6 @@
 ---
 - name: SLOP | Check installed slop version
-  shell: >
+  ansible.builtin.shell: >
     if command -v slop &> /dev/null;
     then echo "found"; else echo "not found"; fi
   args:
@@ -13,7 +13,7 @@
     - always
 
 - name: SLOP | Install slop with deps
-  include_role:
+  ansible.builtin.include_role:
     name: _0package
   when: check_slop.stdout.find('not found') != -1
   vars:
@@ -38,7 +38,7 @@
 #   tags:
 #     - always
 
-# - become: True
+# - become: true
 #   block:
 #     - name: MAIM | Ensure maim folder temp exists
 #       file:
@@ -65,7 +65,7 @@
 #         - maimslop
 
 #     - name: MAIM | Clone maim from github
-#       become: True
+#       become: true
 #       git:
 #         repo: 'https://github.com/naelstrof/maim.git'
 #         dest: '{{ temp_dir }}/maim'
@@ -78,7 +78,7 @@
 #         - maimslop
 
 #     - name: MAIM | Install maim
-#       become: True
+#       become: true
 #       shell: |
 #         {{ item }}
 #       args:

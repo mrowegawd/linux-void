@@ -1,7 +1,6 @@
 ---
-- become: True
+- become: true
   block:
-
     - name: OOMOX | Install dependencies oomox
       include_role:
         name: _0package

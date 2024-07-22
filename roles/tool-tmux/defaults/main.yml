@@ -1,0 +1,15 @@
+tmux_version: "3.4"
+
+build_from_source_tmux:
+  - pkg_name: "tmux"
+    pkg_version: "{{ tmux_version }}"
+    pkg_cmd_check_version: |
+      bash -lc 'if command -v tmux &> /dev/null;
+      then tmux -V ; else echo "not found"; fi'
+    link:
+      - url: "https://github.com/tmux/tmux/archive/refs/tags/{{ tmux_version }}.tar.gz"
+        tar_file: "tmux-{{ tmux_version }}.tar.gz"
+        dest_tar_file: "tmux-{{ tmux_version }}"
+    pkg_cmd_make: |
+      sh ./autogen.sh && ./configure && make 
+      sudo make install

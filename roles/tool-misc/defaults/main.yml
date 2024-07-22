@@ -1,0 +1,8 @@
+---
+mpdris_name: "mpdris2-rs"
+mpdris_repo: "https://github.com/szclsya/mpdris2-rs"
+mpdris_dest: "/home/{{ user_admin }}/.local/src/mpdris2-rs"
+
+pamixer_name: "pamixer"
+pamixer_repo: "https://github.com/cdemoulins/pamixer"
+pamixer_dest: "{{ temp_dir_pamixer.path }}/pamixer"

@@ -1,0 +1,9 @@
+
+{% if _accounts_pwquality_apply_rules | bool %}
+{% for rule in accounts_password_quality %}
+{% if rule.value is defined and rule.enabled | bool %}
+# {{ rule.stig_id }} - {{ rule.description }}
+{{ rule.parameter}} = {{ rule.value }}
+{% endif %}
+{% endfor %}
+{% endif %}

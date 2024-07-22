@@ -1,8 +1,6 @@
 ---
 - name: DISABLE-FIREWALLD | Check if firewalld package is installed | Redhat
-  command: yum list installed firewalld
-  args:
-    warn: no
+  ansible.builtin.command: yum list installed firewalld
   register: firewalld_installed
   ignore_errors: true
   failed_when: false
@@ -14,7 +12,7 @@
     - iptables
 
 - name: DISABLE-FIREWALLD | Disable the firewalld service | Redhat
-  service:
+  ansible.builtin.service:
     name: firewalld
     state: stopped
     enabled: no
@@ -27,9 +25,7 @@
     - iptables
 
 - name: DISABLE-FIREWALLD | Checking ufw yang masih aktif | Debian
-  command: service ufw status
-  args:
-    warn: no
+  ansible.builtin.command: service ufw status
   register: ufw_isactive
   ignore_errors: true
   failed_when: false
@@ -41,7 +37,7 @@
     - iptables
 
 - name: DISABLE-FIREWALLD | Disable service ufw | Debian
-  service:
+  ansible.builtin.service:
     name: ufw
     state: stopped
     enabled: no

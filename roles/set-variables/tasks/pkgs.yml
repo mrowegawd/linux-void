@@ -1,0 +1,33 @@
+---
+- name: SETVARS PKGS | Update all packages to their latest version | Debian
+  become: true
+  ansible.builtin.apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  when: ansible_os_family | lower == 'debian'
+  tags:
+    - always
+
+- name: SETVARS PKGS | Ensure apt packages are managed | Debian
+  become: true
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items:
+    - "{{ __tools_base_pkg }}"
+  when: ansible_os_family | lower == 'debian'
+  tags:
+    - always
+
+- name: SETVARS PKGS | Ensure yum packages are managed | Redhat
+  become: true
+  ansible.builtin.yum:
+    name: "{{ packages }}"
+    state: "{{ _apt_state }}"
+  vars:
+    packages: "{{ __tools_base_pkg }}"
+    state: '{{ _apt_state | default("present") }}'
+  when: ansible_os_family | lower == 'redhat'
+  tags:
+    - always

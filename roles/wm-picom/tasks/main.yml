@@ -1,0 +1,77 @@
+---
+#
+## Link: https://github.com/yshui/picom
+#
+- name: PICOM | Include vars for specific os
+  ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
+  tags:
+    - picom
+
+- name: PICOM | Check picom install
+  ansible.builtin.shell: >
+    if command -v picom &> /dev/null;
+    then picom --version; else echo "not found"; fi
+  args:
+    executable: /bin/bash
+  changed_when: false
+  register: check_picom_version
+  tags:
+    - picom
+
+- name: PICOM | Setup picom
+  become: true
+  tags:
+    - picom
+  when: check_picom_version.stdout.find('not found') != -1
+  block:
+    - name: PICOM | Ensure apt dependencies picom are managed | Debian
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: present
+      when: ansible_os_family | lower == 'debian'
+      with_items:
+        - "{{ __picom_deps }}"
+      tags:
+        - picom
+
+    - name: PICOM | Ensure tmp dir to hold any temporary files for picom
+      ansible.builtin.tempfile:
+        state: directory
+        suffix: build
+      register: temp_dir_picom
+      changed_when: false
+      tags:
+        - picom
+
+    - name: PICOM | Ensure path temp/picom are exists
+      ansible.builtin.file:
+        path: "{{ picom_dest }}"
+        mode: "0755"
+        state: directory
+      tags:
+        - picom
+
+    - name: PICOM | Clone picom with submodule
+      ansible.builtin.git:
+        repo: "https://github.com/ibhagwan/picom.git"
+        dest: "{{ picom_dest }}"
+        recursive: yes
+        update: yes
+        version: next
+      register: jobpicomdownload
+      until: jobpicomdownload is success
+      retries: 10
+      delay: 10
+      tags:
+        - picom
+
+    - name: PICOM | Install picom
+      ansible.builtin.shell: |
+        LDFLAGS="-L/usr/local/include" CPPFLAGS="-I/usr/local/include" meson --buildtype=release . build
+        ninja -C build install
+      args:
+        chdir: "{{ picom_dest }}"
+      changed_when: false
+      until: jobpicomdownload is success
+      tags:
+        - picom

@@ -1,0 +1,111 @@
+---
+- name: SETVARS | Get the username of the user running deploy.
+  become: false
+  delegate_to: localhost
+  ansible.builtin.command: whoami
+  register: username_on_the_host
+  changed_when: false
+
+- name: SETVARS | Set variable user_admin
+  ansible.builtin.set_fact:
+    user_admin: "{{ username_on_the_host.stdout_lines[0] }}"
+  when: username_on_the_host is defined
+
+# - name: SETVARS | Debug user_admin
+#   ansible.builtin.debug:
+#     msg: "{{ user_admin }}"
+
+- name: SETVARS | Ensure /home/user_admin is exists
+  ansible.builtin.stat:
+    path: "/home/{{ user_admin }}"
+  register: path_user_admin
+  tags:
+    - always
+
+# - name: SETVARS | Debug user_admin
+#   ansible.builtin.debug:
+#     msg: "{{ path_user_admin }}"
+
+- name: SETVARS | Run tasks system-user before continuing if /home/user_admin is not defined yet
+  ansible.builtin.include_role:
+    name: "system-user"
+  when: not path_user_admin.stat.exists
+
+- name: SETVARS | Create tmp dir to hold any temporary files
+  ansible.builtin.tempfile:
+    state: directory
+    suffix: build
+  register: mktemp_result
+  changed_when: false
+  tags:
+    - always
+
+- name: SETVARS | Set variable temp dir for mktemp_result
+  ansible.builtin.set_fact:
+    temp_dir: "{{ mktemp_result.path }}"
+  changed_when: False
+  tags:
+    - always
+# - name: INIT | Debug mktemp_result
+#   ansible.builtin.debug:
+#     msg: "{{ mktemp_result }}"
+# - name: Dont know
+#   when: _dev_mode | bool
+#   block:
+#     - name: INIT | Yum Update | Redhat
+#       yum:
+#         name: "*"
+#         state: latest
+#       when: ansible_distribution | lower == 'centos'
+#       tags:
+#         - install
+#         - updatesync
+#         - skip_ansible_lint
+#
+#     - name: INIT | Remove apt source.list | Debian
+#       ansible.builtin.file:
+#         state: absent
+#         path: "/etc/apt/sources.list"
+#       changed_when: false
+#       when:
+#         - ansible_os_family | lower == 'debian'
+#         - ansible_distribution_major_version == "9"
+#       tags:
+#         - install
+#
+#     - name: INIT | Upload new source_list for | Debian
+#       ansible.builtin.template:
+#         src: "{{ ansible_distribution | lower }}/{{ ansible_distribution_major_version }}/source.list.j2"
+#         dest: "/etc/apt/sources.list"
+#         owner: "root"
+#         group: "root"
+#         mode: "0644"
+#       changed_when: false
+#       when:
+#         - ansible_os_family | lower == 'debian'
+#       tags:
+#         - install
+#
+#     - name: INIT | Apt update | Debian
+#       ansible.builtin.apt:
+#         upgrade: dist
+#         update-cache: yes
+#         cache_valid_time: 3200
+#       changed_when: false
+#       when: ansible_os_family | lower == 'debian'
+#       tags:
+#         - always
+#         - install
+#         - updatesync
+#
+#     - name: INIT | Installing pre-reqs
+#       ansible.builtin.include_role:
+#         name: _0package
+#       vars:
+#         _apt_packages:
+#           ["build-essential", "software-properties-common", "gpg-agent"]
+#       tags:
+#         - always
+#         - install
+#
+#       when: ansible_os_family | lower == 'debian'

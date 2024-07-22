@@ -1,0 +1,13 @@
+---
+bspwm_version: 0.9.10
+bspwm_git:
+  - repo: "https://github.com/baskerville/bspwm.git"
+    dest: "{{ temp_dir_bspwm.path }}/bspwm"
+  - repo: "https://github.com/baskerville/sxhkd.git"
+    dest: "{{ temp_dir_bspwm.path }}/sxhkd"
+  - repo: "https://github.com/baskerville/sutils.git"
+    dest: "{{ temp_dir_bspwm.path }}/sutils"
+  - repo: "https://github.com/baskerville/xtitle.git"
+    dest: "{{ temp_dir_bspwm.path }}/xtitle"
+  - repo: "https://github.com/baskerville/xdo.git"
+    dest: "{{ temp_dir_bspwm.path }}/xdo"

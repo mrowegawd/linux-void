@@ -1,8 +1,8 @@
 ---
 - name: DOCKER | Check docker if exis
-  become: True
+  become: true
   become_user: "{{ user_admin }}"
-  shell: |
+  ansible.builtin.shell: |
     set -o pipefail;
     if command -v docker-compose &> /dev/null;
     then docker-compose --version | cut -d" " -f4 ; else echo "not found"; fi
@@ -11,13 +11,17 @@
     executable: /bin/bash
   changed_when: false
   register: check_docker_compose_version
+  tags:
+    - install
+    - docker
+    - docker-compose
 
 - name: DOCKER-COMPOSE | Install Docker Compose | Debian
-  become: True
-  get_url:
+  become: true
+  ansible.builtin.get_url:
     url: "{{ docker_compose_repo_format }}/docker-compose-Linux-x86_64"
     dest: "/usr/local/bin/docker-compose"
-    force: True
+    force: true
     owner: "root"
     group: "root"
     mode: "0755"

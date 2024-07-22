@@ -3,11 +3,28 @@
   gather_facts: "true"
   hosts: localhost
   roles:
-    - _init
-    - environment
-    - system
+    - set-variables
+    # - environment
+    # - system
     # - browsers
-    - prolang
-    - virtualmanager
-    - windowmanager
+    # - prolang
+    # - virtualmanager
+    # - windowmanager
+
+    # Tools
+    - tool-asdf
+    - tool-fzf
+    - tool-tmux
+    - tool-misc
     - tools
+    # - tool-newsboat
+
+    # Window Manager
+    - wm-bspwm
+    - wm-conky
+    - wm-rofi
+    # - wm-polybar
+    - wm-eww # (eww dont like this!)
+    #- wm-ags # (alternative polybar and eww but hard to install on docker lols)
+    - wm-dunst
+    - wm-picom

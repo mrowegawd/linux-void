@@ -1,0 +1,71 @@
+---
+#
+# https://github.com/junegunn/fzf
+#
+#
+- name: FZF | Get the username running the deploy
+  become: false
+  delegate_to: localhost
+  ansible.builtin.command: whoami
+  register: username_on_the_host
+  changed_when: false
+  tags:
+    - fzf
+
+- name: FZF | Set_fact user_admin
+  ansible.builtin.set_fact:
+    user_admin: "{{ username_on_the_host.stdout_lines[0] }}"
+  when: username_on_the_host is defined
+  tags:
+    - fzf
+
+- name: FZF | Ensure if path fzf if exists
+  become: true
+  become_user: "{{ user_admin }}"
+  ansible.builtin.stat:
+    path: "/home/{{ user_admin }}/.fzf"
+  register: check_fzf
+  tags:
+    - fzf
+
+# - name: FZF | Debug check_fzf
+#   ansible.builtin.debug:
+#     msg: "{{ check_fzf }}"
+
+- name: Run if FZF home path not exists
+  become: true
+  when: not check_fzf.stat.exists
+  tags:
+    - fzf
+  block:
+    - name: FZF | Git Clone FZF ke home user
+      become: true
+      become_user: "{{ user_admin }}"
+      ansible.builtin.git:
+        repo: "{{ item.repo }}"
+        dest: "/home/{{ user_admin }}/{{ item.name }}"
+        version: "{{ item.version }}"
+        accept_hostkey: yes
+        force: yes
+      with_items:
+        - "{{ fzf_repo }}"
+
+    - name: FZF | Install FZF
+      become: true
+      become_user: "{{ user_admin }}"
+      ansible.builtin.command: |
+        /home/{{ user_admin }}/.fzf/install
+      register: fzf_install
+      changed_when: false
+      tags:
+        - install
+
+    - name: FZF | Ensure path permission ~/.fzf
+      become: true
+      become_user: "{{ user_admin }}"
+      ansible.builtin.file:
+        path: "/home/{{ user_admin }}/.fzf"
+        owner: "{{ user_admin }}"
+        group: "{{ user_admin }}"
+        recurse: "yes"
+      when: fzf_install is success

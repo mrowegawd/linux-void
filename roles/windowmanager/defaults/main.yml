@@ -4,20 +4,6 @@
 # WM VARIAN
 #
 ##############################
-# BSPWM --------------------------------------------------------- {{{
-bspwm_version: 0.9.10
-bspwm_git:
-  - repo: "https://github.com/baskerville/bspwm.git"
-    dest: "{{ temp_dir }}/bspwm"
-  - repo: "https://github.com/baskerville/sxhkd.git"
-    dest: "{{ temp_dir }}/sxhkd"
-  - repo: "https://github.com/baskerville/sutils.git"
-    dest: "{{ temp_dir }}/sutils"
-  - repo: "https://github.com/baskerville/xtitle.git"
-    dest: "{{ temp_dir }}/xtitle"
-  - repo: "https://github.com/baskerville/xdo.git"
-    dest: "{{ temp_dir }}/xdo"
-
 #
 # }}}
 # AWESOME --------------------------------------------------------- {{{
@@ -44,44 +30,3 @@ dwm_git:
 # }}}
 
 lua_version: "{{ _install_programming.lua.lua_version }}"
-
-##############################
-#
-# WM_TOOLS
-#
-##############################
-
-# ROFI --------------------------------------------------------- {{{
-rofi_version: 1.7.2
-rofi_download:
-  - url: "https://github.com/davatorium/rofi/releases/download/{{ rofi_version }}/rofi-{{ rofi_version }}.tar.gz"
-    dest: "{{ temp_dir }}/rofi"
-    name: "rofi-{{ rofi_version }}"
-
-#
-# }}}
-# POLYBAR --------------------------------------------------------- {{{
-polybar_version: 3.5.7
-polybar_download:
-  - url: "https://github.com/polybar/polybar/releases/download/{{ polybar_version }}/polybar-{{ polybar_version }}.tar.gz"
-    dest: "{{ temp_dir }}/polybar"
-    name: "polybar-{{ polybar_version }}"
-
-#
-# }}}
-# DUNST --------------------------------------------------------- {{{
-dunst_version: "1.7.3"
-dunst_download:
-  - url: "https://github.com/dunst-project/dunst/archive/refs/tags/v{{ dunst_version }}.tar.gz"
-    dest: "{{ temp_dir }}/dunst"
-    name: "dunst-{{ dunst_version }}"
-#
-# }}}
-# PICOM --------------------------------------------------------- {{{
-
-# Config picom di sini tidak diperlukan
-
-#
-# }}}
-
-# vim: foldmethod=marker

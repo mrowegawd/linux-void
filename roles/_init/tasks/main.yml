@@ -1,8 +1,11 @@
 ---
 - name: Tools | Include vars for specific os
-  include_vars: "{{ ansible_distribution | lower }}/main.yml"
+  ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
   tags:
     - always
 
-- import_tasks: base.yml
-- import_tasks: misc.yml
+- name: Tools | Import task base.yml
+  ansible.builtin.import_tasks: base.yml
+
+- name: Tools | Import task misc.yml
+  ansible.builtin.import_tasks: misc.yml

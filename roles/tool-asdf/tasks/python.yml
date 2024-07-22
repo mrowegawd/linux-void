@@ -1,0 +1,123 @@
+---
+- name: ASDF-Python | Include vars for specific os
+  ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
+  tags:
+    - python
+
+- name: ASDF-Python | Check plugin-list if spesific our lang is exists
+  become: true
+  become_user: "{{ user_admin }}"
+  ansible.builtin.shell: |
+    source ~/.asdf/asdf.sh && asdf plugin-list
+  args:
+    executable: /bin/bash
+  register: plugin_python_exists
+  changed_when: false
+  failed_when: false
+  ignore_errors: true
+  tags:
+    - python
+
+# - name: ASDF-Python | Debug plugin_python_exists!
+#   ansible.builtin.debug:
+#     msg: "{{ plugin_python_exists }}"
+#
+# - name: ASDF-Python | Debug plugin_python_exists!
+#   ansible.builtin.debug:
+#     msg: "{{ plugin_python_exists.stdout.find('python') }}"
+#   when:
+#     - (plugin_python_exists.stderr.find('No plugins installed') != -1) or (plugin_python_exists.stdout.find('python') == -1)
+
+- name: ASDF-Python | Install plugin asdf for python
+  become: true
+  become_user: "{{ user_admin }}"
+  ansible.builtin.shell: |
+    source ~/.asdf/asdf.sh && {{ item.plugin_asdf_install }}
+  args:
+    executable: /bin/bash
+  changed_when: false
+  with_items:
+    - "{{ python_lang.0 }}"
+  when:
+    - (plugin_python_exists.stderr.find('No plugins installed') != -1) or (plugin_python_exists.stdout.find('python') == -1)
+  tags:
+    - python
+
+- name: ASDF-Python | Check version python2 python3 version
+  become: true
+  become_user: "{{ user_admin }}"
+  ansible.builtin.shell: |
+    source ~/.asdf/asdf.sh && {{ item.plugin_asdf_version }} --version
+  args:
+    executable: /bin/bash
+  register: "python_version_cur_version"
+  changed_when: false
+  failed_when: false
+  loop: "{{ python_lang | flatten(levels=1) }}"
+  ignore_errors: true
+  tags:
+    - python
+
+# - name: ASDF-Python | Debug python_version_cur_version!
+#   ansible.builtin.debug:
+#     msg: "{{ python_version_cur_version }}"
+
+- name: ASDF-Python | Ensure apt packages are managed | Debian
+  become: true
+  ansible.builtin.apt:
+    name: "{{ item.0.plugin_asdf_deps }}"
+    state: present
+  with_nested:
+    - "{{ python_lang | flatten(levels=1) }}"
+    - "{{ python_version_cur_version.results }}"
+  when:
+    - (item.0.plugin_asdf_deps | length > 0) and (item.1.stderr.find('command not found') != -1)
+    - ansible_os_family | lower == 'debian'
+  tags:
+    - python
+
+- name: ASDF-Python | Ensure yum packages are managed | Redhat
+  become: true
+  ansible.builtin.yum:
+    name: "{{ item.0.plugin_asdf_deps }}"
+    state: present
+  with_nested:
+    - "{{ python_lang | flatten(levels=1) }}"
+    - "{{ python_version_cur_version.results }}"
+  when:
+    - (item.0.plugin_asdf_deps | length > 0) and (item.1.stderr.find('command not found') != -1)
+    - ansible_os_family | lower == 'redhat'
+  tags:
+    - python
+
+- name: ASDF-Python | Install both python2 and python3 version
+  become: true
+  become_user: "{{ user_admin }}"
+  ansible.builtin.shell: |
+    source ~/.asdf/asdf.sh && asdf install python {{ item.0.plugin_asdf_version }}
+  args:
+    executable: /bin/bash
+  changed_when: false
+  register: python_version_installed
+  with_nested:
+    - "{{ python_lang | flatten(levels=1) }}"
+    - "{{ python_version_cur_version.results }}"
+  when:
+    - item.1.stderr.find('command not found') != -1
+  tags:
+    - python
+
+- name: ASDF-Python | Ensure global version python2 python3 are defined
+  become: true
+  become_user: "{{ user_admin }}"
+  ansible.builtin.shell: |
+    source ~/.asdf/asdf.sh && {{ item.plugin_asdf_set_global_version }}
+  args:
+    executable: /bin/bash
+  changed_when: false
+  with_items:
+    - "{{ python_lang | flatten(levels=1) }}"
+  when:
+    - python_version_installed is success
+  tags:
+    - python

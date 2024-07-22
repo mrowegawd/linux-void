@@ -1,0 +1,108 @@
+---
+- name: ASDF-Ruby | Include vars for specific os
+  ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
+  tags:
+    - ruby
+
+- name: ASDF-Ruby | Check plugin-list if spesific our lang is exists
+  become: true
+  become_user: "{{ user_admin }}"
+  ansible.builtin.shell: |
+    source ~/.asdf/asdf.sh && asdf plugin-list
+  args:
+    executable: /bin/bash
+  register: plugin_ruby_exists
+  changed_when: false
+  failed_when: false
+  ignore_errors: true
+  tags:
+    - ruby
+
+# - name: ASDF-Ruby | Debug plugin_ruby_exists!
+#   ansible.builtin.debug:
+#     msg: "{{ plugin_ruby_exists.stdout.find('ruby') }}"
+
+- name: ASDF-Ruby | Install plugin asdf for ruby
+  become: true
+  become_user: "{{ user_admin }}"
+  ansible.builtin.shell: |
+    source ~/.asdf/asdf.sh && {{ ruby_lang.plugin_asdf_install }}
+  args:
+    executable: /bin/bash
+  changed_when: false
+  when:
+    # jika plugin sama sekali belum diinstall, masih berupa plugin kosong
+    - (plugin_ruby_exists.stderr.find('No plugins installed') != 0) or (plugin_ruby_exists.stdout.find('ruby') == -1)
+  tags:
+    - ruby
+
+- name: ASDF-Ruby | Check ruby version if exists
+  become: true
+  become_user: "{{ user_admin }}"
+  ansible.builtin.shell: |
+    source ~/.asdf/asdf.sh && ruby --version
+  args:
+    executable: /bin/bash
+  register: ruby_version_cur_version
+  changed_when: false
+  failed_when: false
+  ignore_errors: true
+  tags:
+    - ruby
+
+- name: ASDF-Ruby | Ensure apt packages are managed | Debian
+  become: true
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ ruby_lang.plugin_asdf_deps }}"
+  when:
+    - ruby_lang.plugin_asdf_deps | length > 0
+    - ruby_version_cur_version.stderr.find('command not found') != -1
+    - ansible_os_family | lower == 'debian'
+  tags:
+    - ruby
+
+- name: ASDF-Ruby | Ensure yum packages are managed | Redhat
+  become: true
+  ansible.builtin.yum:
+    name: "{{ item }}"
+    state: "{{ _apt_state }}"
+  vars:
+    state: '{{ _apt_state | default("present") }}'
+  with_items:
+    - "{{ ruby_lang.plugin_asdf_deps }}"
+  when:
+    - ruby_lang.plugin_asdf_deps | length > 0
+    - ruby_version_cur_version.stderr.find('command not found') != -1
+    - ansible_os_family | lower == 'redhat'
+  tags:
+    - ruby
+
+- name: ASDF-Ruby | Install ruby version
+  become: true
+  become_user: "{{ user_admin }}"
+  ansible.builtin.shell: |
+    source ~/.asdf/asdf.sh && asdf install ruby {{ ruby_lang.plugin_asdf_version }}
+  args:
+    executable: /bin/bash
+  changed_when: false
+  register: ruby_version_installed
+  when:
+    - ruby_version_cur_version.stderr.find('command not found') != -1
+  tags:
+    - ruby
+
+- name: ASDF-Ruby | Ensure global version are defined
+  become: true
+  become_user: "{{ user_admin }}"
+  ansible.builtin.shell: |
+    source ~/.asdf/asdf.sh && {{ ruby_lang.plugin_asdf_set_global_version }}
+  args:
+    executable: /bin/bash
+  changed_when: false
+  when:
+    - ruby_version_installed is success
+  tags:
+    - ruby

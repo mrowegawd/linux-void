@@ -1,0 +1,16 @@
+__apt_packages:
+  - libevent-dev
+  - ncurses-dev
+  - build-essential
+  - bison
+  - pkg-config
+
+__tools_base_pkg:
+  - build-essential
+  - automake
+  - curl
+  - git
+  - make
+  - g++
+  - gcc
+  - cmake

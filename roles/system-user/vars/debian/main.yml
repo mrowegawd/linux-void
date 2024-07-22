@@ -1,0 +1,23 @@
+---
+#>> accounts.yml ==============================================================
+__pam_auth_file: /etc/pam.d/common-auth
+__pam_password_file: /etc/pam.d/common-password
+
+#>> pam.yml
+
+__pam_os_package_ccreds: "libpam-ccreds"
+__pam_os_package_cracklib: "libpam-cracklib"
+__pam_os_package_passwdqc: "libpam-passwdqc"
+
+__pam_passwdqc_path: "/usr/share/pam-configs/passwdqc"
+__pam_tally2_path: "/usr/share/pam-configs/tally2"
+
+#>> auth.yml
+#>> auth.yml ==================================================================
+__pam_postlogin_file: /etc/pam.d/login
+
+# Commands
+__grub_update_cmd: "/usr/sbin/update-grub"
+
+# test
+__login_defs_env_umask: 022

@@ -1,52 +1,21 @@
 ---
 # INSTALL BUILD SOURCE -------------------------------------------- {{{
-tmux_version: "3.2a"
-newsboat_version: "2.25"
 torrent_version: "3.00"
 telegram_version: "tsetup.3.3.0"
 
 install_tools_from_buildsource:
-  - pkg_name: "tmux"
-    pkg_version: "{{ tmux_version }}"
-    pkg_deps: "{{ __tmux_deps }}"
-    pkg_cmd_check_version: |
-      bash -lc 'if command -v tmux &> /dev/null;
-      then tmux -V ; else echo "not found"; fi'
-    pkg_url_download:
-      - url: "https://github.com/tmux/tmux/releases/download/{{ tmux_version }}/tmux-{{ tmux_version }}.tar.gz"
-        tar_file: "tmux-{{ tmux_version }}.tar.gz"
-        after_extract_filename: "tmux-{{ tmux_version }}"
-        dest_temp_dir: "{{ temp_dir }}/tmux"
-    pkg_cmd_make: |
-      ./configure && make && make install
-
-  - pkg_name: "newsboat"
-    pkg_version: "{{ newsboat_version }}"
-    pkg_deps: "{{ __newsboat_deps }}"
-    pkg_cmd_check_version: |
-      bash -lc 'if command -v newsboat &> /dev/null;
-      then newsboat --version; else echo "not found"; fi'
-    pkg_url_download:
-      - url: "https://github.com/newsboat/newsboat/archive/refs/tags/r{{newsboat_version}}.tar.gz"
-        tar_file: "newsboat-r{{ newsboat_version }}.tar.gz"
-        after_extract_filename: "newsboat-r{{ newsboat_version }}"
-        dest_temp_dir: "{{ temp_dir }}/newsboat"
-    pkg_cmd_make: |
-      make && make install
-
-  - pkg_name: "torrent"
-    pkg_version: "{{ torrent_version }}"
-    pkg_deps: "{{ __torrent_deps }}"
-    pkg_cmd_check_version: |
-      bash -lc 'if command -v transmission-daemon &> /dev/null;
-      then transmission-daemon --V | grep {{torrent_version }} | cut -d" " -f2; else echo "not found"; fi'
-    pkg_url_download:
-      - url: "https://github.com/transmission/transmission/releases/download/3.00/transmission-{{ torrent_version }}.tar.xz"
-        tar_file: "transmission-{{ torrent_version }}.tar.xz"
-        after_extract_filename: "transmission-{{ torrent_version }}"
-        dest_temp_dir: "{{ temp_dir }}/torrent"
-    pkg_cmd_make: |
-      ./configure -q && make -s && sudo make install
+  pkg_version: "{{ torrent_version }}"
+  pkg_deps: "{{ __torrent_deps }}"
+  pkg_cmd_check_version: |
+    bash -lc 'if command -v transmission-daemon &> /dev/null;
+    then transmission-daemon --V | grep {{torrent_version }} | cut -d" " -f2; else echo "not found"; fi'
+  pkg_url_download:
+    - url: "https://github.com/transmission/transmission/releases/download/3.00/transmission-{{ torrent_version }}.tar.xz"
+      tar_file: "transmission-{{ torrent_version }}.tar.xz"
+      after_extract_filename: "transmission-{{ torrent_version }}"
+      dest_temp_dir: "{{ temp_dir }}/torrent"
+  pkg_cmd_make: |
+    ./configure -q && make -s && sudo make install
 
   # - pkg_name: "telegram"
   #   pkg_version: "{{ telegram_version }}"
@@ -179,7 +148,7 @@ visual_studio_code_package: "{{ (visual_studio_code_build == 'insiders') | terna
 alacritty_url_download: https://api.github.com/repos/alacritty/alacritty/releases/latest
 #
 # }}}
-# KITTY ------------------------------------------------------- {{{
+# KITTY ----------------------------------------------------------- {{{
 kitty_version: "0.24.1"
 kitty_url_download: https://sw.kovidgoyal.net/kitty/installer.sh
 #
@@ -189,13 +158,6 @@ mpv_version: "0.34.0"
 mpv_build:
   - repo: https://github.com/mpv-player/mpv-build.git
     dest: "{{ temp_dir }}/mpv_build"
-#
-# }}}
-# VIFM ------------------------------------------------------------ {{{
-# vifm_version: "0.10.1"
-# vifm_build:
-#   - repo: https://github.com/mpv-player/mpv-build.git
-#     dest: "{{ temp_dir }}/mpv_build"
 #
 # }}}
 # AUTOENV --------------------------------------------------------- {{{
@@ -226,4 +188,4 @@ zsh_plugins:
 #
 # }}}
 
-# vim: foldmethod=marker
+# vim: foldmethod=marker foldlevel=0

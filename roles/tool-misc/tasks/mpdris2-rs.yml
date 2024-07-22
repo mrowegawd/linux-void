@@ -1,0 +1,115 @@
+---
+#
+## https://github.com/szclsya/mpdris2-rs
+## controlling mpd with playerctl
+#
+- name: MPDRIS | Make sure path asdf are exists
+  become: true
+  become_user: "{{ user_admin }}"
+  ansible.builtin.stat:
+    path: "/home/{{ user_admin }}/.asdf"
+  register: mpdris_is_asdf_exists
+  tags:
+    - misc
+    - mpdris
+
+- name: MPDRIS | Mpdris need rustup installed, so make sure it exists
+  become: true
+  become_user: "{{ user_admin }}"
+  ansible.builtin.shell: |
+    source ~/.asdf/asdf.sh &&
+    bash -c 'if command -v rustup &> /dev/null;
+    then rustup -V; else echo "not found"; fi'
+  args:
+    executable: /bin/bash
+  changed_when: false
+  register: mpdris_current_version
+  when: mpdris_is_asdf_exists.stat.exists
+  tags:
+    - misc
+    - mpdris
+
+- name: MPDRIS | Setup mpdris
+  tags:
+    - misc
+    - mpdris
+  when:
+    - mpdris_current_version.stdout.find('not found') == -1
+  block:
+    - name: MPDRIS | Ensure ~/.local/src/mpdris are exists
+      become: true
+      become_user: "{{ user_admin }}"
+      ansible.builtin.file:
+        path: "{{ mpdris_dest }}"
+        state: directory
+        mode: "0755"
+      tags:
+        - misc
+        - mpdris
+
+    - name: MPDRIS | Clone mpdris from github, so we can install with rustup
+      ansible.builtin.git:
+        repo: "{{ mpdris_repo }}"
+        dest: "{{ mpdris_dest }}"
+        clone: yes
+        version: master
+        update: no
+        force: yes
+        recursive: false
+      retries: 3
+      delay: 3
+      register: mpdrisdlgit
+      until: mpdrisdlgit is success
+      tags:
+        - misc
+        - mpdris
+
+    # - name: MPDRIS | Debug mpdris_current_version!
+    #   ansible.builtin.debug:
+    #     msg: "yes"
+    #   tags:
+    #     - misc
+    #     - mpdris
+
+    - name: MPDRIS | Install mpdris
+      become: true
+      become_user: "{{ user_admin }}"
+      ansible.builtin.shell: |
+        source ~/.asdf/asdf.sh &&
+        cargo build --release
+      args:
+        executable: /bin/bash
+        chdir: "{{ mpdris_dest }}"
+      changed_when: false
+      when: mpdrisdlgit is success
+      tags:
+        - misc
+        - mpdris
+
+    - name: MPDRIS | Check if grub is present on the remote node
+      ansible.builtin.stat:
+        path: "/home/{{ user_admin }}/.local/bin"
+      register: check_dir_local_bin
+      tags:
+        - misc
+        - mpdris
+
+    # - name: MPDRIS | Debug path .local/bin
+    #   ansible.builtin.debug:
+    #     msg: "{{ check_dir_local_bin }}"
+
+    - name: MPDRIS | Create symlink for mpdris at ~/.local/bin
+      become: true
+      become_user: "{{ user_admin }}"
+      ansible.builtin.file:
+        src: "{{ mpdris_dest }}/target/release/mpdris2-rs"
+        dest: "/home/{{ user_admin }}/.local/bin/mpdris2-rs"
+        owner: "{{ user_admin }}"
+        mode: 0755
+        force: yes
+        state: link
+      when:
+        - check_dir_local_bin.stat.exists | bool
+      tags:
+        - misc
+        - mpdris

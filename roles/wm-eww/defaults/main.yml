@@ -1,0 +1,6 @@
+---
+dest_eww: "/home/{{ user_admin }}/.local/src/eww"
+
+eww_git:
+  - repo: "https://github.com/elkowar/eww"
+    dest: "{{ dest_eww }}"

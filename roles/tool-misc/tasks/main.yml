@@ -1,0 +1,19 @@
+---
+- name: MISC | Include vars for specific os
+  ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
+  tags:
+    - misc
+    - mpdris
+    - pamixer
+
+- name: MISC | Import task mpdris2-rs for mpd support
+  ansible.builtin.import_tasks: mpdris2-rs.yml
+  tags:
+    - misc
+    - mpdris
+
+# - name: MISC | Import task pamixer for volume control
+#   ansible.builtin.import_tasks: pamixer.yml
+#   tags:
+#     - misc
+#     - pamixer

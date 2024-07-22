@@ -5,24 +5,6 @@
 #
 ##############################
 
-# BSPWM --------------------------------------------------------- {{{
-__bspwm_deps:
-  - gcc
-  - git
-  - libasound2-dev
-  - libxcb-ewmh-dev
-  - libxcb-ewmh2
-  - libxcb-icccm4-dev
-  - libxcb-keysyms1-dev
-  - libxcb-randr0-dev
-  - libxcb-shape0-dev
-  - libxcb-util0-dev
-  - libxcb-xinerama0-dev
-  - libxcb-xtest0-dev
-  - make
-  - xcb
-  - xdotool
-#
 # }}}
 # AWESOME --------------------------------------------------------- {{{
 __awesome_deps:
@@ -108,18 +90,6 @@ __dwm_deps:
 #
 ##############################
 
-# DUNST --------------------------------------------------------- {{{
-__dunst_deps:
-  - libdbus-1-dev
-  - libnotify-dev
-  - libx11-dev
-  - libxinerama-dev
-  - libxrandr-dev
-  - libxss-dev
-  - libglib2.0-dev
-  - libpango1.0-dev
-  - libgtk-3-dev
-  - libxdg-basedir-dev
 #
 # }}}
 # ROFI --------------------------------------------------------- {{{
@@ -178,34 +148,6 @@ __polybar_deps:
   - libmpdclient-dev
   - libcurl4-openssl-dev
   - libnl-genl-3-dev
-#
-# }}}
-# PICOM --------------------------------------------------------- {{{
-__picom_deps:
-  - libxext-dev
-  - libxcb1-dev
-  - libxcb-damage0-dev
-  - libxcb-xfixes0-dev
-  - libxcb-shape0-dev
-  - libxcb-render-util0-dev
-  - libxcb-render0-dev
-  - libxcb-randr0-dev
-  - libxcb-composite0-dev
-  - libxcb-image0-dev
-  - libxcb-present-dev
-  - libxcb-xinerama0-dev
-  - libxcb-glx0-dev
-  - libpixman-1-dev
-  - libdbus-1-dev
-  - libconfig-dev
-  - libgl1-mesa-dev
-  - libpcre2-dev
-  - libpcre3-dev
-  - libevdev-dev
-  - uthash-dev
-  - libev-dev
-  - libx11-xcb-dev
-  - meson
 #
 # }}}
 # OOMOX --------------------------------------------------------- {{{

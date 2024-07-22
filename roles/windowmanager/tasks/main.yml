@@ -1,21 +1,25 @@
 ---
 - name: Environment | Include vars for specific os
-  include_vars: "{{ ansible_distribution | lower }}/main.yml"
+  ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
   tags:
     - always
 
-- become: True
+- name: Testing bro
+  become: true
+  when: ansible_os_family | lower == 'debian'
   block:
     # WM VARIAN ---------------------------------------------------------------
-    - import_tasks: bspwm.yml
+    - name: Import task bspwm.yml
+      ansible.builtin.import_tasks: bspwm.yml
     # - import_tasks: awesome.yml
     # - import_tasks: dwm.yml
 
     # WM Tools ----------------------------------------------------------------
-    - import_tasks: _dunst.yml
-    - import_tasks: _picom.yml
-    - import_tasks: _polybar.yml
-    - import_tasks: _rofi.yml
-    - import_tasks: _oomox.yml
-    - import_tasks: _wm_lock.yml
-  when: ansible_os_family | lower == 'debian'
+    # - name: Import task _dunst.yml
+    #   ansible.builtin.import_tasks: _dunst.yml
+    # - name: Import task _polybar.yml
+    #   ansible.builtin.import_tasks: _polybar.yml
+    # - name: Import task _oomox.yml
+    #   ansible.builtin.import_tasks: _oomox.yml
+    # - name: Import task _wm_lock.yml
+    #   ansible.builtin.import_tasks: _wm_lock.yml

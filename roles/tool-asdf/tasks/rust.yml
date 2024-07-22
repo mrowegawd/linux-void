@@ -1,0 +1,103 @@
+---
+- name: ASDF-Rust | Check plugin-list if spesific our lang is exists
+  become: true
+  become_user: "{{ user_admin }}"
+  ansible.builtin.shell: |
+    source ~/.asdf/asdf.sh && asdf plugin-list
+  args:
+    executable: /bin/bash
+  register: plugin_rust_exists
+  changed_when: false
+  failed_when: false
+  ignore_errors: true
+  tags:
+    - rust
+
+# - name: ASDF-Rust | Debug plugin_rust_exists!
+#   ansible.builtin.debug:
+#     msg: "{{ plugin_rust_exists.stdout.find('rust') }}"
+
+- name: ASDF-Rust | Install plugin asdf for rust
+  become: true
+  become_user: "{{ user_admin }}"
+  ansible.builtin.shell: |
+    source ~/.asdf/asdf.sh && {{ rust_lang.plugin_asdf_install }}
+  args:
+    executable: /bin/bash
+  changed_when: false
+  when:
+    # jika plugin sama sekali belum diinstall, masih berupa plugin kosong
+    - (plugin_rust_exists.stderr.find('No plugins installed') != 0) or (plugin_rust_exists.stderr.find('rust') == -1)
+  tags:
+    - rust
+
+- name: ASDF-Rust | Check rust version if exists
+  become: true
+  become_user: "{{ user_admin }}"
+  ansible.builtin.shell: |
+    source ~/.asdf/asdf.sh && rustup --version
+  args:
+    executable: /bin/bash
+  register: rust_version_cur_version
+  changed_when: false
+  failed_when: false
+  ignore_errors: true
+  tags:
+    - rust
+
+- name: ASDF-Rust | Ensure apt packages are managed | Debian
+  become: true
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ rust_lang.plugin_asdf_deps }}"
+  when:
+    - rust_lang.plugin_asdf_deps | length > 0
+    - rust_version_cur_version.stderr.find(rust_version) == -1
+    - ansible_os_family | lower == 'debian'
+  tags:
+    - rust
+
+- name: ASDF-Rust | Ensure yum packages are managed | Redhat
+  become: true
+  ansible.builtin.yum:
+    name: "{{ item }}"
+    state: "{{ _apt_state }}"
+  vars:
+    state: '{{ _apt_state | default("present") }}'
+  with_items:
+    - "{{ rust_lang.plugin_asdf_deps }}"
+  when:
+    - rust_lang.plugin_asdf_deps | length > 0
+    - rust_version_cur_version.stderr.find(rust_version) == -1
+    - ansible_os_family | lower == 'redhat'
+  tags:
+    - rust
+
+- name: ASDF-Rust | Install rust version
+  become: true
+  become_user: "{{ user_admin }}"
+  ansible.builtin.shell: |
+    source ~/.asdf/asdf.sh && asdf install rust {{ rust_lang.plugin_asdf_rust_version }}
+  args:
+    executable: /bin/bash
+  changed_when: false
+  register: rust_version_installed
+  when:
+    - rust_version_cur_version.stderr.find(rust_version) == -1
+  tags:
+    - rust
+
+- name: ASDF-Rust | Ensure global version are defined
+  become: true
+  become_user: "{{ user_admin }}"
+  ansible.builtin.shell: |
+    source ~/.asdf/asdf.sh && {{ rust_lang.plugin_asdf_set_global_version }}
+  args:
+    executable: /bin/bash
+  changed_when: false
+  when:
+    - rust_version_installed is success
+  tags:
+    - rust

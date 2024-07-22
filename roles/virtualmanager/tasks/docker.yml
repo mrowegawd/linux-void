@@ -1,8 +1,9 @@
 ---
 - name: DOCKER | Check docker if exis
-  become: True
+  become: true
   become_user: "{{ user_admin }}"
-  shell: |
+  ansible.builtin.shell: |
+    set -o pipefail;
     if command -v docker &> /dev/null;
     then docker --version | cut -d" " -f3 | cut -d"," -f1 ; else echo "not found"; fi
   args:
@@ -12,7 +13,7 @@
   register: check_docker_version
 
 - name: DOCKER | Install docker dep
-  include_role:
+  ansible.builtin.include_role:
     name: _0package
   vars:
     _apt_packages: "{{ __docker_dep }}"
@@ -22,7 +23,7 @@
     - docker
 
 - name: DOCKER | Ensure docker repo is present
-  include_role:
+  ansible.builtin.include_role:
     name: _0package
     tasks_from: ppa
   vars:
@@ -36,7 +37,7 @@
     - docker
 
 - name: DOCKER | Install docker dep
-  include_role:
+  ansible.builtin.include_role:
     name: _0package
   vars:
     _apt_packages: "{{ [docker_package_name] }}"
@@ -46,8 +47,8 @@
     - docker
 
 - name: DOCKER | Ensure user is added to docker group
-  become: True
-  user:
+  become: true
+  ansible.builtin.user:
     name: "{{ user_admin }}"
     groups: docker
     append: yes

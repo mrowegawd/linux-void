@@ -1,0 +1,214 @@
+---
+- name: SYSTEM-USER-ACCOUNTS | Check if /etc/security/pwquality.conf exists
+  ansible.builtin.stat:
+    path: /etc/security/pwquality.conf
+  check_mode: False
+  register: pwquality_config_check
+  tags:
+    - always
+
+- name: SYSTEM-USER-ACCOUNTS | Set password quality requirements
+  ansible.builtin.blockinfile:
+    dest: /etc/security/pwquality.conf
+    backup: yes
+    insertbefore: EOF
+    marker: "# {mark} Added by ansible-hardening role"
+    state: present
+    block: '{{ lookup("template", "pwquality.conf.j2") }}'
+  when:
+    - pwquality_config_check.stat.exists
+  tags:
+    - accounts
+    - medium
+
+- name: SYSTEM-USER-ACCOUNTS | Check for SHA512 password storage in PAM
+  ansible.builtin.command: |
+    grep pam_unix.so {{ __pam_password_file }}
+  register: password_sha512_check
+  changed_when: False
+  check_mode: False
+  tags:
+    - always
+
+- name: SYSTEM-USER-ACCOUNTS | Print warning if PAM is not using SHA512 for password storage
+  ansible.builtin.debug:
+    msg: >
+      PAM is not using SHA512 for password storage. This is a security issue.
+  when:
+    - password_sha512_check is defined
+    - "'sha512' not in password_sha512_check.stdout"
+  tags:
+    - accounts
+    - medium
+
+# install: ansible-galaxy collection install community.general.
+- name: SYSTEM-USER-ACCOUNTS | Ensure libuser is storing passwords using SHA512
+  community.general.ini_file:
+    dest: /etc/libuser.conf
+    section: defaults
+    option: crypt_style
+    value: sha512
+    mode: "0600"
+    backup: yes
+  when:
+    - accounts_security_libuser_crypt_style_sha512 | bool
+    - ansible_os_family | lower == 'redhat'
+  tags:
+    - accounts
+    - medium
+
+- name: SYSTEM-USER-ACCOUNTS | Set minimum password lifetime limit to 24 hours for interactive accounts
+  ansible.builtin.command: |
+    chage -m 1 {{ item.name }}
+  changed_when: false
+  when:
+    - item.shadow is mapping
+    - item.shadow.min_days != 1
+    - _accounts_security_set_minimum_password_lifetime | bool
+  with_items:
+    - "{{ interactive_user_list.users }}"
+  tags:
+    - accounts
+    - medium
+
+- name: SYSTEM-USER-ACCOUNTS | Set maximum password lifetime limit to 60 days for interactive accounts
+  ansible.builtin.command: |
+    chage -M 60 {{ item.name }}
+  changed_when: false
+  when:
+    - item.shadow is mapping
+    - item.shadow.max_days > 60
+    - _accounts_security_set_maximum_password_lifetime | bool
+  with_items:
+    - "{{ interactive_user_list.users }}"
+  tags:
+    - accounts
+    - medium
+
+- name: SYSTEM-USER-ACCOUNTS | Ensure that users cannot reuse one of their last 5 passwords
+  ansible.builtin.lineinfile:
+    dest: "{{ __pam_password_file }}"
+    regexp: '^(password\s+[a-z0-9\=\[\] ]+\s+pam_unix\.so.+?)\s+(?:remember=\d+)?$'
+    line: '\1 remember={{ security_password_remember_password }}'
+    backrefs: yes
+    state: present
+  when:
+    - _accounts_security_password_remember_password is defined
+  tags:
+    - accounts
+    - medium
+
+# - name: SETVARS | Debug user_admin
+#   ansible.builtin.debug:
+#     msg: "{{ path_user_admin }}"
+
+- name: SYSTEM-USER-ACCOUNTS | Ensure accounts are disabled if the password expires
+  ansible.builtin.lineinfile:
+    dest: /etc/default/useradd
+    regexp: '^[#\s]*INACTIVE'
+    line: "INACTIVE=0"
+  when:
+    - accounts_security_disable_account_if_password_expires | bool
+  tags:
+    - accounts
+    - medium
+
+- name: SYSTEM-USER-ACCOUNTS | Apply shadow-utils configurations
+  ansible.builtin.lineinfile:
+    dest: /etc/login.defs
+    regexp: "^{{ item.parameter }}"
+    line: "{{ item.parameter }} {{ item.value }}"
+    state: present
+    backup: yes
+  when:
+    - item.value
+    - item.ansible_os_family == 'all' or item.ansible_os_family == ansible_os_family
+  with_items: "{{ accounts_shadow_utils }}"
+  tags:
+    - accounts
+    - medium
+
+- name: SYSTEM-USER-ACCOUNTS | Print warning for groups in /etc/passwd that are not in /etc/group
+  ansible.builtin.debug:
+    msg: >
+      The following users have GIDs in /etc/passwd that do not exist in /etc/group:
+      {{ user_list.users | selectattr('group', 'equalto', False) | map(attribute='name') | join(', ') }}
+  when:
+    - user_list is defined
+    - user_list.users | selectattr('group', 'equalto', False) | list | length > 0
+  tags:
+    - accounts
+    - low
+
+- name: SYSTEM-USER-ACCOUNTS | Get all accounts with UID 0
+  ansible.builtin.command: |
+    awk -F: '$3 == 0 {print $1}' /etc/passwd
+  changed_when: False
+  check_mode: False
+  register: root_user_check
+  tags:
+    - accounts
+    - high
+
+- name: SYSTEM-USER-ACCOUNTS | Print warnings for non-root users with UID 0
+  ansible.builtin.fail:
+    msg: |
+      Only the 'root' user should have UID 0. Other users were found:
+      {{ root_user_check.stdout_lines | join(', ') }}"
+  when:
+    - root_user_check.stdout != 'root'
+  tags:
+    - accounts
+    - high
+
+- name: SYSTEM-USER-ACCOUNTS | Print warning for local interactive users without a home directory assigned
+  ansible.builtin.debug:
+    msg: |
+      The following users do not have a home directory assigned:
+      {{ user_list.users | selectattr('dir', 'equalto', '') | map(attribute='name') | join(', ') }}
+  when:
+    - user_list is defined
+    - user_list.users | selectattr('dir', 'equalto', '') | map(attribute='name') | list | length > 0
+  tags:
+    - accounts
+    - medium
+
+- name: SYSTEM-USER-ACCOUNTS | Check each user to see if its home directory exists on the filesystem
+  ansible.builtin.stat:
+    path: '{{ item["dir"] }}'
+  when:
+    - user_list is defined
+    - item['dir']
+  with_items: "{{ user_list.users }}"
+  register: home_directory_checks
+  no_log: true
+  tags:
+    - accounts
+    - medium
+
+- name: SYSTEM-USER-ACCOUNTS | Print warning for users with an assigned home directory that does not exist
+  ansible.builtin.debug:
+    msg: |
+      These users have a home directory assigned, but the directory does not exist:
+      {% for check in home_directory_checks.results %}
+      {% if not check.stat.exists %}
+      {{ check.item.name }} ({{ check.item.dir }} does not exist)
+      {% endif %}
+      {% endfor %}
+  when:
+    - home_directory_checks.results is defined
+    - home_directory_checks.results | selectattr('stat.exists', 'sameas', false) | list | length > 0
+  tags:
+    - accounts
+    - medium
+
+- name: SYSTEM-USER-ACCOUNTS | Use pwquality when passwords are changed or created
+  ansible.builtin.lineinfile:
+    dest: /etc/pam.d/passwd
+    line: "password required pam_pwquality.so retry=3"
+    state: present
+  when:
+    - accounts_security_enable_pwquality_password_set | bool
+  tags:
+    - accounts
+    - medium

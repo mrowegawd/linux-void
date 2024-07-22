@@ -1,0 +1,6 @@
+---
+picom_dest: "{{ temp_dir_picom.path }}/picom"
+
+picom_git:
+  - repo: "https://github.com/yshui/picom"
+    dest: "{{ picom_dest }}"

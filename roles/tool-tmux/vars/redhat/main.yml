@@ -1,0 +1,7 @@
+__yum_packages:
+  - libevent-devel
+  - ncurses-devel
+  - gcc
+  - make
+  - bison
+  - pkg-config

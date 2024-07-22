@@ -1,0 +1,6 @@
+---
+rofi_version: 1.7.5
+rofi_download:
+  - url: "https://github.com/davatorium/rofi/releases/download/{{ rofi_version }}/rofi-{{ rofi_version }}.tar.gz"
+    dest: "{{ temp_dir_rofi.path }}/rofi"
+    name: "rofi-{{ rofi_version }}"

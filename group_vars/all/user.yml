@@ -1,3 +1,4 @@
+# vim: foldmethod=marker foldlevel=0
 ---
 # USER VAR -------------------------------------------------------------------- {{{
 #
@@ -26,7 +27,7 @@ _user_admin:
       primary: "{{ _mypass_user_sudo }}"
       secondary:
         - "{{ _group_admin }}"
-        - "libvirt" # use for role virtualwindows
+        # - "libvirt" # use for role virtualwindows TODO: set group ini check ini nanti nya
     authorized:
       new: "{{ _mypass_sshkey_pub }}"
       renew: "{{ _mypass_sshkey_pub_renew }}"

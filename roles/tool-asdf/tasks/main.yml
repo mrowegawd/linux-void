@@ -1,0 +1,69 @@
+---
+- name: ASDF | Include vars for specific os
+  ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
+  tags:
+    - asdf
+
+- name: ASDF | Ensure apt packages are managed | Debian
+  become: true
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ __dep_asdf_pkgs }}"
+  when: ansible_os_family | lower == 'debian'
+  tags:
+    - asdf
+
+- name: ASDF | Ensure yum packages are managed | Redhat
+  become: true
+  ansible.builtin.yum:
+    name: "{{ packages }}"
+    state: "{{ _apt_state }}"
+  vars:
+    packages: "{{ __dep_asdf_pkgs }}"
+    state: '{{ _apt_state | default("present") }}'
+  when: ansible_os_family | lower == 'redhat'
+  tags:
+    - asdf
+
+- name: ASDF | Clone asdf
+  become: true
+  become_user: "{{ user_admin }}"
+  ansible.builtin.git:
+    repo: "https://github.com/asdf-vm/asdf.git"
+    dest: "/home/{{ user_admin }}/.asdf"
+    version: "master"
+  tags:
+    - install
+    - asdf
+
+- name: ASDF | Import task go.yml
+  ansible.builtin.import_tasks: go.yml
+  tags:
+    - asdf
+    - go
+
+- name: ASDF | Import task rust.yml
+  ansible.builtin.import_tasks: rust.yml
+  tags:
+    - asdf
+    - rust
+
+- name: ASDF | Import task nodejs.yml
+  ansible.builtin.import_tasks: nodejs.yml
+  tags:
+    - asdf
+    - nodejs
+
+- name: ASDF | Import task ruby.yml
+  ansible.builtin.import_tasks: ruby.yml
+  tags:
+    - asdf
+    - ruby
+
+- name: ASDF | Import task python.yml
+  ansible.builtin.import_tasks: python.yml
+  tags:
+    - asdf
+    - python

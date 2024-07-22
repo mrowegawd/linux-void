@@ -1,6 +1,6 @@
 ---
 - name: TOOLS | Installing pre-reqs
-  include_role:
+  ansible.builtin.include_role:
     name: _0package
   vars:
     _apt_packages: "{{ __tools_base_pkg }}"
@@ -9,13 +9,13 @@
     - install
 
 - name: TOOLS | Install development tools for redhat
-  yum:
+  ansible.builtin.yum:
     name: "@Development Tools"
     state: present
   when: ansible_os_family == 'RedHat'
 
 - name: TOOLS | Installing tools
-  include_role:
+  ansible.builtin.include_role:
     name: _0package
   vars:
     _apt_packages: "{{ __tools + __tools_extensions }}"
@@ -35,7 +35,7 @@
     - install
 
 - name: TOOLS | Installing tools with ppa
-  include_role:
+  ansible.builtin.include_role:
     name: _0package
   vars:
     _apt_packages: "{{ __tools_ppa }}"

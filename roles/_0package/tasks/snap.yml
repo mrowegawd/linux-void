@@ -1,7 +1,7 @@
 ---
 - name: 00SNAP | Ensure snapd packages are managed | Debian
-  become: True
-  snap:
+  become: true
+  community.general.snap:
     name: "{{ packages }}"
     state: present
   retries: 3

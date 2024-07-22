@@ -1,6 +1,6 @@
 ---
 - name: VSCODE | Install vscode deps
-  include_role:
+  ansible.builtin.include_role:
     name: _0package
   vars:
     _apt_packages: "{{ __vscode_shared_dep }}"
@@ -9,7 +9,7 @@
     - vscode
 
 - name: VSCODE | Ensure vscode repo is present
-  include_role:
+  ansible.builtin.include_role:
     name: _0package
     tasks_from: ppa
   vars:
@@ -22,7 +22,7 @@
     - vscode
 
 - name: VSCODE | Install vscode (apt)
-  include_role:
+  ansible.builtin.include_role:
     name: _0package
   vars:
     _apt_packages: '{{ visual_studio_code_package }}{{ (visual_studio_code_version | length > 0) | ternary("=" + visual_studio_code_version, "") }}'

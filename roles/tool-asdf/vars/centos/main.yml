@@ -1,0 +1,41 @@
+---
+__dep_asdf_pkgs:
+  - gnupg2
+  - curl
+  - gawk
+
+__dep_python2_pkgs: []
+
+__dep_python3_pkgs:
+  - "@Development Tools"
+  - gcc
+  - zlib-devel
+  - bzip2
+  - bzip2-devel
+  - readline-devel
+  - sqlite
+  - sqlite-devel
+  - openssl-devel
+  - tk-devel
+  - libffi-devel
+  - xz-devel
+  - curl
+  - wget
+
+__dep_nodejs_pkgs:
+  - gpg
+  - curl
+
+__dep_ruby_pkgs:
+  - autoconf
+  - gcc-6
+  - patch
+  - bzip2
+  - openssl-devel
+  - libyaml-devel
+  - libffi-devel
+  - readline-devel
+  - zlib-devel
+  - gdbm-devel
+  - ncurses-devel
+  - tar
