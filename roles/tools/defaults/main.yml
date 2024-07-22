@@ -153,13 +153,6 @@ kitty_version: "0.24.1"
 kitty_url_download: https://sw.kovidgoyal.net/kitty/installer.sh
 #
 # }}}
-# MPV ------------------------------------------------------------- {{{
-mpv_version: "0.34.0"
-mpv_build:
-  - repo: https://github.com/mpv-player/mpv-build.git
-    dest: "{{ temp_dir }}/mpv_build"
-#
-# }}}
 # AUTOENV --------------------------------------------------------- {{{
 autoenv_git:
   - repo: "https://github.com/kennethreitz/autoenv.git"

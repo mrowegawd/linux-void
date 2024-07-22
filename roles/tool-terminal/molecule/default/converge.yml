@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Converge install tool-terminal"
+      ansible.builtin.include_role:
+        name: "tool-terminal"

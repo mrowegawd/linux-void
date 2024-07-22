@@ -1,0 +1,7 @@
+- name: TOOL-VIDEO | Ensure mpv deps installed
+  ansible.builtin.include_role:
+    name: _0package
+  vars:
+    _apt_packages: "{{ tool_video_pgks }}"
+  tags:
+    - video

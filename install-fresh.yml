@@ -16,8 +16,13 @@
     - tool-fzf
     - tool-tmux
     - tool-misc
-    - tools
-    # - tool-newsboat
+    - tool-video
+    - tool-terminal
+    - tool-docker
+    - tool-qemu
+    - tool-editor
+    - tool-newsboat
+    # - tools
 
     # Window Manager
     - wm-bspwm

@@ -1,0 +1,57 @@
+---
+# set -o pipefail;
+- name: MPV | Check mpv installed version
+  become: true
+  become_user: "{{ user_admin }}"
+  ansible.builtin.shell: |
+    if command -v mpv &> /dev/null;
+    then mpv --version | head -1 | cut -d" " -f2 ; else echo "not found"; fi
+  args:
+    chdir: "/home/{{ user_admin }}"
+    executable: /bin/bash
+  changed_when: false
+  register: check_mpv_version
+  tags:
+    - mpv
+    - video
+
+- name: MPV | Intsall MPV
+  become: true
+  when: check_mpv_version.stdout.find('not found') != -1
+  tags:
+    - mpv
+    - video
+  block:
+    # Untuk install mpv butuh dependencies
+    - name: MPV | Clone mpv-build from github
+      ansible.builtin.git:
+        repo: "{{ item.repo }}"
+        dest: "{{ item.dest }}"
+        clone: yes
+        update: no
+        force: yes
+        version: master
+        recursive: false
+      retries: 3
+      delay: 3
+      register: mpvdlgit
+      until: mpvdlgit is success
+      with_items: "{{ mpv_build }}"
+
+    - name: MPV | Ensure mpv deps installed
+      ansible.builtin.include_role:
+        name: _0package
+      vars:
+        _apt_packages: "{{ __mpv_deps }}"
+
+    - name: MPV | Install MPV
+      ansible.builtin.shell: |
+        printf "%s\n" --disable-gl > mpv_options
+        ./rebuild -j4
+        sudo ./install
+      args:
+        executable: /bin/bash
+        chdir: "{{ item.dest }}"
+      when: mpvdlgit is success
+      changed_when: false
+      with_items: "{{ mpv_build }}"

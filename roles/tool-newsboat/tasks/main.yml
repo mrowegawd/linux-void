@@ -5,7 +5,7 @@
 - name: NEWSBOAT | Include vars for specific os
   ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
   tags:
-    - newsboat
+    - always
 
 - name: NEWSBOAT | Check newsboat current version
   become: true
