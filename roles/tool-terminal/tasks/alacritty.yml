@@ -1,24 +1,25 @@
 ---
-- name: ALACRITTY | Check alacritty path if exists
+- name: TERMINAL-ALACRITTY | Check alacritty path if exists
   ansible.builtin.stat:
     path: "/home/{{ user_admin }}/.asdf/shims/alacritty"
   register: check_alacritty_path
   tags:
-    - always
+    - terminal
+    - alacritty
 
 - name: Run if alacritty path not exists
   when: not check_alacritty_path.stat.exists
+  tags:
+    - terminal
+    - alacritty
   block:
-    - name: ALACRITTY | Install alacritty deps
+    - name: TERMINAL-ALACRITTY | Install alacritty deps
       ansible.builtin.include_role:
         name: _0package
       vars:
         _apt_packages: "{{ __alacritty_pkg }}"
-      tags:
-        - install
-        - nvim
 
-    - name: ALACRITTY | Install alacritty with cargo
+    - name: TERMINAL-ALACRITTY | Install alacritty with cargo
       become: true
       become_user: "{{ user_admin }}"
       changed_when: false
@@ -28,7 +29,7 @@
         executable: /bin/bash
       register: installed_alacritty
 
-    - name: ALACRITTY | Reshim rust after install alacritty
+    - name: TERMINAL-ALACRITTY | Reshim rust after install alacritty
       become: true
       become_user: "{{ user_admin }}"
       changed_when: false

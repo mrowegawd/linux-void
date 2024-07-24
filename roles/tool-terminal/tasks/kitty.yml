@@ -1,7 +1,7 @@
 ---
 # Check install: https://sw.kovidgoyal.net/kitty/binary/
 
-- name: KITTY | Check kitty if exis
+- name: TERMINAL-KITTY | Check kitty if exis
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
@@ -14,6 +14,9 @@
     PATH: "/home/{{ user_admin }}/.local/bin:{{ ansible_env.PATH }}"
   changed_when: false
   register: check_kitty_version
+  tags:
+    - kitty
+    - terminal
 
 # - name: test
 #   debug:
@@ -21,15 +24,17 @@
 
 - name: Install kitty terminal if not exists
   when: kitty_version not in check_kitty_version.stdout or check_kitty_version.stdout.find('not found') != -1
+  tags:
+    - kitty
   block:
-    - name: KITTY | Install kitty deps
+    - name: TERMINAL-KITTY | Install kitty deps
       become: true
       become_user: "{{ user_admin }}"
       ansible.builtin.file:
         path: "/home/{{ user_admin }}/.local/bin/kitty"
         state: "absent"
 
-    - name: KITTY | Download kitty from url
+    - name: TERMINAL-KITTY | Download kitty from url
       become: true
       become_user: "{{ user_admin }}"
       ansible.builtin.get_url:
@@ -42,7 +47,7 @@
       retries: 30
       delay: 10
 
-    - name: KITTY | Install kitty there
+    - name: TERMINAL-KITTY | Install kitty there
       become: true
       become_user: "{{ user_admin }}"
       ansible.builtin.shell: |
@@ -52,7 +57,7 @@
       changed_when: false
       when: kitty_download_task is success
 
-    - name: KITTY | Create symlink for kitty at ~/.local/bin
+    - name: TERMINAL-KITTY | Create symlink for kitty at ~/.local/bin
       become: true
       become_user: "{{ user_admin }}"
       ansible.builtin.file:
@@ -63,7 +68,7 @@
         force: yes
         state: link
 
-    - name: KITTY | Cleaning up
+    - name: TERMINAL-KITTY | Cleaning up
       become: true
       become_user: "{{ user_admin }}"
       ansible.builtin.file:
@@ -75,7 +80,7 @@
           mode: "0755"
           state: absent
 
-    - name: KITTY | Copy kitty application.desktop
+    - name: TERMINAL-KITTY | Copy kitty application.desktop
       become: true
       become_user: "{{ user_admin }}"
       ansible.builtin.copy:

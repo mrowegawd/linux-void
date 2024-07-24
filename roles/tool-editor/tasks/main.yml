@@ -1,8 +1,10 @@
 ---
-- name: VIDEO | Include vars for specific os
+- name: EDITOR | Include vars for specific os
   ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
   tags:
-    - always
+    - editor
+    - vscode
+    - neovim
 
 - name: Import task vscode.yml
   ansible.builtin.import_tasks: vscode.yml

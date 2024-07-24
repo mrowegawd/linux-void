@@ -223,17 +223,6 @@ __vifm_deps:
 
 #
 # }}}
-# TMUX -------------------------------------------------------------- {{{
-__tmux_deps:
-  - libevent-dev
-  - libncurses-dev
-  - automake
-  - autoconf
-  - gcc
-  - pkg-config
-
-#
-# }}}
 # TELEGRAM ---------------------------------------------------------- {{{
 __telegram_deps:
   - xz-utils

@@ -6,7 +6,7 @@
 - name: DOCKER | Include vars for specific os
   ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
   tags:
-    - always
+    - docker
 
 - include_tasks: setup-RedHat.yml
   when: ansible_os_family == 'RedHat'

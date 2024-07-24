@@ -1,5 +1,4 @@
 ---
-
 - name: BSPWM | Check bspwm installed version
   shell: >
     if command -v bspwm &> /dev/null;
@@ -9,7 +8,7 @@
   changed_when: false
   register: check_bspwm_version
   tags:
-    - always
+    - bspwm
 
 # - name: Test debug
 #   debug:

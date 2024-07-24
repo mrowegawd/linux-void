@@ -1,8 +1,10 @@
 ---
-- name: VIDEO | Include vars for specific os
+- name: TERMINAL | Include vars for specific os
   ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
   tags:
-    - always
+    - terminal
+    - kitty
+    - zsh
 
 - name: Import task kitty.yml
   ansible.builtin.import_tasks: kitty.yml
