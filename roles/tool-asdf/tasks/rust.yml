@@ -12,6 +12,7 @@
   ignore_errors: true
   tags:
     - rust
+    - asdf
 
 # - name: ASDF-Rust | Debug plugin_rust_exists!
 #   ansible.builtin.debug:
@@ -30,6 +31,7 @@
     - (plugin_rust_exists.stderr.find('No plugins installed') != 0) or (plugin_rust_exists.stderr.find('rust') == -1)
   tags:
     - rust
+    - asdf
 
 - name: ASDF-Rust | Check rust version if exists
   become: true
@@ -44,6 +46,7 @@
   ignore_errors: true
   tags:
     - rust
+    - asdf
 
 - name: ASDF-Rust | Ensure apt packages are managed | Debian
   become: true
@@ -58,6 +61,7 @@
     - ansible_os_family | lower == 'debian'
   tags:
     - rust
+    - asdf
 
 - name: ASDF-Rust | Ensure yum packages are managed | Redhat
   become: true
@@ -74,6 +78,7 @@
     - ansible_os_family | lower == 'redhat'
   tags:
     - rust
+    - asdf
 
 - name: ASDF-Rust | Install rust version
   become: true
@@ -88,6 +93,7 @@
     - rust_version_cur_version.stderr.find(rust_version) == -1
   tags:
     - rust
+    - asdf
 
 - name: ASDF-Rust | Ensure global version are defined
   become: true
@@ -101,3 +107,4 @@
     - rust_version_installed is success
   tags:
     - rust
+    - asdf

@@ -26,11 +26,5 @@
     #     tasks_from: buildsourcewithgit
     #   with_items: "{{ install_tools_from_git }}"
 
-    # - name: Import task folders.yml
-    #   ansible.builtin.import_tasks: folders.yml
-    # - name: Import task autoenv.yml
-    #   ansible.builtin.import_tasks: autoenv.yml
-    # - name: Import task dropbox.yml
-    #   ansible.builtin.import_tasks: dropbox.yml
     - name: Import task tools.yml
       ansible.builtin.import_tasks: tools.yml

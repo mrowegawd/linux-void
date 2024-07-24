@@ -4,15 +4,15 @@
   tags:
     - video
 
-- name: Import task maim_slop.yml
-  ansible.builtin.import_tasks: maim_slop.yml
+- include_tasks: maim-slop.yml
   tags:
     - video
+    - slop
 
-- name: Import task tool-video.yml
-  ansible.builtin.import_tasks: tool-video.yml
+- include_tasks: tool-video.yml
   tags:
     - video
+    - mpv
 # - name: Import task mpv.yml
 #   ansible.builtin.import_tasks: mpv.yml
 #   tags:

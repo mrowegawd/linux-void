@@ -1,27 +1,25 @@
 ---
-- name: AUTOENV | Register, check path home/user/.autoenv jika exists
+- name: AUTOENV-MISC | Register, check path home/user/.autoenv jika exists
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.stat:
     path: "/home/{{ user_admin }}/.autoenv"
   register: check_autoenv_path
   tags:
-    - install
+    - misc
     - autoenv
 
-- name: AUTOENV | Install autoenv
+- name: AUTOENV-MISC | Install autoenv
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.git:
-    repo: "{{ item.repo }}"
+    repo: "https://github.com/kennethreitz/autoenv.git"
     dest: "/home/{{ user_admin }}/.autoenv"
-    version: "{{ item.version }}"
+    version: "master"
     update: yes
     force: yes
     recursive: yes
-  with_items:
-    - "{{ autoenv_git }}"
   when: not check_autoenv_path.stat.exists
   tags:
-    - install
+    - misc
     - autoenv

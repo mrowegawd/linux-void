@@ -1,13 +1,16 @@
 ---
-- name: Install DROPBOX | Check path .dropbox-dist if exists
+- name: DROPBOX-MISC | Check path .dropbox-dist if exists
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.stat:
     path: "~/.dropbox-dist"
   register: check_dropbox
   check_mode: False
+  tags:
+    - misc
+    - dropbox
 
-- name: Install DROPBOX | Start download dropbox and extract them
+- name: DROPBOX-MISC | Start download dropbox and extract them
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
@@ -17,6 +20,9 @@
     chdir: "/home/{{ user_admin }}"
   changed_when: false
   when: not check_dropbox.stat.exists
+  tags:
+    - misc
+    - dropbox
 #
 #
 # After download tar selesai, kamu harus menjalankan nya secara manual:

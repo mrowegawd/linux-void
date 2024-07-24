@@ -5,15 +5,35 @@
     - misc
     - mpdris
     - pamixer
+    - folders
+    - dropbox
+    - tools
 
-- name: MISC | Import task mpdris2-rs for mpd support
-  ansible.builtin.import_tasks: mpdris2-rs.yml
+- include_tasks: mpdris2-rs.yml
   tags:
     - misc
     - mpdris
-
-# - name: MISC | Import task pamixer for volume control
-#   ansible.builtin.import_tasks: pamixer.yml
+# - include_tasks: pamixer.yml
 #   tags:
 #     - misc
 #     - pamixer
+
+- include_tasks: folders.yml
+  tags:
+    - misc
+    - folders
+
+- include_tasks: dropbox.yml
+  tags:
+    - misc
+    - folders
+
+- include_tasks: tools.yml
+  tags:
+    - misc
+    - tools
+
+- include_tasks: autoenv.yml
+  tags:
+    - misc
+    - autoenv

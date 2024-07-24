@@ -1,7 +1,0 @@
-mpv_build:
-  - repo: https://github.com/mpv-player/mpv-build.git
-    dest: "{{ temp_dir }}/mpv_build"
-
-tool_video_pgks:
-  - ffmpeg
-  - mpv

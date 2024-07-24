@@ -1,5 +1,5 @@
 ---
-- name: SLOP | Check installed slop version
+- name: SLOP-VIDEO | Check installed slop version
   ansible.builtin.shell: >
     if command -v slop &> /dev/null;
     then echo "found"; else echo "not found"; fi
@@ -12,7 +12,7 @@
   tags:
     - video
 
-- name: SLOP | Install slop with dependencies
+- name: SLOP-VIDEO | Install slop with dependencies
   ansible.builtin.include_role:
     name: _0package
   when: check_slop.stdout.find('not found') != -1

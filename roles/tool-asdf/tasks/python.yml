@@ -3,6 +3,7 @@
   ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
   tags:
     - python
+    - asdf
 
 - name: ASDF-Python | Check plugin-list if spesific our lang is exists
   become: true
@@ -17,6 +18,7 @@
   ignore_errors: true
   tags:
     - python
+    - asdf
 
 # - name: ASDF-Python | Debug plugin_python_exists!
 #   ansible.builtin.debug:
@@ -42,6 +44,7 @@
     - (plugin_python_exists.stderr.find('No plugins installed') != -1) or (plugin_python_exists.stdout.find('python') == -1)
   tags:
     - python
+    - asdf
 
 - name: ASDF-Python | Check version python2 python3 version
   become: true
@@ -106,6 +109,7 @@
     - item.1.stderr.find('command not found') != -1
   tags:
     - python
+    - asdf
 
 - name: ASDF-Python | Ensure global version python2 python3 are defined
   become: true
@@ -121,3 +125,4 @@
     - python_version_installed is success
   tags:
     - python
+    - asdf

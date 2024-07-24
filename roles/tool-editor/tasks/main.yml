@@ -4,16 +4,14 @@
   tags:
     - editor
     - vscode
-    - neovim
+    - nvim
 
-- name: Import task vscode.yml
-  ansible.builtin.import_tasks: vscode.yml
+- include_tasks: vscode.yml
   tags:
     - editor
     - vscode
 
-- name: Import task neovim.yml
-  ansible.builtin.import_tasks: neovim.yml
+- include_tasks: neovim.yml
   tags:
     - editor
-    - neovim
+    - nvim

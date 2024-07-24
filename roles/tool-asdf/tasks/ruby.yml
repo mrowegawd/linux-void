@@ -3,6 +3,7 @@
   ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
   tags:
     - ruby
+    - asdf
 
 - name: ASDF-Ruby | Check plugin-list if spesific our lang is exists
   become: true
@@ -17,6 +18,7 @@
   ignore_errors: true
   tags:
     - ruby
+    - asdf
 
 # - name: ASDF-Ruby | Debug plugin_ruby_exists!
 #   ansible.builtin.debug:
@@ -35,6 +37,7 @@
     - (plugin_ruby_exists.stderr.find('No plugins installed') != 0) or (plugin_ruby_exists.stdout.find('ruby') == -1)
   tags:
     - ruby
+    - asdf
 
 - name: ASDF-Ruby | Check ruby version if exists
   become: true
@@ -49,6 +52,7 @@
   ignore_errors: true
   tags:
     - ruby
+    - asdf
 
 - name: ASDF-Ruby | Ensure apt packages are managed | Debian
   become: true
@@ -63,6 +67,7 @@
     - ansible_os_family | lower == 'debian'
   tags:
     - ruby
+    - asdf
 
 - name: ASDF-Ruby | Ensure yum packages are managed | Redhat
   become: true
@@ -79,6 +84,7 @@
     - ansible_os_family | lower == 'redhat'
   tags:
     - ruby
+    - asdf
 
 - name: ASDF-Ruby | Install ruby version
   become: true
@@ -93,6 +99,7 @@
     - ruby_version_cur_version.stderr.find('command not found') != -1
   tags:
     - ruby
+    - asdf
 
 - name: ASDF-Ruby | Ensure global version are defined
   become: true
@@ -106,3 +113,4 @@
     - ruby_version_installed is success
   tags:
     - ruby
+    - asdf

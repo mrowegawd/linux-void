@@ -4,22 +4,20 @@
   tags:
     - terminal
     - kitty
+    - alacritty
     - zsh
 
-- name: Import task kitty.yml
-  ansible.builtin.import_tasks: kitty.yml
+- include_tasks: kitty.yml
   tags:
     - terminal
     - kitty
 
-- name: Import task alacritty.yml
-  ansible.builtin.import_tasks: alacritty.yml
+- include_tasks: alacritty.yml
   tags:
     - terminal
     - alacritty
 
-- name: Import task zsh.yml
-  ansible.builtin.import_tasks: zsh.yml
+- include_tasks: zsh.yml
   tags:
     - terminal
     - zsh

@@ -153,12 +153,6 @@ kitty_version: "0.24.1"
 kitty_url_download: https://sw.kovidgoyal.net/kitty/installer.sh
 #
 # }}}
-# AUTOENV --------------------------------------------------------- {{{
-autoenv_git:
-  - repo: "https://github.com/kennethreitz/autoenv.git"
-    version: "master"
-#
-# }}}
 # FZF ------------------------------------------------------------- {{{
 fzf_repo:
   - name: ".fzf"

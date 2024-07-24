@@ -13,15 +13,16 @@
 
     # Tools
     - tool-asdf
-    - tool-fzf
-    - tool-tmux
-    - tool-misc
-    - tool-video
-    - tool-terminal
     - tool-docker
-    - tool-qemu
     - tool-editor
+    - tool-fzf
+    - tool-misc
     - tool-newsboat
+    - tool-qemu
+    - tool-terminal
+    - tool-tmux
+    - tool-video
+    # - tool-test
     # - tools
 
     # Window Manager

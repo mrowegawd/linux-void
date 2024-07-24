@@ -3,7 +3,7 @@
 ## https://github.com/szclsya/mpdris2-rs
 ## controlling mpd with playerctl
 #
-- name: MPDRIS | Make sure path asdf are exists
+- name: MPDRIS-MISC | Make sure path asdf are exists
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.stat:
@@ -13,7 +13,7 @@
     - misc
     - mpdris
 
-- name: MPDRIS | Mpdris need rustup installed, so make sure it exists
+- name: MPDRIS-MISC | Mpdris need rustup installed, so make sure it exists
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
@@ -29,14 +29,14 @@
     - misc
     - mpdris
 
-- name: MPDRIS | Setup mpdris
+- name: MPDRIS-MISC | Setup mpdris
   tags:
     - misc
     - mpdris
   when:
     - mpdris_current_version.stdout.find('not found') == -1
   block:
-    - name: MPDRIS | Ensure ~/.local/src/mpdris are exists
+    - name: MPDRIS-MISC | Ensure ~/.local/src/mpdris are exists
       become: true
       become_user: "{{ user_admin }}"
       ansible.builtin.file:
@@ -47,7 +47,7 @@
         - misc
         - mpdris
 
-    - name: MPDRIS | Clone mpdris from github, so we can install with rustup
+    - name: MPDRIS-MISC | Clone mpdris from github, so we can install with rustup
       ansible.builtin.git:
         repo: "{{ mpdris_repo }}"
         dest: "{{ mpdris_dest }}"
@@ -64,14 +64,14 @@
         - misc
         - mpdris
 
-    # - name: MPDRIS | Debug mpdris_current_version!
+    # - name: MPDRIS-MISC | Debug mpdris_current_version!
     #   ansible.builtin.debug:
     #     msg: "yes"
     #   tags:
     #     - misc
     #     - mpdris
 
-    - name: MPDRIS | Install mpdris
+    - name: MPDRIS-MISC | Install mpdris
       become: true
       become_user: "{{ user_admin }}"
       ansible.builtin.shell: |
@@ -86,7 +86,7 @@
         - misc
         - mpdris
 
-    - name: MPDRIS | Check if grub is present on the remote node
+    - name: MPDRIS-MISC | Check if grub is present on the remote node
       ansible.builtin.stat:
         path: "/home/{{ user_admin }}/.local/bin"
       register: check_dir_local_bin
@@ -94,11 +94,11 @@
         - misc
         - mpdris
 
-    # - name: MPDRIS | Debug path .local/bin
+    # - name: MPDRIS-MISC | Debug path .local/bin
     #   ansible.builtin.debug:
     #     msg: "{{ check_dir_local_bin }}"
 
-    - name: MPDRIS | Create symlink for mpdris at ~/.local/bin
+    - name: MPDRIS-MISC | Create symlink for mpdris at ~/.local/bin
       become: true
       become_user: "{{ user_admin }}"
       ansible.builtin.file:

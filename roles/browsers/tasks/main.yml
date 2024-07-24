@@ -3,7 +3,7 @@
 - name: BROWSERS | Include vars for specific os
   ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
   tags:
-    - always
+    - browser
 
 - name: BROWSERS | Fasdf
   ansible.builtin.include_vars: ""

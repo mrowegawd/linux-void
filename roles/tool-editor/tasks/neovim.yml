@@ -1,14 +1,14 @@
 ---
-- name: NEOVIM | Install neovim dependencies
+- name: NEOVIM-EDITOR | Install neovim dependencies
   ansible.builtin.include_role:
     name: _0package
   vars:
     _apt_packages: "{{ __neovim_dependencies_pkg }}"
   tags:
-    - install
+    - editor
     - nvim
 
-- name: NEOVIM.PROVIDER | Install provider neovim for Nodejs
+- name: NEOVIM-PROVIDER-EDITOR | Install provider neovim for Nodejs
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
@@ -18,11 +18,11 @@
   changed_when: false
   register: neovim_provider_nodejs
   tags:
-    - install
+    - editor
     - nvim
     - nvimprovider
 
-- name: NEOVIM.PROVIDER | Reshim nodejs asdf
+- name: NEOVIM-PROVIDER-EDITOR | Reshim nodejs asdf
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
@@ -32,11 +32,11 @@
   when: neovim_provider_nodejs is success
   changed_when: false
   tags:
-    - install
+    - editor
     - nvim
     - nvimprovider
 
-- name: NEOVIM.PROVIDER | Install provider neovim for Ruby
+- name: NEOVIM-PROVIDER-EDITOR | Install provider neovim for Ruby
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
@@ -46,11 +46,11 @@
   changed_when: false
   register: neovim_provider_ruby
   tags:
-    - install
+    - editor
     - nvim
     - nvimprovider
 
-- name: NEOVIM.PROVIDER | Reshim ruby asdf
+- name: NEOVIM-PROVIDER-EDITOR | Reshim ruby asdf
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
@@ -60,11 +60,11 @@
   when: neovim_provider_ruby is success
   changed_when: false
   tags:
-    - install
+    - editor
     - nvim
     - nvimprovider
 
-- name: NEOVIM.PROVIDER | Create virtualenv for neovim python provider
+- name: NEOVIM-PROVIDER-EDITOR | Create virtualenv for neovim python provider
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
@@ -79,11 +79,11 @@
     - "python2 -m pip install virtualenv"
     - "python2 -m virtualenv neovim2"
   tags:
-    - install
+    - editor
     - nvim
     - nvimprovider
 
-- name: NEOVIM.PROVIDER | Install neovim for python3/python2 virtualenv
+- name: NEOVIM-PROVIDER-EDITOR | Install neovim for python3/python2 virtualenv
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
@@ -98,11 +98,11 @@
     - "~/.config/neovim3/bin/pip"
     - "~/.config/neovim2/bin/pip"
   tags:
-    - install
+    - editor
     - nvim
     - nvimprovider
 
-- name: NEOVIM.PROVIDER | Reshim python asdf
+- name: NEOVIM-PROVIDER-EDITOR | Reshim python asdf
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
@@ -112,6 +112,6 @@
   when: neovim_provider_python is success
   changed_when: false
   tags:
-    - install
+    - editor
     - nvim
     - nvimprovider

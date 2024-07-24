@@ -1,14 +1,14 @@
 ---
-- name: VSCODE | Install vscode deps
+- name: VSCODE-EDITOR | Install vscode deps
   ansible.builtin.include_role:
     name: _0package
   vars:
     _apt_packages: "{{ __vscode_shared_dep }}"
   tags:
-    - install
+    - editor
     - vscode
 
-- name: VSCODE | Ensure vscode repo is present
+- name: VSCODE-EDITOR | Ensure vscode repo is present
   ansible.builtin.include_role:
     name: _0package
     tasks_from: ppa
@@ -18,14 +18,14 @@
     apt_repo_repositories:
       - "{{ vscode_apt_repo }}"
   tags:
-    - install
+    - editor
     - vscode
 
-- name: VSCODE | Install vscode (apt)
+- name: VSCODE-EDITOR | Install vscode (apt)
   ansible.builtin.include_role:
     name: _0package
   vars:
     _apt_packages: '{{ visual_studio_code_package }}{{ (visual_studio_code_version | length > 0) | ternary("=" + visual_studio_code_version, "") }}'
   tags:
-    - install
+    - editor
     - vscode

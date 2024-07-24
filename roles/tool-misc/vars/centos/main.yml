@@ -1,2 +1,14 @@
 ---
-__deps_pamixer:
+__deps_pamixer: []
+
+__tools: []
+
+__tools_base_pkg: []
+
+__tools_extensions: []
+
+__tools_from_snapd: []
+
+__tools_ppa_keys: []
+
+__tools_ppa: []
