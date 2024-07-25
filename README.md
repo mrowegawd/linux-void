@@ -8,7 +8,7 @@
 ansible-playbook install-fresh.yml --ask-become-pass
 
 # or install specific role
-ansible-playbook install-fresh.yml --ask-become-pass --tag "eww"
+ansible-playbook install-fresh.yml --ask-become-pass --tag "eww" # "eww,tools,nvim"
 ```
 
 ## Fonts
