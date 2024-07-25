@@ -1,7 +1,6 @@
 ---
-
 - name: BSPWM | Check bspwm installed version
-  shell: >
+  ansible.builtin.shell: |
     if command -v bspwm &> /dev/null;
     then bspwm -version; else echo "not found"; fi
   args:
@@ -9,7 +8,7 @@
   changed_when: false
   register: check_bspwm_version
   tags:
-    - always
+    - bspwm
 
 # - name: Test debug
 #   debug:
@@ -20,11 +19,12 @@
 #   pause:
 #     seconds: 10
 
-- become: true
+- name: BSPWM | Setup bspwm
+  become: true
   when: check_bspwm_version.stdout.find('not found') != -1
   block:
     - name: BSPWM | Ensure bspwm dependencies installed
-      include_role:
+      ansible.builtin.include_role:
         name: _0package
       vars:
         _apt_packages: "{{ __bspwm_deps }}"
@@ -32,10 +32,11 @@
         - install
         - bspwm
 
-    - name: BSPWM | Ensure file bspwm {{ temp_dir }} exists
-      file:
+    - name: BSPWM | Ensure file bspwm temp_dir exists
+      ansible.builtin.file:
         path: "{{ temp_dir }}/{{ item }}"
         state: directory
+        mode: "755"
       with_items:
         - bspwm
         - sxhkd
@@ -47,7 +48,7 @@
         - bspwm
 
     - name: BSPWM | Clone bspwm from github
-      git:
+      ansible.builtin.git:
         repo: "{{ item.repo }}"
         dest: "{{ item.dest }}"
         clone: yes
@@ -66,12 +67,13 @@
         - bspwm
 
     - name: BSPWM | Install bspwm
-      shell: |
+      ansible.builtin.shell: |
         make
         make install
       args:
         executable: /bin/bash
         chdir: "{{ temp_dir }}/{{ item }}"
+      changed_when: false
       with_items:
         - bspwm
         - sxhkd
@@ -83,7 +85,7 @@
         - bspwm
 
     - name: BSPWM | Copy bspwm-session to /usr/bin
-      shell: |
+      ansible.builtin.shell: |
         cp contrib/freedesktop/bspwm.desktop /usr/share/xsessions
       args:
         executable: /bin/bash
@@ -91,12 +93,13 @@
       with_items:
         - bspwm
         # - xdo
+      changed_when: false
       tags:
         - install
         - bspwm
 
     - name: BSPWM | Ensure file executable bspwmrc perm 0755
-      file:
+      ansible.builtin.file:
         path: "/home/{{ user_admin }}/.config/bspwm/bspwmrc"
         owner: "{{ user_admin }}"
         group: "{{ user_admin }}"

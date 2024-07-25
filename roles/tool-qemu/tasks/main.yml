@@ -1,0 +1,160 @@
+---
+#
+## Taken from and credit: https://github.com/mrlesmithjr/ansible-kvm
+#
+
+- name: Include task set-facts.yml
+  ansible.builtin.include_tasks: set-facts.yml
+  tags:
+    - qemu
+
+- name: Include task hw-virtualization-check.yml
+  ansible.builtin.include_tasks: hw-virtualization-check.yml
+  tags:
+    - config_vms
+    - qemu
+
+- name: Include task install-packages-os.yml
+  ansible.builtin.include_tasks: "install-packages-{{ ansible_os_family | lower }}.yml"
+  when: ansible_os_family in ["Debian", "RedHat"]
+  tags:
+    - qemu
+
+- name: Include task config-kvm.yml
+  ansible.builtin.include_tasks: config-kvm.yml
+  tags:
+    - config_kvm
+    - qemu
+  when: kvm_config
+
+- name: Include task users.yml
+  ansible.builtin.include_tasks: users.yml
+  tags:
+    - config_users
+    - qemu
+  when:
+    - kvm_config_users
+    - kvm_users is defined
+
+- name: Include task config-ssh.yml
+  ansible.builtin.include_tasks: config-ssh.yml
+  tags:
+    - config_ssh
+    - qemu
+  when:
+    - kvm_allow_root_ssh is defined
+    - kvm_allow_root_ssh
+
+- name: Include task config-virtual-networks.yml
+  ansible.builtin.include_tasks: config-virtual-networks.yml
+  tags:
+    - config_virtual_networks
+    - qemu
+  when:
+    - kvm_config_virtual_networks
+    - kvm_virtual_networks is defined
+
+- name: Include task config-storage-pools.yml
+  ansible.builtin.include_tasks: config-storage-pools.yml
+  tags:
+    - config_storage_pools
+    - qemu
+  when:
+    - kvm_config_storage_pools
+    - kvm_storage_pools is defined
+
+- name: Include task config-vms.yml
+  ansible.builtin.include_tasks: config_vms.yml
+  tags:
+    - config_vms
+    - qemu
+  when:
+    - kvm_manage_vms is defined
+    - kvm_manage_vms
+    - kvm_vms is defined
+
+- name: Include task system_tweaks.yml
+  ansible.builtin.include_tasks: system_tweaks.yml
+  when: kvm_enable_system_tweaks
+  tags:
+    - qemu
+
+- name: Include task apparmor.yml
+  ansible.builtin.include_tasks: apparmor.yml
+  when:
+    - kvm_disable_apparmor
+    - ansible_os_family == "Debian"
+  tags:
+    - qemu
+# - name: Debug kvm_domain_type!
+#   ansible.builtin.debug:
+#     msg: "{{ kvm_domain_type }}"
+#   tags:
+#     - qemu
+#
+#
+# - include: "install_packages_{{ ansible_os_family | lower }}.yml"
+#   when: ansible_os_family in ["Debian", "RedHat"]
+#
+# - name: KVM AND QEMU | Install qemu and kvm system
+#   ansible.builtin.include_role:
+#     name: _0package
+#   vars:
+#     _apt_packages: "{{ __qemu_pkgs }}"
+#   tags:
+#     - install
+# - name: KVM AND QEMU | Ensure libvirtd systemd enabled
+#   become: yes
+#   service:
+#     name: libvirtd
+#     enabled: true
+#     state: started
+# Manage cloud image
+# - name: KVM AND QEMU | Set qemu dir for images
+#   file:
+#     state: directory
+#     path: /virt/images
+
+# - name: Check Ubuntu 18.04 cloud image
+#   uri:
+#     url: https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64.img
+#     method: HEAD
+#   register: cloudimg_http_stat
+#   check_mode: false
+
+# - name: Check local cloud image
+#   stat:
+#     path: /virt/images/bionic-server-cloudimg-amd64.img
+#     get_checksum: false
+#   register: cloudimg_local_stat
+
+# - name: Update Ubuntu 18.04 cloud image
+#   get_url:
+#     url: https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64.img
+#     dest: /virt/images/bionic-server-cloudimg-amd64.img
+#   when: not cloudimg_local_stat.stat.exists or
+#     cloudimg_local_stat.stat.size != cloudimg_http_stat.content_length
+#   register: cloudimg_local_updated
+
+# - name: Convert cloud image qcow format
+#   shell:
+#     chdir: /virt/images/
+#     cmd: qemu-img convert -f qcow2 bionic-server-cloudimg-amd64.img bionic-server-cloudimg-amd64.qcow2
+#     creates: /virt/images/bionic-server-cloudimg-amd64.qcow2
+#   when: cloudimg_local_updated.changed|bool
+
+# VM Directory
+# - name: Virtual machine directory
+#   file:
+#     path: /virt/vms
+#     state: directory
+#     owner: root
+#     group: root
+#     mode: 0755
+# - name: Set up KVM platform
+#   include_tasks: install.yml
+# - name: Configure Virtual Machines
+#   include_tasks: vm.yml
+#   loop: "{{ virtual_machines }}"
+#   loop_control:
+#     loop_var: vm

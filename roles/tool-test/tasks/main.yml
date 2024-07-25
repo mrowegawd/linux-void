@@ -1,0 +1,6 @@
+---
+- name: TEST | Debug ansible_check_mode!
+  ansible.builtin.debug:
+    msg: "{{ ansible_check_mode }}"
+  tags:
+    - test

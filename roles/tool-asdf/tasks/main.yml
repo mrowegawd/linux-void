@@ -3,6 +3,11 @@
   ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
   tags:
     - asdf
+    - go
+    - rust
+    - nodejs
+    - ruby
+    - python
 
 - name: ASDF | Ensure apt packages are managed | Debian
   become: true
@@ -14,6 +19,11 @@
   when: ansible_os_family | lower == 'debian'
   tags:
     - asdf
+    - go
+    - rust
+    - nodejs
+    - ruby
+    - python
 
 - name: ASDF | Ensure yum packages are managed | Redhat
   become: true
@@ -26,6 +36,11 @@
   when: ansible_os_family | lower == 'redhat'
   tags:
     - asdf
+    - go
+    - rust
+    - nodejs
+    - ruby
+    - python
 
 - name: ASDF | Clone asdf
   become: true
@@ -37,33 +52,33 @@
   tags:
     - install
     - asdf
+    - go
+    - rust
+    - nodejs
+    - ruby
+    - python
 
-- name: ASDF | Import task go.yml
-  ansible.builtin.import_tasks: go.yml
+- include_tasks: go.yml
   tags:
     - asdf
     - go
 
-- name: ASDF | Import task rust.yml
-  ansible.builtin.import_tasks: rust.yml
+- include_tasks: rust.yml
   tags:
     - asdf
     - rust
 
-- name: ASDF | Import task nodejs.yml
-  ansible.builtin.import_tasks: nodejs.yml
+- include_tasks: nodejs.yml
   tags:
     - asdf
     - nodejs
 
-- name: ASDF | Import task ruby.yml
-  ansible.builtin.import_tasks: ruby.yml
+- include_tasks: ruby.yml
   tags:
     - asdf
     - ruby
 
-- name: ASDF | Import task python.yml
-  ansible.builtin.import_tasks: python.yml
+- include_tasks: python.yml
   tags:
     - asdf
     - python

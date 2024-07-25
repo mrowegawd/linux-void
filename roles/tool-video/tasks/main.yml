@@ -1,0 +1,19 @@
+---
+- name: VIDEO | Include vars for specific os
+  ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
+  tags:
+    - video
+
+- include_tasks: maim-slop.yml
+  tags:
+    - video
+    - slop
+
+- include_tasks: tool-video.yml
+  tags:
+    - video
+    - mpv
+# - name: Import task mpv.yml
+#   ansible.builtin.import_tasks: mpv.yml
+#   tags:
+#     - video

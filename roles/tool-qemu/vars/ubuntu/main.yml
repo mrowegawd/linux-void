@@ -1,0 +1,10 @@
+__qemu_pkgs:
+  - bridge-utils
+  - cloud-image-utils
+  - libvirt-clients
+  - libvirt-daemon-system
+  - libvirt-dev
+  - qemu-kvm
+  - qemu-system
+  - virt-manager
+  - virtinst

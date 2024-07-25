@@ -1,0 +1,95 @@
+---
+- name: LUA-EDITOR | Include vars for specific os
+  ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
+  tags:
+    - lua
+    - editor
+    - nvim
+
+- name: LUA-EDITOR | Check lua current version
+  become: true
+  ansible.builtin.shell: |
+    {{ item.pkg_cmd_check_version }}
+  args:
+    executable: /bin/bash
+  changed_when: false
+  register: lua_current_version
+  with_items:
+    - "{{ build_from_source_lua }}"
+  tags:
+    - lua
+    - editor
+    - nvim
+
+- name: LUA-EDITOR | Setup lua {{ lua_version }}
+  tags:
+    - lua
+    - editor
+    - nvim
+  when:
+    - lua_current_version.results.0.stdout.find(lua_version) == -1
+  block:
+    - name: LUA-EDITOR | Ensure tmp dir to hold any temporary files for lua
+      ansible.builtin.tempfile:
+        state: directory
+        suffix: build
+      register: temp_dir_lua
+      changed_when: false
+
+    - name: LUA-EDITOR | Install dependencies | Debian
+      become: true
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+      when: ansible_os_family | lower == 'debian'
+      with_items:
+        - build-essential
+        - libreadline-dev
+
+    - name: LUA-EDITOR | Install dependencies | Redhat
+      ansible.builtin.yum:
+        name: "{{ packages }}"
+        state: present
+      vars:
+        packages: "{{ __yum_packages }}"
+        state: '{{ _yum_state | default("present") }}'
+      become: true
+      when: ansible_os_family | lower == 'redhat'
+
+    # - name: LUA-EDITOR | Debug temp_dir_lua!
+    #   ansible.builtin.debug:
+    #     msg: "{{ temp_dir_lua }}"
+    - name: LUA-EDITOR | Get download tar gz from github lua release
+      become: true
+      ansible.builtin.get_url:
+        url: "{{ item.link.0.url }}"
+        dest: "{{ temp_dir_lua.path }}"
+        mode: 0755
+        force: true
+        timeout: 30
+      register: download_job_lua
+      until: download_job_lua is succeeded
+      retries: 3
+      delay: 3
+      with_items:
+        - "{{ build_from_source_lua }}"
+
+    - name: LUA-EDITOR | Extract tar file lua-{{ lua_version }}
+      ansible.builtin.unarchive:
+        src: "{{ temp_dir_lua.path }}/{{ item.link.0.tar_file }}"
+        dest: "{{ temp_dir_lua.path }}"
+        copy: no # this `no` means, will delete for sure
+      with_items:
+        - "{{ build_from_source_lua }}"
+
+    - name: LUA-EDITOR | Build lua {{ lua_version }}
+      become: true
+      ansible.builtin.shell: |
+        {{ item.pkg_cmd_make }}
+      args:
+        chdir: "{{ temp_dir_lua.path }}/{{ item.link.0.dest_tar_file }}"
+        executable: /bin/bash
+      changed_when: false
+      with_items:
+        - "{{ build_from_source_lua }}"

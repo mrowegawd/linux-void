@@ -1,46 +1,59 @@
 ---
-- name: Install {{ item.pkg_name | upper }} | Check {{ item.pkg_name }} last installed version if exists
-  shell: |
+- name: BUILD-SOURCE-WITH-GIT | Check command pkg before continue
+  ansible.builtin.shell: |
     {{ item.pkg_cmd_check_version }}
   args:
-    warn: no
+    executable: /bin/bash
   changed_when: false
   register: check_pkg_command
+  loop: "{{ install_with_git }}"
 
-# - name: Debug version pkg {{ item.pkg_name }}
-#   debug:
-#     msg: "{{ check_pkg_command.stdout }}"
+- name: BUILD-SOURCE-WITH-GIT | Setting Debian Facts
+  ansible.builtin.set_fact:
+    current_stdout: "{{ item.stdout }}"
+  with_items: "{{ check_pkg_command.results }}"
 
-- name: Install {{ item.pkg_name | upper }} | Remove the old {{ item.pkg_name }}
-  apt:
-    name: "{{ item.pkg_name }}"
-    state: absent
-  when: item.pkg_version not in check_pkg_command.stdout or check_pkg_command.stdout.find('not found') != -1
+# - name: BUILD-SOURCE-WITH-GIT | Debug version pkg
+#   ansible.builtin.debug:
+#     msg: "{{ current_stdout.find(item.pkg_version) }}"
+#   loop: "{{ install_with_git }}"
 
-- name: Install {{ item.pkg_name | upper }} | Install dependencies {{ item.pkg_name }}
-  include_role:
+# - name: BUILD-SOURCE-WITH-GIT | Remove old dep pkgs
+#   ansible.builtin.apt:
+#     name: "{{ item.pkg_name }}"
+#     state: absent
+#   loop: "{{ install_with_git }}"
+#   when: current_stdout.find(item.pkg_version) == -1
+
+- name: BUILD-SOURCE-WITH-GIT | Install deps
+  ansible.builtin.include_role:
     name: _0package
   vars:
     _apt_packages: "{{ item.pkg_deps }}"
-  when: item.pkg_version not in check_pkg_command.stdout or check_pkg_command.stdout.find('not found') != -1
+  loop: "{{ install_with_git }}"
+  when: current_stdout.find(item.pkg_version) == -1
 
-- name: Install {{ item.pkg_name | upper }} | Ensure path {{ item.pkg_url_download.0.dest_temp_dir }}/{{ item.pkg_name }} are exists
-  file:
+- name: BUILD-SOURCE-WITH-GIT | Ensure path temp dir exists
+  ansible.builtin.file:
     path: "{{ item.pkg_url_download.0.dest_temp_dir }}"
     mode: 0755
     state: directory
-  when: item.pkg_version not in check_pkg_command.stdout or check_pkg_command.stdout.find('not found') != -1
+  loop: "{{ install_with_git }}"
+  when: current_stdout.find(item.pkg_version) == -1
 
-- name: Install | Git clone {{ item.pkg_name }}
-  git:
+- name: BUILD-SOURCE-WITH-GIT | Git clone
+  ansible.builtin.git:
     repo: "{{ item.pkg_url_download.0.repo }}"
     dest: "{{ item.pkg_url_download.0.dest_temp_dir }}"
     version: "{{ item.pkg_url_download.0.version | default('master') }}"
-  when: item.pkg_version not in check_pkg_command.stdout or check_pkg_command.stdout.find('not found') != -1
+  loop: "{{ install_with_git }}"
+  when: current_stdout.find(item.pkg_version) == -1
 
-- name: Install {{ item.pkg_name | upper }} | Run make install for {{ item.pkg_name }}
-  shell: |
+- name: BUILD-SOURCE-WITH-GIT | Run make install
+  ansible.builtin.shell: |
     {{ item.pkg_cmd_make }}
   args:
     chdir: "{{ item.pkg_url_download.0.dest_temp_dir }}"
-  when: item.pkg_version not in check_pkg_command.stdout or check_pkg_command.stdout.find('not found') != -1
+  changed_when: false
+  loop: "{{ install_with_git }}"
+  when: current_stdout.find(item.pkg_version) == -1

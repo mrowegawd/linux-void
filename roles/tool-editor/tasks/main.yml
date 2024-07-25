@@ -1,0 +1,34 @@
+---
+- name: EDITOR | Include vars for specific os
+  ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
+  tags:
+    - editor
+    - vscode
+    - luarocks
+    - nvim
+
+- name: EDITOR | Include vscode.yml
+  ansible.builtin.include_tasks: vscode.yml
+  tags:
+    - editor
+    - vscode
+
+- name: EDITOR | Include neovim.yml
+  ansible.builtin.include_tasks: neovim.yml
+  tags:
+    - editor
+    - nvim
+
+- name: EDITOR | Include lua.yml
+  ansible.builtin.include_tasks: lua.yml
+  tags:
+    - editor
+    - nvim
+    - lua
+
+- name: EDITOR | Include luarocks.yml
+  ansible.builtin.include_tasks: luarocks.yml
+  tags:
+    - editor
+    - nvim
+    - luarocks

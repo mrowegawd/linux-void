@@ -13,11 +13,17 @@
 
     # Tools
     - tool-asdf
+    - tool-docker
+    - tool-editor
     - tool-fzf
-    - tool-tmux
     - tool-misc
-    - tools
-    # - tool-newsboat
+    - tool-newsboat
+    - tool-qemu
+    - tool-terminal
+    - tool-tmux
+    - tool-video
+    # - tool-test
+    # - tools
 
     # Window Manager
     - wm-bspwm

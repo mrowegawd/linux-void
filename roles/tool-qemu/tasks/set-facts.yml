@@ -1,0 +1,65 @@
+---
+- name: SET-FACTS-QEMU | Setting Debian Facts
+  ansible.builtin.set_fact:
+    kvm_service_name: libvirtd
+  when: ansible_distribution in ["Debian", "CentOS"]
+  tags:
+    - qemu
+
+- name: SET-FACTS-QEMU | Setting Ubuntu Facts
+  ansible.builtin.set_fact:
+    kvm_service_name: libvirt-bin
+  when:
+    - ansible_distribution == "Ubuntu"
+    - ansible_distribution_version is version('20.04', '<')
+  tags:
+    - qemu
+
+- name: SET-FACTS-QEMU | Setting Ubuntu Facts
+  ansible.builtin.set_fact:
+    kvm_service_name: libvirtd
+  when:
+    - ansible_distribution == "Ubuntu"
+    - ansible_distribution_version is version('20.04', '>=')
+  tags:
+    - qemu
+
+- name: SET-FACTS-QEMU | Defining Debian packages to install
+  ansible.builtin.set_fact:
+    kvm_debian_packages:
+      - bridge-utils
+      - libvirt-bin
+      - python[3]*-libvirt
+      - python[3]*-lxml
+      - qemu-kvm
+  when: >
+    (ansible_distribution == "Debian" and
+    ansible_distribution_major_version|int < 9)
+    or
+    (ansible_distribution == "Ubuntu" and
+    ansible_distribution_version < "18.10")
+  tags:
+    - qemu
+
+- name: SET-FACTS-QEMU | Defining Debian packages to install
+  ansible.builtin.set_fact:
+    kvm_debian_packages:
+      - bridge-utils
+      - libvirt-daemon-system
+      - libvirt-clients
+      - python[3]*-libvirt
+      - python[3]*-lxml
+      - qemu-kvm
+      - qemu-system
+      - qemu-utils
+      - virtinst
+      - libvirt-daemon
+      - virt-manager # --> sebagai GUI nya, jalankan `virt-manager` di cli ketika selesai
+  when: >
+    (ansible_distribution == "Debian" and
+    ansible_distribution_major_version|int >= 9)
+    or
+    (ansible_distribution == "Ubuntu" and
+    ansible_distribution_version >= "18.10")
+  tags:
+    - qemu

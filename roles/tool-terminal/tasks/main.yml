@@ -1,0 +1,23 @@
+---
+- name: TERMINAL | Include vars for specific os
+  ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
+  tags:
+    - terminal
+    - kitty
+    - alacritty
+    - zsh
+
+- include_tasks: kitty.yml
+  tags:
+    - terminal
+    - kitty
+
+- include_tasks: alacritty.yml
+  tags:
+    - terminal
+    - alacritty
+
+- include_tasks: zsh.yml
+  tags:
+    - terminal
+    - zsh

@@ -82,43 +82,6 @@ install_tools_from_asdf:
 
 #
 # }}}
-# INSTALL BUILD GIT ----------------------------------------------- {{{
-xgetres_version: "1.0"
-cava_version: "0.7.4"
-
-install_tools_from_git:
-  - pkg_name: "xgetres"
-    pkg_version: "{{ xgetres_version }}"
-    pkg_deps: []
-    pkg_cmd_check_version: |
-      bash -lc 'if command -v xgetres &> /dev/null;
-      then xgetres --version | cut -d" " -f2 ; else echo "not found"; fi'
-    pkg_url_download:
-      - repo: "https://github.com/tamirzb/xgetres.git"
-        after_extract_filename: "xgetres"
-        version: "master"
-        dest_temp_dir: "{{ temp_dir }}/xgetres"
-    pkg_cmd_make: |
-      sudo make install
-
-  - pkg_name: "cava"
-    pkg_version: "{{ cava_version }}"
-    pkg_deps: "{{ __cava_deps }}"
-    pkg_cmd_check_version: |
-      bash -lc 'if command -v cava &> /dev/null;
-      then cava -version | cut -d" " -f2 | cut -d"-" -f1 ; else echo "not found"; fi'
-    pkg_url_download:
-      - repo: "https://github.com/karlstav/cava.git"
-        after_extract_filename: "cava"
-        version: "master"
-        dest_temp_dir: "{{ temp_dir }}/cava"
-    pkg_cmd_make: |
-      ./autogen.sh
-      ./configure && make
-      sudo make install
-
-#
-# }}}
 
 ######
 ###
@@ -151,19 +114,6 @@ alacritty_url_download: https://api.github.com/repos/alacritty/alacritty/release
 # KITTY ----------------------------------------------------------- {{{
 kitty_version: "0.24.1"
 kitty_url_download: https://sw.kovidgoyal.net/kitty/installer.sh
-#
-# }}}
-# MPV ------------------------------------------------------------- {{{
-mpv_version: "0.34.0"
-mpv_build:
-  - repo: https://github.com/mpv-player/mpv-build.git
-    dest: "{{ temp_dir }}/mpv_build"
-#
-# }}}
-# AUTOENV --------------------------------------------------------- {{{
-autoenv_git:
-  - repo: "https://github.com/kennethreitz/autoenv.git"
-    version: "master"
 #
 # }}}
 # FZF ------------------------------------------------------------- {{{

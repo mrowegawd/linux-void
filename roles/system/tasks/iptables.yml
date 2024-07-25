@@ -1,6 +1,6 @@
 ---
 - name: IPTABLES | Install iptables
-  include_role:
+  ansible.builtin.include_role:
     name: _0package
   vars:
     _apt_packages: "{{ __iptables_package }}"
@@ -8,9 +8,9 @@
     - install
     - iptables
 
-- name: Check ansible_service_mgr
-  debug:
-    msg: "{{ ansible_service_mgr }}"
+# - name: IPTABLES | Check ansible_service_mgr
+#   ansible.builtin.debug:
+#     msg: "{{ ansible_service_mgr }}"
 
 # - name: IPTABLES | After install iptables, flush the settings
 #   command: iptables -F
@@ -19,9 +19,11 @@
 #     - install
 #     - iptables
 
-- block:
+- name: IPTABLES | Enable iptables
+  when: ansible_service_mgr == 'systemd'
+  block:
     - name: IPTABLES | Copy template files to dest for systemd
-      template:
+      ansible.builtin.template:
         src: "etc/conf/firewall.j2"
         dest: /etc/firewall.bash
         owner: root
@@ -35,7 +37,7 @@
         - chiptables
 
     - name: IPTABLES | Copy unit files to dest for systemd
-      template:
+      ansible.builtin.template:
         src: '{{ "etc/systemd/system/firewall.unit.j2" if ansible_service_mgr == "systemd" else "etc/init.d/firewall.init.j2" }}'
         dest: '{{ "/etc/systemd/system/firewall.service" if ansible_service_mgr == "systemd" else "/etc/init.d/firewall" }}'
         owner: root
@@ -48,12 +50,10 @@
         - iptables
 
     - name: IPTABLES | Configure the firewall service.
-      service:
+      ansible.builtin.service:
         name: firewall
         state: started
         enabled: true
       tags:
         - install
         - iptables
-
-  when: ansible_service_mgr == 'systemd'

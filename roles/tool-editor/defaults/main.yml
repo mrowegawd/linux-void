@@ -1,0 +1,31 @@
+---
+# lua_version: "5.4.7"
+lua_version: "5.1"
+
+build_from_source_lua:
+  - pkg_name: "lua"
+    pkg_version: "{{ lua_version }}"
+    pkg_cmd_check_version: |
+      bash -lc 'if command -v lua &> /dev/null;
+      then lua -v ; else echo "not found"; fi'
+    link:
+      - url: "https://www.lua.org/ftp/lua-{{ lua_version }}.tar.gz"
+        tar_file: "lua-{{ lua_version }}.tar.gz"
+        dest_tar_file: "lua-{{ lua_version }}"
+    pkg_cmd_make: |
+      make linux && sudo make install
+
+luarocks_version: "3.11.1"
+
+build_from_source_luarocks:
+  - pkg_name: "luarocks"
+    pkg_version: "{{ luarocks_version }}"
+    pkg_cmd_check_version: |
+      bash -lc 'if command -v luarocks &> /dev/null;
+      then luarocks --version ; else echo "not found"; fi'
+    link:
+      - url: "https://luarocks.org/releases/luarocks-{{ luarocks_version }}.tar.gz"
+        tar_file: "luarocks-{{ luarocks_version }}.tar.gz"
+        dest_tar_file: "luarocks-{{ luarocks_version }}"
+    pkg_cmd_make: |
+      sudo ./configure && make && sudo make install

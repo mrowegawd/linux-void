@@ -1,0 +1,94 @@
+---
+- name: SLOP-VIDEO | Check installed slop version
+  ansible.builtin.shell: >
+    if command -v slop &> /dev/null;
+    then echo "found"; else echo "not found"; fi
+  args:
+    executable: /bin/bash
+  ignore_errors: True
+  failed_when: false
+  changed_when: false
+  register: check_slop
+  tags:
+    - video
+
+- name: SLOP-VIDEO | Install slop with dependencies
+  ansible.builtin.include_role:
+    name: _0package
+  when: check_slop.stdout.find('not found') != -1
+  vars:
+    _apt_packages:
+      - cmake
+      - libgl1-mesa-dev
+      - slop
+      - maim
+  tags:
+    - install
+    - video
+# - name: MAIM | Check installed maim version
+#   shell: |
+#     if command -v maim &> /dev/null;
+#     then echo "found"; else echo "not found"; fi
+#   args:
+#     executable: /bin/bash
+#   ignore_errors: yes
+#   failed_when: false
+#   changed_when: false
+#   register: check_maim
+#   tags:
+#     - always
+
+# - become: true
+#   block:
+#     - name: MAIM | Ensure maim folder temp exists
+#       file:
+#         path: '{{ temp_dir }}/maim'
+#         state: directory
+#       tags:
+#         - install
+#         - maimslop
+
+#     - name: MAIM | Install maim dependencies
+#       include_role:
+#         name: _0package
+#       vars:
+#         _apt_packages:
+#           - libxcomposite-dev
+#           - libxrandr-dev
+#           - libxfixes-dev
+#           - libglm-dev
+#           - libjpeg-dev
+#           - cmake
+#           - libgl1-mesa-dev
+#       tags:
+#         - install
+#         - maimslop
+
+#     - name: MAIM | Clone maim from github
+#       become: true
+#       git:
+#         repo: 'https://github.com/naelstrof/maim.git'
+#         dest: '{{ temp_dir }}/maim'
+#         version: 'master'
+#         update: yes
+#         force: yes
+#         recursive: yes
+#       tags:
+#         - install
+#         - maimslop
+
+#     - name: MAIM | Install maim
+#       become: true
+#       shell: |
+#         {{ item }}
+#       args:
+#         chdir: '{{ temp_dir }}/maim'
+#         executable: /bin/bash
+#       with_items:
+#         - 'cmake -DCMAKE_INSTALL_PREFIX="/usr" ./'
+#         - 'make && sudo make install'
+#       changed_when: false
+#       tags:
+#         - install
+#         - maimslop
+#   when: check_maim.stdout.find('not found') != -1

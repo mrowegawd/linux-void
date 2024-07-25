@@ -1,0 +1,111 @@
+---
+#
+## Link: https://luarocks.org/releases
+#
+- name: LUAROCKS-EDITOR | Include vars for specific os
+  ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
+  tags:
+    - luarocks
+    - editor
+    - nvim
+
+- name: LUAROCKS-EDITOR | Check luarocks current version
+  become: true
+  ansible.builtin.shell: |
+    {{ item.pkg_cmd_check_version }}
+  args:
+    executable: /bin/bash
+  changed_when: false
+  register: luarocks_current_version
+  with_items:
+    - "{{ build_from_source_luarocks }}"
+  tags:
+    - luarocks
+    - editor
+    - nvim
+
+- name: LUAROCKS-EDITOR | Setup luarocks {{ luarocks_version }}
+  tags:
+    - luarocks
+    - editor
+    - nvim
+  when:
+    - luarocks_current_version.results.0.stdout.find(luarocks_version) == -1
+  block:
+    - name: LUAROCKS-EDITOR | Ensure tmp dir to hold any temporary files for luarocks
+      ansible.builtin.tempfile:
+        state: directory
+        suffix: build
+      register: temp_dir_luarocks
+      changed_when: false
+
+    # - name: LUAROCKS-EDITOR | Install dependencies | Debian
+    #   become: true
+    #   ansible.builtin.apt:
+    #     name: "{{ item }}"
+    #     state: present
+    #     update_cache: yes
+    #   when: ansible_os_family | lower == 'debian'
+    #   with_items:
+    #     - "{{ __apt_packages }}"
+    #     - "{{ __tools_base_pkg }}"
+
+    - name: LUAROCKS-EDITOR | Install dependencies | Redhat
+      ansible.builtin.yum:
+        name: "{{ packages }}"
+        state: present
+      vars:
+        packages: "{{ __yum_packages }}"
+        state: '{{ _yum_state | default("present") }}'
+      become: true
+      when: ansible_os_family | lower == 'redhat'
+
+    # - name: LUAROCKS-EDITOR | Debug temp_dir_luarocks!
+    #   ansible.builtin.debug:
+    #     msg: "{{ temp_dir_luarocks }}"
+    - name: LUAROCKS-EDITOR | Get download tar gz from github luarocks release
+      become: true
+      ansible.builtin.get_url:
+        url: "{{ item.link.0.url }}"
+        dest: "{{ temp_dir_luarocks.path }}"
+        mode: 0755
+        force: true
+        timeout: 30
+      register: download_job_luarocks
+      until: download_job_luarocks is succeeded
+      retries: 3
+      delay: 3
+      with_items:
+        - "{{ build_from_source_luarocks }}"
+      # when: item.pkg_version not in check_pkg_command.stdout or check_pkg_command.stdout.find('not found') != -1
+
+    - name: LUAROCKS-EDITOR | Extract tar file luarocks-{{ luarocks_version }}
+      ansible.builtin.unarchive:
+        src: "{{ temp_dir_luarocks.path }}/{{ item.link.0.tar_file }}"
+        dest: "{{ temp_dir_luarocks.path }}"
+        copy: no # this `no` means, will delete for sure
+      with_items:
+        - "{{ build_from_source_luarocks }}"
+      #   - item.pkg_url_download.0.tar_file is defined
+
+    - name: LUAROCKS-EDITOR | Build luarocks {{ luarocks_version }}
+      become: true
+      ansible.builtin.shell: |
+        {{ item.pkg_cmd_make }}
+      args:
+        chdir: "{{ temp_dir_luarocks.path }}/{{ item.link.0.dest_tar_file }}"
+        executable: /bin/bash
+      changed_when: false
+      with_items:
+        - "{{ build_from_source_luarocks }}"
+
+    - name: LUAROCKS-EDITOR | Install luasocket
+      become: true
+      ansible.builtin.shell: |
+        sudo luarocks install luasocket
+      args:
+        chdir: "{{ temp_dir_luarocks.path }}/{{ item.link.0.dest_tar_file }}"
+        executable: /bin/bash
+      changed_when: false
+      with_items:
+        - "{{ build_from_source_luarocks }}"

@@ -4,12 +4,10 @@
   tags:
     - always
 
-- name: SYSTEM-USER | Import task accounts.yml
-  ansible.builtin.import_tasks: accounts.yml
-- name: SYSTEM-USER | Import task create.yml
-  ansible.builtin.import_tasks: create.yml
-- name: SYSTEM-USER | Import task visido.yml
-  ansible.builtin.import_tasks: visudo.yml
+- include_tasks: accounts.yml
+- include_tasks: create.yml
+- include_tasks: visudo.yml
+#
 # TODO: taruh ini nanti nya dimana
 # - name: User
 #   become: true

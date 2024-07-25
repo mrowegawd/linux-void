@@ -1,0 +1,7 @@
+__docker_dep:
+  - "apt-transport-https"
+  - "ca-certificates"
+  - "curl"
+  - "cron"
+  - "gnupg-agent"
+  - "software-properties-common"

@@ -6,3 +6,8 @@ mpdris_dest: "/home/{{ user_admin }}/.local/src/mpdris2-rs"
 pamixer_name: "pamixer"
 pamixer_repo: "https://github.com/cdemoulins/pamixer"
 pamixer_dest: "{{ temp_dir_pamixer.path }}/pamixer"
+
+xgetres_version: "1.0"
+cava_version: "0.10.2"
+
+euberzugpp_version: "2.9.6"

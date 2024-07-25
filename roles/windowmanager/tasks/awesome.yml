@@ -1,10 +1,12 @@
 ---
-- become: true
+- name: AWESOME | Install awesome wm
+  become: true
   block:
-    - name: AWESOME | Ensure file awesome {{ temp_dir }} exists
-      file:
+    - name: AWESOME | Ensure file awesome temp_dir exists
+      ansible.builtin.file:
         path: "{{ temp_dir }}/{{ item }}"
         state: directory
+        mode: "755"
       with_items:
         - awesome
         - sxhkd
@@ -18,7 +20,7 @@
         - awesome
 
     - name: AWESOME | Clone awesome from github
-      git:
+      ansible.builtin.git:
         repo: "{{ item.repo }}"
         dest: "{{ item.dest }}"
         clone: "yes"
@@ -38,7 +40,7 @@
         - awesome
 
     - name: AWESOME | Clone xcb-util-xrm from github
-      git:
+      ansible.builtin.git:
         repo: "https://github.com/Airblader/xcb-util-xrm"
         dest: "{{ temp_dir }}/xcb-util-xrm"
         clone: yes
@@ -55,12 +57,13 @@
         - awesome
 
     - name: AWESOME | Install dependencies awesome
-      shell: |
+      ansible.builtin.shell: |
         make
         make install
       args:
         executable: /bin/bash
         chdir: "{{ temp_dir }}/{{ item }}"
+      changed_when: false
       with_items:
         - sxhkd
         - sutils
@@ -80,7 +83,7 @@
         - awesome
 
     - name: AWESOME | Install the build-dep for package awesome
-      apt:
+      ansible.builtin.apt:
         pkg: awesome
         state: build-dep
         cache_valid_time: 3200
@@ -100,7 +103,7 @@
     #     - awesome
 
     - name: AWESOME | Install lua
-      include_role:
+      ansible.builtin.include_role:
         name: _0package
       vars:
         _apt_packages: ["liblua{{ lua_version }}-dev", "lua{{ lua_version }}"]
@@ -109,7 +112,7 @@
         - awesome
 
     - name: AWESOME | Ensure usr/bin/lua<version> are exists
-      stat:
+      ansible.builtin.stat:
         path: "/usr/bin/lua{{ lua_version }}"
       register: check_bin_lua
       tags:
@@ -118,27 +121,29 @@
 
     # lua5.3 do not install usr/bin/lua so we make sysmlinks
     - name: AWESOME | Ensure symlink lua exists
-      file:
+      ansible.builtin.file:
         src: "/usr/bin/lua{{ lua_version }}"
         dest: "/usr/bin/lua"
         state: link
       when: not check_bin_lua.stat.exists
 
     - name: AWESOMEE | Wget luarocks (package manager for lua)
-      get_url:
+      ansible.builtin.get_url:
         url: "{{ item.url }}"
         dest: "{{ item.dest }}"
         force: no
+        mode: "755"
       with_items:
         - url: "https://github.com/luarocks/luarocks/archive/v3.0.4.tar.gz"
           dest: "{{ temp_dir }}/luarocks"
 
     - name: AWESOME | Extract luarocks.tar.gz
-      shell: |
+      ansible.builtin.shell: |
         tar xzf {{ item }}-3.0.4.tar.gz
       args:
         executable: /bin/bash
         chdir: "{{ temp_dir }}/luarocks"
+      changed_when: false
       with_items:
         - luarocks
 
@@ -148,20 +153,22 @@
       # creates: "{{ temp_dir }}/luarocks"
       # remote_src: no
     - name: AWESOME | Install luarocks
-      shell: |
+      ansible.builtin.shell: |
         ./configure && make build && make install
       args:
         executable: /bin/bash
         chdir: "{{ temp_dir }}/luarocks/{{ item }}-3.0.4"
+      changed_when: false
       with_items:
         - luarocks
 
     - name: AWESOME | Install packages with luarocks
-      command: "/usr/local/bin/luarocks install {{ item }}"
+      ansible.builtin.command: "/usr/local/bin/luarocks install {{ item }}"
       retries: 3
       delay: 3
       register: jobluacrocks
       until: jobluacrocks is success
+      changed_when: false
       with_items:
         - luacov
         - luacheck
@@ -173,11 +180,12 @@
 
     # sudo apt install build/*.deb
     - name: AWESOME | Install awesome
-      shell: |
+      ansible.builtin.shell: |
         make CMAKE_ARGS="-DGENERATE_DOC:BOOLEAN=OFF" && make install
       args:
         executable: /bin/bash
         chdir: "{{ temp_dir }}/{{ item }}"
+      changed_when: false
       with_items:
         - awesome
 #     - name: AWESOME | Install deb awesome

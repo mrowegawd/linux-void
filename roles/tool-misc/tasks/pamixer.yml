@@ -1,5 +1,5 @@
 ---
-- name: PLAYERCTL | Check if playerctl are exists
+- name: PLAYERCTL-MISC | Check if playerctl are exists
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
@@ -13,18 +13,18 @@
     - misc
     - pamixer
 
-# - name: PAMIXER | Debug playerctl_current_version!
+# - name: PLAYERCTL-MISC | Debug playerctl_current_version!
 #   ansible.builtin.debug:
 #     msg: "{{ playerctl_current_version.stdout }}"
 
-- name: PLAYERCTL | Set playerctl
+- name: PLAYERCTL-MISC | Set playerctl
   when:
     - playerctl_current_version.stdout.find('not found') == 0
   tags:
     - misc
     - pamixer
   block:
-    - name: PLAYERCTL | Install playerctl | Debian
+    - name: PLAYERCTL-MISC | Install playerctl | Debian
       become: true
       ansible.builtin.apt:
         name: "{{ item }}"
@@ -36,7 +36,7 @@
         - misc
         - pamixer
 
-    - name: PLAYERCTL |  Install playerctl | Redhat
+    - name: PLAYERCTL-MISC |  Install playerctl | Redhat
       become: true
       ansible.builtin.yum:
         name: "{{ item }}"
@@ -54,7 +54,7 @@
 ## https://github.com/cdemoulins/pamixer
 #
 
-- name: PAMIXER | Check if pamixer are exists
+- name: PAMIXER-MISC | Check if pamixer are exists
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
@@ -68,18 +68,18 @@
     - misc
     - pamixer
 
-# - name: PAMIXER | Debug pamixer_current_version!
+# - name: PAMIXER-MISC | Debug pamixer_current_version!
 #   ansible.builtin.debug:
 #     msg: '{{ pamixer_current_version.stdout.find("not found") }}'
 
-- name: PAMIXER | Setup pamixer
+- name: PAMIXER-MISC | Setup pamixer
   tags:
     - misc
     - pamixer
   when:
     - pamixer_current_version.stdout.find("not found") == 0
   block:
-    - name: PAMIXER | Ensure apt packages are managed | Debian
+    - name: PAMIXER-MISC | Ensure apt packages are managed | Debian
       become: true
       ansible.builtin.apt:
         name: "{{ __deps_pamixer }}"
@@ -89,7 +89,7 @@
         - misc
         - pamixer
 
-    - name: PAMIXER | Ensure yum packages are managed | Redhat
+    - name: PAMIXER-MISC | Ensure yum packages are managed | Redhat
       become: true
       ansible.builtin.yum:
         name: "{{ __deps_pamixer }}"
@@ -101,7 +101,7 @@
         - misc
         - pamixer
 
-    - name: PAMIXER | Ensure tmp dir to hold any temporary files for pamixer
+    - name: PAMIXER-MISC | Ensure tmp dir to hold any temporary files for pamixer
       ansible.builtin.tempfile:
         state: directory
         suffix: build
@@ -111,7 +111,7 @@
         - misc
         - pamixer
 
-    - name: PAMIXER | Ensure pamixer folder temp exists
+    - name: PAMIXER-MISC | Ensure pamixer folder temp exists
       ansible.builtin.file:
         path: "{{ item }}"
         mode: 0755
@@ -122,7 +122,7 @@
         - misc
         - pamixer
 
-    - name: PAMIXER | Clone pamixer from github, so we can install with rustup
+    - name: PAMIXER-MISC | Clone pamixer from github, so we can install with rustup
       ansible.builtin.git:
         repo: "{{ pamixer_repo }}"
         dest: "{{ pamixer_dest }}"
@@ -139,7 +139,7 @@
         - misc
         - pamixer
 
-    - name: PAMIXER | Install pamixer
+    - name: PAMIXER-MISC | Install pamixer
       become: true
       ansible.builtin.shell: |
         meson setup build
