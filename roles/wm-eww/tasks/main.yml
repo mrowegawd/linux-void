@@ -111,3 +111,29 @@
       when: ewwdlgit is success
       tags:
         - eww
+
+    - name: EWW | Check if grub is present on the remote node
+      ansible.builtin.stat:
+        path: "/home/{{ user_admin }}/.local/bin"
+      register: check_dir_local_bin
+      tags:
+        - eww
+
+    # - name: EWW | Debug path .local/bin
+    #   ansible.builtin.debug:
+    #     msg: "{{ check_dir_local_bin }}"
+
+    - name: EWW | Create a symlink for eww at dir ~/.local/bin
+      become: true
+      become_user: "{{ user_admin }}"
+      ansible.builtin.file:
+        src: "{{ dest_eww }}/target/release/eww"
+        dest: "/home/{{ user_admin }}/.local/bin/eww"
+        owner: "{{ user_admin }}"
+        mode: 0755
+        force: yes
+        state: link
+      when:
+        - check_dir_local_bin.stat.exists | bool
+      tags:
+        - eww

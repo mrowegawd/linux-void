@@ -98,7 +98,7 @@
     #   ansible.builtin.debug:
     #     msg: "{{ check_dir_local_bin }}"
 
-    - name: MPDRIS-MISC | Create symlink for mpdris at ~/.local/bin
+    - name: MPDRIS-MISC | Create a symlink for mpdris at dir ~/.local/bin
       become: true
       become_user: "{{ user_admin }}"
       ansible.builtin.file:
