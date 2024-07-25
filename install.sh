@@ -20,6 +20,18 @@ sudo apt install --no-install-recommends -y \
 sudo pip3 install -U ansible
 sudo pip3 install -U paramiko
 
+WORKDIR="$HOME/moxconf/development"
+CURRENT_DIR="$(pwd)"
+
+mkdir -p "$WORKDIR"
+
+# Periksa apakah directory saat ini sesuai dengan directory yang ditentukan
+if [ "$CURRENT_DIR" != "$TARGET_DIR" ]; then
+  echo "Error: the script must be run from directory $TARGET_DIR"
+  echo "go there and run or git clone again"
+  exit 1
+fi
+
 _mkpass() {
   read -r -p "your password? " getvar
 
