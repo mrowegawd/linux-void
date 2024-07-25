@@ -1,13 +1,13 @@
 ---
 - name: SET-FACTS-QEMU | Setting Debian Facts
-  set_fact:
+  ansible.builtin.set_fact:
     kvm_service_name: libvirtd
   when: ansible_distribution in ["Debian", "CentOS"]
   tags:
     - qemu
 
 - name: SET-FACTS-QEMU | Setting Ubuntu Facts
-  set_fact:
+  ansible.builtin.set_fact:
     kvm_service_name: libvirt-bin
   when:
     - ansible_distribution == "Ubuntu"
@@ -16,7 +16,7 @@
     - qemu
 
 - name: SET-FACTS-QEMU | Setting Ubuntu Facts
-  set_fact:
+  ansible.builtin.set_fact:
     kvm_service_name: libvirtd
   when:
     - ansible_distribution == "Ubuntu"
@@ -25,7 +25,7 @@
     - qemu
 
 - name: SET-FACTS-QEMU | Defining Debian packages to install
-  set_fact:
+  ansible.builtin.set_fact:
     kvm_debian_packages:
       - bridge-utils
       - libvirt-bin
@@ -42,7 +42,7 @@
     - qemu
 
 - name: SET-FACTS-QEMU | Defining Debian packages to install
-  set_fact:
+  ansible.builtin.set_fact:
     kvm_debian_packages:
       - bridge-utils
       - libvirt-daemon-system

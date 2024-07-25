@@ -20,11 +20,5 @@
     #     tasks_from: installwithasdf
     #   with_items: "{{ install_tools_from_asdf }}"
 
-    # - name: TOOLS | Install tools with build from source git
-    #   ansible.builtin.include_role:
-    #     name: _0package
-    #     tasks_from: buildsourcewithgit
-    #   with_items: "{{ install_tools_from_git }}"
-
     - name: Import task tools.yml
       ansible.builtin.import_tasks: tools.yml

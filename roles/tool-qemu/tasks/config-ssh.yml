@@ -1,6 +1,6 @@
 ---
 - name: CONFIG-SSH-QEMU | Configuring ssh to allow root logins
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: "^PermitRootLogin"
     line: PermitRootLogin yes

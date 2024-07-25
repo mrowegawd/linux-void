@@ -4,5 +4,8 @@
   tags:
     - always
 
-- include_tasks: base.yml
-- include_tasks: misc.yml
+- name: Tools | Inclue task base.yml
+  ansible.builtin.include_tasks: base.yml
+
+- name: Tools | Include task misc.yml
+  ansible.builtin.include_tasks: misc.yml

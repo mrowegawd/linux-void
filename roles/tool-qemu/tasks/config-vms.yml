@@ -1,7 +1,7 @@
 ---
 - name: CONFIG-VMS-QEMU | Defining VM(s)
   become: true
-  virt:
+  community.libvirt.virt:
     name: "{{ item['name'] }}"
     command: define
     xml: "{{ lookup('template', 'vm-template.xml.j2') }}"
@@ -12,7 +12,7 @@
 
 - name: CONFIG-VMS-QEMU | Defining VM(s)
   become: true
-  virt:
+  community.libvirt.virt:
     name: "{{ item['name'] }}"
     command: define
     xml: "{{ lookup('template', 'vm-template.xml.j2') }}"
@@ -53,7 +53,7 @@
 
 - name: CONFIG-VMS-QEMU | Setting VM State
   become: true
-  virt:
+  community.libvirt.virt:
     name: "{{ item['name'] }}"
     state: "{{ item['state'] }}"
   when: item['host'] is not defined
@@ -63,7 +63,7 @@
 
 - name: CONFIG-VMS-QEMU | Setting VM State
   become: true
-  virt:
+  community.libvirt.virt:
     name: "{{ item['name'] }}"
     state: "{{ item['state'] }}"
   when:
@@ -75,7 +75,7 @@
 
 - name: CONFIG-VMS-QEMU | Setting autostart status
   become: true
-  virt:
+  community.libvirt.virt:
     name: "{{ item['name'] }}"
     autostart: "{{ item['autostart'] | default(omit) }}"
     command: info
@@ -88,7 +88,7 @@
 
 - name: CONFIG-VMS-QEMU | Setting autostart status
   become: true
-  virt:
+  community.libvirt.virt:
     name: "{{ item['name'] }}"
     autostart: "{{ item['autostart'] | default(omit) }}"
     command: info

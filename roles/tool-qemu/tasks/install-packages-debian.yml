@@ -1,7 +1,7 @@
 ---
 - name: DEBIAN-QEMU | Installing KVM
   become: true
-  apt:
+  ansible.builtin.apt:
     update_cache: true
     name: "{{ kvm_debian_packages }}"
     state: present
@@ -12,7 +12,7 @@
 
 - name: DEBIAN-QEMU | Installing Additional Ubuntu Packages
   become: true
-  apt:
+  ansible.builtin.apt:
     name: "ubuntu-vm-builder"
     state: present
   register: result

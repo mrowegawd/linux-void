@@ -82,43 +82,6 @@ install_tools_from_asdf:
 
 #
 # }}}
-# INSTALL BUILD GIT ----------------------------------------------- {{{
-xgetres_version: "1.0"
-cava_version: "0.7.4"
-
-install_tools_from_git:
-  - pkg_name: "xgetres"
-    pkg_version: "{{ xgetres_version }}"
-    pkg_deps: []
-    pkg_cmd_check_version: |
-      bash -lc 'if command -v xgetres &> /dev/null;
-      then xgetres --version | cut -d" " -f2 ; else echo "not found"; fi'
-    pkg_url_download:
-      - repo: "https://github.com/tamirzb/xgetres.git"
-        after_extract_filename: "xgetres"
-        version: "master"
-        dest_temp_dir: "{{ temp_dir }}/xgetres"
-    pkg_cmd_make: |
-      sudo make install
-
-  - pkg_name: "cava"
-    pkg_version: "{{ cava_version }}"
-    pkg_deps: "{{ __cava_deps }}"
-    pkg_cmd_check_version: |
-      bash -lc 'if command -v cava &> /dev/null;
-      then cava -version | cut -d" " -f2 | cut -d"-" -f1 ; else echo "not found"; fi'
-    pkg_url_download:
-      - repo: "https://github.com/karlstav/cava.git"
-        after_extract_filename: "cava"
-        version: "master"
-        dest_temp_dir: "{{ temp_dir }}/cava"
-    pkg_cmd_make: |
-      ./autogen.sh
-      ./configure && make
-      sudo make install
-
-#
-# }}}
 
 ######
 ###

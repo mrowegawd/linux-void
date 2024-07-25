@@ -1,7 +1,7 @@
 ---
 - name: CONFIG-STORAGE-POOLS-QEMU | Ensure storage pool paths exist
   become: true
-  file:
+  ansible.builtin.file:
     mode: u=rwx,g=rx,o=rx
     path: "{{ item['path'] }}"
     state: directory
@@ -11,7 +11,7 @@
 
 - name: CONFIG-STORAGE-POOLS-QEMU | Defining storage pools
   become: true
-  virt_pool:
+  community.libvirt.virt_pool:
     command: define
     name: "{{ item['name'] }}"
     xml: "{{ lookup('template', 'vm-pool.xml.j2') }}"
@@ -22,7 +22,7 @@
 
 - name: CONFIG-STORAGE-POOLS-QEMU | Setting state of storage pools
   become: true
-  virt_pool:
+  community.libvirt.virt_pool:
     name: "{{ item['name'] }}"
     state: "{{ item['state'] }}"
   when: item['state'] is defined
@@ -31,7 +31,7 @@
     - qemu
 
 - name: CONFIG-STORAGE-POOLS-QEMU | Setting storage pools to autostart
-  virt_pool:
+  community.libvirt.virt_pool:
     autostart: true
     name: "{{ item['name'] }}"
   become: true
@@ -44,7 +44,7 @@
     - qemu
 
 - name: CONFIG-STORAGE-POOLS-QEMU | Setting storage pools to not autostart
-  virt_pool:
+  community.libvirt.virt_pool:
     autostart: false
     name: "{{ item['name'] }}"
   become: true

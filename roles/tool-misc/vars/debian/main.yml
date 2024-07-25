@@ -1,4 +1,47 @@
 ---
+__euberzugpp_deps:
+  - libcairo2-dev
+  - libchafa-dev
+  - libsixel-dev
+  - libssl-dev
+  - libtbb-dev
+  - libuv1-dev
+  - libvips-dev
+  # - libx11-dev
+  # - libx11-xcb-dev
+  - libxcb-composite0-dev
+  - libxcb-ewmh-dev
+  - libxcb-icccm4-dev
+  - libxcb-image0-dev
+  - libxcb-randr0-dev
+  - libxcb-res0-dev
+  - libxcb-util0-dev
+  - libxcb1-dev
+  - libxft-dev
+  - libxft-dev
+  - libxinerama-dev
+  - python3-xcbgen
+  - xcb-proto
+
+__cava_deps:
+  - g++
+  - gcc
+  - gettext
+  - software-properties-common
+  - curl
+  - gnupg
+  - wget
+
+  - libfftw3-dev
+  - libasound2-dev
+  - libncursesw5-dev
+  - libpulse-dev
+  - libtool
+  - automake
+  - libiniparser-dev
+  - libsdl2-2.0-0
+  - libsdl2-dev
+
 __deps_pamixer:
   - cmake
   - g++
@@ -57,6 +100,7 @@ __tools:
   - simplescreenrecorder # recording
   - screenkey #keyboard screen key
   - scrot # screenshot
+  - chafa
 
   # keyboard viewer
   - screenkey

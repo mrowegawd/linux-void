@@ -1,26 +1,4 @@
 ---
-# CAVA -------------------------------------------------------------- {{{
-__cava_deps:
-  - g++
-  - gcc
-  - gettext
-  - software-properties-common
-  - curl
-  - gnupg
-  - wget
-
-  - libfftw3-dev
-  - libasound2-dev
-  - libncursesw5-dev
-  - libpulse-dev
-  - libtool
-  - automake
-  - libiniparser-dev
-  - libsdl2-2.0-0
-  - libsdl2-dev
-
-#
-# }}}
 # VSCODE ------------------------------------------------------------ {{{
 __vscode_shared_dep:
   - software-properties-common

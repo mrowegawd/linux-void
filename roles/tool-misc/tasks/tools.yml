@@ -1,6 +1,6 @@
 ---
 - name: TOOLS-MISC | Installing pre-reqs
-  ansible.builtin.include_role:
+  ansible.builtin.import_role:
     name: _0package
   vars:
     _apt_packages: "{{ __tools_base_pkg }}"
@@ -15,7 +15,7 @@
   when: ansible_os_family == 'RedHat'
 
 - name: TOOLS-MISC | Installing tools
-  ansible.builtin.include_role:
+  ansible.builtin.import_role:
     name: _0package
   vars:
     _apt_packages: "{{ __tools + __tools_extensions }}"
@@ -37,11 +37,66 @@
     - tools
 
 - name: TOOLS-MISC | Installing tools with ppa
-  ansible.builtin.include_role:
+  ansible.builtin.import_role:
     name: _0package
   vars:
     _apt_packages: "{{ __tools_ppa }}"
   when: __tools_ppa | length > 0
+  tags:
+    - misc
+    - tools
+
+- name: TOOLS-MISC | Install tools with build from source git
+  ansible.builtin.import_role:
+    name: _0package
+    tasks_from: buildsourcewithgit
+  vars:
+    install_with_git:
+      - pkg_name: "cava"
+        pkg_version: "{{ cava_version }}"
+        pkg_deps: "{{ __cava_deps }}"
+        pkg_cmd_check_version: |
+          bash -lc 'if command -v cava &> /dev/null;
+          then cava -v | cut -d" " -f2 | cut -d"-" -f1 ; else echo "not found"; fi'
+        pkg_url_download:
+          - repo: "https://github.com/karlstav/cava.git"
+            after_extract_filename: "cava"
+            version: "master"
+            dest_temp_dir: "{{ temp_dir }}/cava"
+        pkg_cmd_make: |
+          ./autogen.sh
+          ./configure && make
+          sudo make install
+      # https://github.com/jstkdng/ueberzugpp
+      - pkg_name: "euberzugpp"
+        pkg_version: "{{ euberzugpp_version }}"
+        pkg_deps: "{{ __euberzugpp_deps }}"
+        pkg_cmd_check_version: |
+          bash -lc 'if command -v euberzugpp &> /dev/null;
+          then euberzugpp -version | cut -d" " -f2 | cut -d"-" -f1 ; else echo "not found"; fi'
+        pkg_url_download:
+          - repo: "https://github.com/jstkdng/ueberzugpp.git"
+            after_extract_filename: "euberzugpp"
+            version: "master"
+            dest_temp_dir: "{{ temp_dir }}/euberzugpp"
+        pkg_cmd_make: |
+          mkdir build && cd build
+          cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_OPENCV=OFF ..
+          cmake --build . && mv ueberzug /usr/local/bin/
+
+  # - pkg_name: "xgetres"
+  #   pkg_version: "{{ xgetres_version }}"
+  #   pkg_deps: []
+  #   pkg_cmd_check_version: |
+  #     bash -lc 'if command -v xgetres &> /dev/null;
+  #     then xgetres --version | cut -d" " -f2 ; else echo "not found"; fi'
+  #   pkg_url_download:
+  #     - repo: "https://github.com/tamirzb/xgetres.git"
+  #       after_extract_filename: "xgetres"
+  #       version: "master"
+  #       dest_temp_dir: "{{ temp_dir }}/xgetres"
+  #   pkg_cmd_make: |
+  #     sudo make install
   tags:
     - misc
     - tools

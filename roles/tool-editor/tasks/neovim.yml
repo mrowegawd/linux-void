@@ -1,12 +1,12 @@
 ---
-- name: NEOVIM-EDITOR | Install neovim dependencies
-  ansible.builtin.include_role:
-    name: _0package
-  vars:
-    _apt_packages: "{{ __neovim_dependencies_pkg }}"
-  tags:
-    - editor
-    - nvim
+# - name: NEOVIM-EDITOR | Install neovim dependencies
+#   ansible.builtin.include_role:
+#     name: _0package
+#   vars:
+#     _apt_packages: "{{ __neovim_dependencies_pkg }}"
+#   tags:
+#     - editor
+#     - nvim
 
 - name: NEOVIM-PROVIDER-EDITOR | Install provider neovim for Nodejs
   become: true

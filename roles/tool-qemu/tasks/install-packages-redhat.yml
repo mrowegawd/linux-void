@@ -32,7 +32,7 @@
     - qemu
 
 - name: REDHAT-QEMU | Creating libvirt Group
-  group:
+  ansible.builtin.group:
     name: libvirt
     state: present
   become: true
@@ -48,7 +48,7 @@
 
 - name: REDHAT-QEMU | Ensuring libvirtd Service Is Enabled and Started
   become: true
-  service:
+  ansible.builtin.service:
     name: libvirtd
     enabled: true
     state: started
