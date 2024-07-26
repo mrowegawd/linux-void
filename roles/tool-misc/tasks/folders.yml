@@ -50,7 +50,7 @@
       mode: "0755"
     - foldername: "Downloads/Video"
       mode: "0755"
-    - foldername: "Downloads/screenshot/video"
+    - foldername: "Downloads/screenshot/videos"
       mode: "0755"
   tags:
     - folders
