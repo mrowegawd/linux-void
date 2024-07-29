@@ -17,6 +17,7 @@ Install and copy fonts at `~/.local/share/fonts`:
 
 - [Monospace](https://github.com/githubnext/monaspace)
 - [JetBrainsMono](https://github.com/ryanoasis/nerd-fonts/releases)
+- [SF-Mono-Font](https://github.com/supercomputra/SF-Mono-Font)
 
 ```bash
 # Cache the fonts:
