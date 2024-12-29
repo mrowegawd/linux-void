@@ -15,11 +15,8 @@ ansible-playbook install-fresh.yml --ask-become-pass --tag "eww" # "eww,tools,nv
 
 Install and copy fonts at `~/.local/share/fonts`:
 
-- [Monospace](https://github.com/githubnext/monaspace)
-- [JetBrainsMono](https://github.com/ryanoasis/nerd-fonts/releases)
-- [SF-Mono-Font](https://github.com/supercomputra/SF-Mono-Font)
+- [JetBrains Mono](https://www.jetbrains.com/lp/mono/)
+- [Nerd Fonts release](https://github.com/ryanoasis/nerd-fonts/releases)
+- [Maple Fonts](https://github.com/subframe7536/maple-font/releases)
 
-```bash
-# Cache the fonts:
-fc-cache -f -v
-```
+Cache the fonts `fc-cache -f -v`
