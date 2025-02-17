@@ -1,7 +1,11 @@
 ---
 - name: Converge
   hosts: all
+  # gather_facts: false
   tasks:
-    - name: "Converge install tool-video"
+    - name: "Before running set-variables"
+      ansible.builtin.include_role:
+        name: "set-variables"
+    - name: Replace this task with one that validates your content
       ansible.builtin.include_role:
         name: "tool-video"
