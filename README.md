@@ -1,14 +1,24 @@
 # Linux Void :penguin: (WIP)
 
-## How to use
+## How to Use
 
 ```bash
 ./install.sh
 # or
 ansible-playbook install-fresh.yml --ask-become-pass
 
-# or install specific role
+# or install a specific role
 ansible-playbook install-fresh.yml --ask-become-pass --tag "eww" # "eww,tools,nvim"
+```
+
+## How to Test
+
+Example:
+
+```bash
+cd ./roles/tool-fzf
+
+molecule converge
 ```
 
 ## Fonts
@@ -20,3 +30,25 @@ Install and copy fonts at `~/.local/share/fonts`:
 - [Maple Fonts](https://github.com/subframe7536/maple-font/releases)
 
 Cache the fonts `fc-cache -f -v`
+
+## Todo
+
+- [ ] tambahkan content ini ke file `../molecule/defualt/molecule.yml`
+
+  Molecule versi terbaru perlu penambahan content pada file `../molecule/defualt/molecule.yml`
+  pada tiap **roles**, kalau tidak `molecule converge` akan gagal
+
+  ```yml
+  ---
+  provisioner:
+    name: ansible
+    lint:
+      name: ansible-lint
+    inventory:
+      links:
+        group_vars: ../../../../group_vars/
+    options:
+      vvv: true
+    env:
+      ANSIBLE_ROLES_PATH: ../../../../roles/
+  ```
