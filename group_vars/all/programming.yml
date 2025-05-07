@@ -6,7 +6,7 @@ _install_programming:
     # choice operation systemnya dan check versionnya disitu
     flutter_version: "flutter_linux_v1.12.13+hotfix.5-stable" # debian
   golang:
-    golang_version: "1.22.5"
+    golang_version: "1.24.2"
     # if downloading golang versions, dia memiliki hash checksum khusus: versi 32 dan 64 bit
     # jadi sesuaikan dgn versi bit os.
     golang_checksum_32: "3b830fa25f79ab08b476f02c84ea4125f41296b074017b492ac1ff748cf1c7c9"
