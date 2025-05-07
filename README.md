@@ -3,11 +3,16 @@
 ## How to Use
 
 ```bash
+# Run the following command for the default installation
 ./install.sh
-# or
+
+# Install Only ansible-stuff
+./install.sh main deps
+
+# Install Using Ansible Playbook
 ansible-playbook install-fresh.yml --ask-become-pass
 
-# or install a specific role
+# Install a Specific Role
 ansible-playbook install-fresh.yml --ask-become-pass --tag "eww" # "eww,tools,nvim"
 ```
 
