@@ -150,3 +150,8 @@
   tags:
     - asdf
     - python
+# - name: "ASDF | Install zig with asdf"
+#   include_tasks: zig.yml
+#   tags:
+#     - asdf
+#     - zig
