@@ -31,6 +31,6 @@
     - wm-rofi
     # - wm-polybar
     - wm-eww # (eww dont like this!)
-    #- wm-ags # (alternative polybar and eww but hard to install on docker lols)
+    # - wm-ags # (alternative polybar and eww but hard to install on docker lols)
     - wm-dunst
     - wm-picom

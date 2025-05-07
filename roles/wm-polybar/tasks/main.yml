@@ -36,7 +36,7 @@
       ansible.builtin.tempfile:
         state: directory
         suffix: build
-      register: temp_dir_dunst
+      register: temp_dir_polybar
       changed_when: false
       tags:
         - install

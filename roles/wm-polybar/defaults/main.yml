@@ -1,5 +1,5 @@
 ---
-polybar_version: 3.7.1
+polybar_version: 3.7.2
 polybar_download:
   - url: "https://github.com/polybar/polybar/releases/download/{{ polybar_version }}/polybar-{{ polybar_version }}.tar.gz"
     dest: "{{ temp_dir_polybar.path }}"
