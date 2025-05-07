@@ -9,21 +9,21 @@
     - ruby
     - python
 
-# - name: ASDF | Ensure apt packages are managed | Debian
-#   become: true
-#   ansible.builtin.apt:
-#     name: "{{ item }}"
-#     state: present
-#   with_items:
-#     - "{{ __dep_asdf_pkgs }}"
-#   when: ansible_os_family | lower == 'debian'
-#   tags:
-#     - asdf
-#     - go
-#     - rust
-#     - nodejs
-#     - ruby
-#     - python
+- name: ASDF | Ensure apt packages are managed | Debian
+  become: true
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ __dep_asdf_pkgs }}"
+  when: ansible_os_family | lower == 'debian'
+  tags:
+    - asdf
+    - go
+    - rust
+    - nodejs
+    - ruby
+    - python
 
 - name: ASDF | Ensure yum packages are managed | Redhat
   become: true
