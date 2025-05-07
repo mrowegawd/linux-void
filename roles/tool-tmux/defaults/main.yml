@@ -11,5 +11,5 @@ build_from_source_tmux:
         tar_file: "tmux-{{ tmux_version }}.tar.gz"
         dest_tar_file: "tmux-{{ tmux_version }}"
     pkg_cmd_make: |
-      sh ./autogen.sh && ./configure && make 
+      sh ./autogen.sh && ./configure --enable-sixel && make 
       sudo make install
