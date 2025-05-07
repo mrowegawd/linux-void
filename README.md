@@ -31,7 +31,7 @@ Install and copy fonts at `~/.local/share/fonts`:
 
 Cache the fonts `fc-cache -f -v`
 
-## Todo
+## TODO
 
 - [ ] tambahkan content ini ke file `../molecule/defualt/molecule.yml`
 
@@ -52,3 +52,6 @@ Cache the fonts `fc-cache -f -v`
     env:
       ANSIBLE_ROLES_PATH: ../../../../roles/
   ```
+
+  - [x] tool-tmux
+  - [x] tool-video
