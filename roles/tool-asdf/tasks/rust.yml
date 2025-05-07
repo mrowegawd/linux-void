@@ -3,7 +3,7 @@
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
-    source ~/.asdf/asdf.sh && asdf plugin-list
+    /home/{{ user_admin }}/.local/bin/asdf plugin list
   args:
     executable: /bin/bash
   register: plugin_rust_exists
@@ -22,7 +22,7 @@
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
-    source ~/.asdf/asdf.sh && {{ rust_lang.plugin_asdf_install }}
+    /home/{{ user_admin }}/.local/bin/asdf {{ rust_lang.plugin_asdf_install }}
   args:
     executable: /bin/bash
   changed_when: false
@@ -37,9 +37,11 @@
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
-    source ~/.asdf/asdf.sh && rustup --version
+    rustc --version
   args:
     executable: /bin/bash
+  environment:
+    PATH: "/home/{{ user_admin }}/.asdf/shims:{{ lookup('env', 'PATH') }}"
   register: rust_version_cur_version
   changed_when: false
   failed_when: false
@@ -47,6 +49,10 @@
   tags:
     - rust
     - asdf
+
+# - name: ASDF-Rust | Debug plugin_rust_exists!
+#   ansible.builtin.debug:
+#     msg: "{{ rust_version_cur_version.stdout.find(rust_version) }}"
 
 - name: ASDF-Rust | Ensure apt packages are managed | Debian
   become: true
@@ -84,7 +90,7 @@
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
-    source ~/.asdf/asdf.sh && asdf install rust {{ rust_lang.plugin_asdf_rust_version }}
+    /home/{{ user_admin }}/.local/bin/asdf install rust {{ rust_lang.plugin_asdf_rust_version }}
   args:
     executable: /bin/bash
   changed_when: false
@@ -95,16 +101,33 @@
     - rust
     - asdf
 
-- name: ASDF-Rust | Ensure global version are defined
+- name: ASDF-Rust | Ensure specific text exists in .tool_version
   become: true
   become_user: "{{ user_admin }}"
-  ansible.builtin.shell: |
-    source ~/.asdf/asdf.sh && {{ rust_lang.plugin_asdf_set_global_version }}
-  args:
-    executable: /bin/bash
-  changed_when: false
+  ansible.builtin.lineinfile:
+    path: "/home/{{ user_admin }}/.tool-versions"
+    line: "rust {{ rust_version }}"
+    create: yes
+    state: present
+    mode: 0600
   when:
     - rust_version_installed is success
   tags:
     - rust
     - asdf
+#- name: ASDF-Rust | Check rust version if exists
+#  become: true
+#  become_user: "{{ user_admin }}"
+#  ansible.builtin.shell: |
+#    rust version
+#  args:
+#    executable: /bin/bash
+#  register: rust_version_cur_version2
+#  environment:
+#    PATH: "/home/{{ user_admin }}/.asdf/shims:{{ lookup('env', 'PATH') }}"
+#  changed_when: false
+#  failed_when: false
+#  ignore_errors: true
+#  tags:
+#    - rust
+#    - asdf

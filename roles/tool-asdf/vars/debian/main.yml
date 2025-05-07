@@ -4,6 +4,7 @@ __dep_asdf_pkgs:
   - gpg
   - curl
   - gawk
+  - wget
 
 __dep_python2_pkgs: []
 

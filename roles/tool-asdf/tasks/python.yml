@@ -9,7 +9,7 @@
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
-    source ~/.asdf/asdf.sh && asdf plugin-list
+    /home/{{ user_admin }}/.local/bin/asdf plugin list
   args:
     executable: /bin/bash
   register: plugin_python_exists
@@ -34,7 +34,7 @@
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
-    source ~/.asdf/asdf.sh && {{ item.plugin_asdf_install }}
+    /home/{{ user_admin }}/.local/bin/asdf {{ item.plugin_asdf_install }}
   args:
     executable: /bin/bash
   changed_when: false
@@ -50,9 +50,11 @@
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
-    source ~/.asdf/asdf.sh && {{ item.plugin_asdf_version }} --version
+    {{ item.plugin_asdf_version }} --version
   args:
     executable: /bin/bash
+  environment:
+    PATH: "/home/{{ user_admin }}/.asdf/shims:{{ lookup('env', 'PATH') }}"
   register: "python_version_cur_version"
   changed_when: false
   failed_when: false
@@ -97,7 +99,7 @@
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
-    source ~/.asdf/asdf.sh && asdf install python {{ item.0.plugin_asdf_version }}
+    /home/{{ user_admin }}/.local/bin/asdf install python {{ item.0.plugin_asdf_version }}
   args:
     executable: /bin/bash
   changed_when: false
@@ -114,13 +116,12 @@
 - name: ASDF-Python | Ensure global version python2 python3 are defined
   become: true
   become_user: "{{ user_admin }}"
-  ansible.builtin.shell: |
-    source ~/.asdf/asdf.sh && {{ item.plugin_asdf_set_global_version }}
-  args:
-    executable: /bin/bash
-  changed_when: false
-  with_items:
-    - "{{ python_lang | flatten(levels=1) }}"
+  ansible.builtin.lineinfile:
+    path: "/home/{{ user_admin }}/.tool-versions"
+    line: "python {{ python3_version }} {{ python2_version }}"
+    create: yes
+    state: present
+    mode: 0600
   when:
     - python_version_installed is success
   tags:

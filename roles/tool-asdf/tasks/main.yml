@@ -9,21 +9,21 @@
     - ruby
     - python
 
-- name: ASDF | Ensure apt packages are managed | Debian
-  become: true
-  ansible.builtin.apt:
-    name: "{{ item }}"
-    state: present
-  with_items:
-    - "{{ __dep_asdf_pkgs }}"
-  when: ansible_os_family | lower == 'debian'
-  tags:
-    - asdf
-    - go
-    - rust
-    - nodejs
-    - ruby
-    - python
+# - name: ASDF | Ensure apt packages are managed | Debian
+#   become: true
+#   ansible.builtin.apt:
+#     name: "{{ item }}"
+#     state: present
+#   with_items:
+#     - "{{ __dep_asdf_pkgs }}"
+#   when: ansible_os_family | lower == 'debian'
+#   tags:
+#     - asdf
+#     - go
+#     - rust
+#     - nodejs
+#     - ruby
+#     - python
 
 - name: ASDF | Ensure yum packages are managed | Redhat
   become: true
@@ -42,43 +42,111 @@
     - ruby
     - python
 
-- name: ASDF | Clone asdf
+- name: ASDF | Check if .local/bin directory exists
   become: true
   become_user: "{{ user_admin }}"
-  ansible.builtin.git:
-    repo: "https://github.com/asdf-vm/asdf.git"
-    dest: "/home/{{ user_admin }}/.asdf"
-    version: "master"
+  ansible.builtin.stat:
+    path: "/home/{{ user_admin }}/.local/bin"
+  register: local_bin_dir
+  check_mode: false
   tags:
     - install
     - asdf
-    - go
-    - rust
-    - nodejs
-    - ruby
-    - python
 
-- include_tasks: go.yml
+- name: ASDF | Create .local/bin directory if it does not exist
+  ansible.builtin.file:
+    path: "/home/{{ user_admin }}/{{ item }}"
+    state: directory
+    mode: "0755"
+    owner: "{{ user_admin }}"
+    group: "{{ user_admin }}"
+  when: not local_bin_dir.stat.exists
+  with_items:
+    - ".local"
+    - ".local/bin"
+  tags:
+    - install
+    - asdf
+
+- name: ASDF | Check if asdf bin exists
+  ansible.builtin.stat:
+    path: "/home/{{ user_admin }}/.local/bin/asdf"
+  register: asdf_file_bin_path
+  check_mode: false
+  tags:
+    - install
+    - asdf
+
+# - name: ASDF | Debug asdf_file_bin_path!
+#   ansible.builtin.debug:
+#     msg: "{{ asdf_tar_gz }}"
+
+- name: ASDF | Download tar asdf-v{{ asdf_version }}
+  become: true
+  become_user: "{{ user_admin }}"
+  ansible.builtin.get_url:
+    url: "https://github.com/asdf-vm/asdf/releases/download/v{{ asdf_version }}/{{ asdf_tar_gz }}"
+    dest: "/home/{{ user_admin }}/.local/bin"
+    mode: 0755
+    force: true
+    timeout: 30
+  when: not asdf_file_bin_path.stat.exists
+  register: jobasdfdownload
+  until: jobasdfdownload is succeeded
+  retries: 3
+  delay: 3
+  tags:
+    - install
+    - asdf
+
+- name: ASDF | Extract tar asdf-v{{ asdf_version }}
+  become: true
+  become_user: "{{ user_admin }}"
+  ansible.builtin.unarchive:
+    src: "/home/{{ user_admin }}/.local/bin/{{ asdf_tar_gz }}"
+    dest: "/home/{{ user_admin }}/.local/bin"
+    copy: no # with no will not copy or will deleted
+  when:
+    - jobasdfdownload is succeeded
+    - not asdf_file_bin_path.stat.exists
+  tags:
+    - install
+    - asdf
+
+- name: ASDF | Remove asdf tar gz
+  ansible.builtin.file:
+    path: "/home/{{ user_admin }}/.local/bin/{{ asdf_tar_gz }}"
+    state: absent
+  tags:
+    - install
+    - asdf
+
+- name: "ASDF | Install go with asdf"
+  include_tasks: go.yml
   tags:
     - asdf
     - go
 
-- include_tasks: rust.yml
+- name: "ASDF | Install rust with asdf"
+  include_tasks: rust.yml
   tags:
     - asdf
     - rust
 
-- include_tasks: nodejs.yml
+- name: "ASDF | Install nodejs with asdf"
+  include_tasks: nodejs.yml
   tags:
     - asdf
     - nodejs
 
-- include_tasks: ruby.yml
+- name: "ASDF | Install ruby with asdf"
+  include_tasks: ruby.yml
   tags:
     - asdf
     - ruby
 
-- include_tasks: python.yml
+- name: "ASDF | Install python with asdf"
+  include_tasks: python.yml
   tags:
     - asdf
     - python

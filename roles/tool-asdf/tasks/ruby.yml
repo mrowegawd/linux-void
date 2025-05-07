@@ -9,7 +9,7 @@
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
-    source ~/.asdf/asdf.sh && asdf plugin-list
+    /home/{{ user_admin }}/.local/bin/asdf plugin list
   args:
     executable: /bin/bash
   register: plugin_ruby_exists
@@ -28,7 +28,7 @@
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
-    source ~/.asdf/asdf.sh && {{ ruby_lang.plugin_asdf_install }}
+    /home/{{ user_admin }}/.local/bin/asdf {{ ruby_lang.plugin_asdf_install }}
   args:
     executable: /bin/bash
   changed_when: false
@@ -43,9 +43,11 @@
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
-    source ~/.asdf/asdf.sh && ruby --version
+    ruby --version
   args:
     executable: /bin/bash
+  environment:
+    PATH: "/home/{{ user_admin }}/.asdf/shims:{{ lookup('env', 'PATH') }}"
   register: ruby_version_cur_version
   changed_when: false
   failed_when: false
@@ -90,25 +92,28 @@
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
-    source ~/.asdf/asdf.sh && asdf install ruby {{ ruby_lang.plugin_asdf_version }}
+    /home/{{ user_admin }}/.local/bin/asdf install ruby {{ ruby_lang.plugin_asdf_version }}
   args:
     executable: /bin/bash
   changed_when: false
   register: ruby_version_installed
   when:
     - ruby_version_cur_version.stderr.find('command not found') != -1
+  environment:
+    PATH: "/home/{{ user_admin }}/.local/bin:{{ lookup('env', 'PATH') }}"
   tags:
     - ruby
     - asdf
 
-- name: ASDF-Ruby | Ensure global version are defined
+- name: ASDF-Ruby | Ensure specific text exists in .tool_version
   become: true
   become_user: "{{ user_admin }}"
-  ansible.builtin.shell: |
-    source ~/.asdf/asdf.sh && {{ ruby_lang.plugin_asdf_set_global_version }}
-  args:
-    executable: /bin/bash
-  changed_when: false
+  ansible.builtin.lineinfile:
+    path: "/home/{{ user_admin }}/.tool-versions"
+    line: "ruby {{ ruby_version }}"
+    create: yes
+    state: present
+    mode: 0600
   when:
     - ruby_version_installed is success
   tags:

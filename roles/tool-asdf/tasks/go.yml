@@ -3,7 +3,7 @@
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
-    source ~/.asdf/asdf.sh && asdf plugin-list
+    /home/{{ user_admin }}/.local/bin/asdf plugin list
   args:
     executable: /bin/bash
   register: plugin_go_exists
@@ -22,7 +22,7 @@
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
-    source ~/.asdf/asdf.sh && {{ go_lang.plugin_asdf_install }}
+    /home/{{ user_admin }}/.local/bin/asdf {{ go_lang.plugin_asdf_install }}
   args:
     executable: /bin/bash
   changed_when: false
@@ -37,9 +37,11 @@
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
-    source ~/.asdf/asdf.sh && go version
+    go version
   args:
     executable: /bin/bash
+  environment:
+    PATH: "/home/{{ user_admin }}/.asdf/shims:{{ lookup('env', 'PATH') }}"
   register: go_version_cur_version
   changed_when: false
   failed_when: false
@@ -88,7 +90,7 @@
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
-    source ~/.asdf/asdf.sh && asdf install golang {{ go_lang.plugin_asdf_go_version }}
+    /home/{{ user_admin }}/.local/bin/asdf install golang {{ go_lang.plugin_asdf_go_version }}
   args:
     executable: /bin/bash
   changed_when: false
@@ -99,16 +101,33 @@
     - go
     - asdf
 
-- name: ASDF-Go | Ensure global version are defined
+- name: ASDF-Go | Ensure specific text exists in .tool_version
   become: true
   become_user: "{{ user_admin }}"
-  ansible.builtin.shell: |
-    source ~/.asdf/asdf.sh && {{ go_lang.plugin_asdf_set_global_version }}
-  args:
-    executable: /bin/bash
-  changed_when: false
+  ansible.builtin.lineinfile:
+    path: "/home/{{ user_admin }}/.tool-versions"
+    line: "golang {{ go_version }}"
+    create: yes
+    state: present
+    mode: 0600
   when:
     - go_version_installed is success
   tags:
     - go
     - asdf
+#- name: ASDF-Go | Check go version if exists
+#  become: true
+#  become_user: "{{ user_admin }}"
+#  ansible.builtin.shell: |
+#    go version
+#  args:
+#    executable: /bin/bash
+#  register: go_version_cur_version2
+#  environment:
+#    PATH: "/home/{{ user_admin }}/.asdf/shims:{{ lookup('env', 'PATH') }}"
+#  changed_when: false
+#  failed_when: false
+#  ignore_errors: true
+#  tags:
+#    - go
+#    - asdf

@@ -20,7 +20,7 @@ _install_programming:
     java_sdk: ""
   nodejs:
     # install nodejs versi long term, LTS
-    nodejs_version: "20.15.1"
+    nodejs_version: "23.11.0"
     nvm_version: "v0.39.7"
   lua:
     lua_version: "5.4.2"
@@ -37,9 +37,9 @@ _install_programming:
     xdebug_remote_connect_back: 1
     group_for_webserver: "www"
   python3:
-    python3_version: "3.12.4"
+    python3_version: "3.13.3"
     python2_version: "2.7.16"
   ruby:
-    ruby_version: "3.3.4"
+    ruby_version: "3.4.4"
   rust:
-    rust_version: "1.79.0"
+    rust_version: "1.86.0"

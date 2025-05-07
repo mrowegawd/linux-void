@@ -9,7 +9,7 @@
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
-    source ~/.asdf/asdf.sh && asdf plugin-list
+    /home/{{ user_admin }}/.local/bin/asdf plugin list
   args:
     executable: /bin/bash
   register: plugin_nodejs_exists
@@ -28,7 +28,7 @@
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
-    source ~/.asdf/asdf.sh && {{ nodejs_lang.plugin_asdf_install }}
+    /home/{{ user_admin }}/.local/bin/asdf {{ nodejs_lang.plugin_asdf_install }}
   args:
     executable: /bin/bash
   changed_when: false
@@ -43,9 +43,11 @@
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
-    source ~/.asdf/asdf.sh && node --version
+    node --version
   args:
     executable: /bin/bash
+  environment:
+    PATH: "/home/{{ user_admin }}/.asdf/shims:{{ lookup('env', 'PATH') }}"
   register: nodejs_version_cur_version
   changed_when: false
   failed_when: false
@@ -53,6 +55,10 @@
   tags:
     - nodejs
     - asdf
+
+# - name: ASDF-Nodejs | Debug plugin_nodejs_exists!
+#   ansible.builtin.debug:
+#     msg: "{{ nodejs_version_cur_version.stdout.find(nodejs_version) }}"
 
 - name: ASDF-Nodejs | Ensure apt packages are managed | Debian
   become: true
@@ -90,9 +96,11 @@
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
-    source ~/.asdf/asdf.sh && asdf install nodejs {{ nodejs_lang.plugin_asdf_nodejs_version }}
+    /home/{{ user_admin }}/.local/bin/asdf install nodejs {{ nodejs_lang.plugin_asdf_nodejs_version }}
   args:
     executable: /bin/bash
+  environment:
+    PATH: "/home/{{ user_admin }}/.local/bin:{{ lookup('env', 'PATH') }}"
   changed_when: false
   register: nodejs_version_installed
   when:
@@ -101,16 +109,37 @@
     - nodejs
     - asdf
 
-- name: ASDF-Nodejs | Ensure global version are defined
+- name: ASDF-Nodejs | Ensure specific text exists in .tool_version
   become: true
   become_user: "{{ user_admin }}"
-  ansible.builtin.shell: |
-    source ~/.asdf/asdf.sh && {{ nodejs_lang.plugin_asdf_set_global_version }}
-  args:
-    executable: /bin/bash
-  changed_when: false
+  ansible.builtin.lineinfile:
+    path: "/home/{{ user_admin }}/.tool-versions"
+    line: "nodejs {{ nodejs_version }}"
+    create: yes
+    state: present
+    mode: 0600
   when:
     - nodejs_version_installed is success
   tags:
     - nodejs
     - asdf
+# - name: ASDF-Nodejs | Check nodejs version if exists
+#   become: true
+#   become_user: "{{ user_admin }}"
+#   ansible.builtin.shell: |
+#     node --version
+#   args:
+#     executable: /bin/bash
+#   register: nodejs_version_cur_version2
+#   environment:
+#     PATH: "/home/{{ user_admin }}/.asdf/shims:{{ lookup('env', 'PATH') }}"
+#   changed_when: false
+#   failed_when: false
+#   ignore_errors: true
+#   tags:
+#     - nodejs
+#     - asdf
+#
+# - name: ASDF-Nodejs | Debug plugin_nodejs_exists!
+#   ansible.builtin.debug:
+#     msg: "{{ nodejs_version_cur_version2.stdout.find(nodejs_version) }}"
