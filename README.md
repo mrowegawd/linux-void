@@ -21,6 +21,7 @@ ansible-playbook install-fresh.yml --ask-become-pass --tag "eww" # "eww,tools,nv
 Example:
 
 ```bash
+# Example test tool-fzf
 cd ./roles/tool-fzf
 
 molecule converge
