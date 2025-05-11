@@ -25,18 +25,25 @@
         - auth
 
     - name: Importing task accounts
-      ansilbe.builtin.import_tasks: accounts.yml
+      ansible.builtin.import_tasks: accounts.yml
+
     - name: Importing task auth
-      ansilbe.builtin.import_tasks: auth.yml
+      ansible.builtin.import_tasks: auth.yml
+
     - name: Importing task create
-      ansilbe.builtin.import_tasks: create.yml
+      ansible.builtin.import_tasks: create.yml
+
     - name: Importing task visido
-      ansilbe.builtin.import_tasks: visudo.yml
+      ansible.builtin.import_tasks: visudo.yml
+
     - name: Importing task folders
-      ansilbe.builtin.import_tasks: folders.yml
+      ansible.builtin.import_tasks: folders.yml
+
     - name: Importing task dotfiles
-      ansilbe.builtin.import_tasks: dotfiles.yml
+      ansible.builtin.import_tasks: dotfiles.yml
+
     - name: Importing task dotfiles root
-      ansilbe.builtin.import_tasks: dotfiles_root.yml
+      ansible.builtin.import_tasks: dotfiles_root.yml
+
     - name: Importing task lolcale
-      ansilbe.builtin.import_tasks: locale.yml
+      ansible.builtin.import_tasks: locale.yml

@@ -26,7 +26,6 @@
   ansible.builtin.shell: |
     ./install.sh
   args:
-    warn: no
     chdir: "/home/{{ user_admin }}/moxconf/development/dotfiles"
     executable: /bin/bash
   changed_when: false

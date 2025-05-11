@@ -60,9 +60,11 @@
     - medium
 
 - name: AUTH | Check for 'nopasswd' in sudoers files
-  ansible.builtin.shell: grep -ir nopasswd /etc/sudoers /etc/sudoers.d/ | egrep -v "^([[:space:]]*)?(#|$)" || echo "not found"
+  ansible.builtin.shell: |
+    set -o pipefail;
+    grep -ir nopasswd /etc/sudoers /etc/sudoers.d/ | egrep -v "^([[:space:]]*)?(#|$)" || echo "not found"
   args:
-    warn: no
+    executable: /bin/bash
   register: sudoers_nopasswd_check
   changed_when: false
   when:
@@ -168,6 +170,7 @@
   ansible.builtin.blockinfile:
     dest: /etc/security/limits.d/ansible-hardening-maxlogins.conf
     create: yes
+    mode: 0600
     block: |
       # Deployed by the ansible-hardening role
       # V-72217 - Limit concurrent sessions for all accounts/types

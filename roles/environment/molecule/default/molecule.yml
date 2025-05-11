@@ -46,15 +46,15 @@ provisioner:
   name: ansible
   # https://molecule.readthedocs.io/en/stable/configuration.html#id22
   # targeting group_vars global
+  lint:
+    name: ansible-lint
   inventory:
     links:
       group_vars: ../../../../group_vars/
   # st terminal no color output, to solve this we need this env to force it
   # https://www.jeffgeerling.com/blog/2020/getting-colorized-output-molecule-and-ansible-on-github-actions-ci
   env:
-    PY_COLORS: "1"
-    ANSIBLE_FORCE_COLOR: "1"
-    ANSIBLE_ROLES_PATH: "../../../_init"
+    ANSIBLE_ROLES_PATH: ../../../../roles/
 verifier:
   name: ansible
 lint: |

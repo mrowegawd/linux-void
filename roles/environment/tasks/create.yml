@@ -10,9 +10,14 @@
 
 - name: USER | Get the username running the deploy
   become: False
-  delegate_to: command whoami
+  command: whoami
+  delegate_to: localhost
   register: username_on_the_host
   changed_when: false
+
+- name: Test get the username
+  debug:
+    msg: "{{ username_on_the_host }}"
 
 - name: USER | Check current path /home/user if exists
   ansible.builtin.stat:

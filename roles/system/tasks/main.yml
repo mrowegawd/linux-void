@@ -9,5 +9,6 @@
   block:
     - name: Import iptables.yml
       ansible.builtin.import_tasks: iptables.yml
+
     - name: Import disable-firewalld.yml
       ansible.builtin.import_tasks: disable-firewalld.yml

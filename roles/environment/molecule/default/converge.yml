@@ -2,9 +2,9 @@
 - name: Converge
   hosts: all
   tasks:
-    - name: "Include _init"
-      include_role:
-        name: "_init"
+    - name: "Before running set-variables"
+      ansible.builtin.include_role:
+        name: "set-variables"
     - name: "Include environment"
       include_role:
         name: "environment"
