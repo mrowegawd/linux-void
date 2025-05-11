@@ -13,7 +13,7 @@
   ansible.builtin.git:
     repo: "https://github.com/mrowegawd/dotfiles.git"
     dest: "/home/{{ user_admin }}/moxconf/development/dotfiles"
-    version: "test-plugin"
+    version: "master"
   changed_when: false
   tags:
     - install
