@@ -113,6 +113,51 @@
     - install
     - asdf
 
+# - name: ASDF | Ensure that ~/.local/bin is included in the user PATH
+#   become: true
+#   become_user: "{{ user_admin }}"
+#   ansible.builtin.shell: echo $PATH
+#   register: path_output
+#   environment:
+#     PATH: "/home/{{ user_admin }}/.local/bin:{{ ansible_env.PATH }}"
+#   args:
+#     executable: /bin/bash
+#   changed_when: false
+
+# - name: ASDF | Check debug PATH
+#   ansible.builtin.debug:
+#     msg: "{{ path_output }} {{ user_admin }}"
+
+# - name: Pastikan ~/.local/bin ada di PATH
+#   assert:
+#     that:
+#       - "'.local/bin' in path_output.stdout"
+#     fail_msg: "~/.local/bin tidak ditemukan di PATH"
+#     success_msg: "~/.local/bin ditemukan di PATH"
+
+- name: ASDF | Check string 'ASDF_DATA_DIR' if exists in file .bashrc
+  ansible.builtin.shell: |
+    cat /home/{{ user_admin }}/.bashrc
+  register: cat_string_bashrc
+  args:
+    executable: /bin/bash
+  changed_when: false
+
+# - name: ASDF | Debug this cat_string_bashrc
+#   # jika line string nya tidak ditemukan bakal teroutput -1
+#   ansible.builtin.debug:
+#     msg: "{{ cat_string_bashrc.stdout.find('ASDF_DATA_DIR') }}"
+
+- name: ASDF | Ensure string 'ASDF_DATA_DIR' (multiline strings block) exists in file .bashrc
+  ansible.builtin.blockinfile:
+    path: "/home/{{ user_admin }}/.bashrc"
+    block: |
+      export PATH="$HOME/.local/bin:$PATH"
+      export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
+      . <(asdf completion bash)
+    state: present
+  when: cat_string_bashrc.stdout.find('ASDF_DATA_DIR') == -1
+
 - name: ASDF | Remove asdf tar gz
   ansible.builtin.file:
     path: "/home/{{ user_admin }}/.local/bin/{{ asdf_tar_gz }}"
