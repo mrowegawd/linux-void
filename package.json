@@ -1,0 +1,7 @@
+{
+  "name": "linux-void",
+  "packageManager": "yarn@4.6.0",
+  "dependencies": {
+    "@ansible/ansible-language-server": "^1.2.3"
+  }
+}

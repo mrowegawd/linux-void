@@ -21,7 +21,7 @@
     - tool-qemu
     - tool-terminal
     - tool-tmux
-    - tool-video
+    # - tool-video  # --> mpv error ketika install di debian 12 (bookworm)
     # - tool-test
     # - tools
 

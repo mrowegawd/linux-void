@@ -1,10 +1,10 @@
 __mpv_deps:
-  # - debhelper (>= 7)
-  # - libdav1d-dev
   - autoconf
   - automake
   - build-essential
+  - debhelper
   - gcc
+  - glslang-dev
   - ladspa-sdk
   - libarchive-dev
   - libasound2-dev
@@ -18,9 +18,12 @@ __mpv_deps:
   - libbs2b-dev
   - libcaca-dev
   - libcdio-paranoia-dev
+  - libdav1d-dev
+  # - libdisplay-info-dev
   - libdrm-dev
   - libdvdnav-dev
   - libegl1-mesa-dev
+  - libepoxy-dev
   - libfontconfig-dev
   - libfreetype6-dev
   - libfribidi-dev
@@ -28,24 +31,28 @@ __mpv_deps:
   - libgl1-mesa-dev
   - libgme-dev
   - libgnutls28-dev
-  # - libgpac-dev
   - libgsm1-dev
   - libharfbuzz-dev
   - libjack-dev
+  - libjack-jackd2-dev
   - libjpeg-dev
   - liblcms2-dev
   - liblircclient-dev
   - liblua5.1-0-dev
+  - liblua5.2-dev
   - libmodplug-dev
   - libmp3lame-dev
   - libopenal-dev
   - libopencore-amrnb-dev
   - libopencore-amrwb-dev
   - libopus-dev
+  - libpipewire-0.3-dev
   - libpulse-dev
   - librtmp-dev
   - librubberband-dev
   - libsdl1.2-dev
+  - libsdl2-dev
+  - libsixel-dev
   - libsoxr-dev
   - libspeex-dev
   - libssh-dev
@@ -54,27 +61,34 @@ __mpv_deps:
   - libtheora-dev
   - libtool
   - libuchardet-dev
+  - libunwind-dev
   - libv4l-dev
   - libva-dev
   - libvdpau-dev
   - libvo-amrwbenc-dev
   - libvorbis-dev
   - libvpx-dev
+  - libvulkan-dev
   - libwayland-dev
   - libx11-dev
   - libx264-dev
   - libxext-dev
   - libxinerama-dev
   - libxkbcommon-dev
+  - libxpresent-dev
   - libxrandr-dev
   - libxss-dev
   - libxv-dev
   - libxvidcore-dev
+  - linux-libc-dev
+  - meson
   - nasm
+  - ninja-build
   - pkg-config
   - python3
   - python3-docutils
   - texi2html
+  - wayland-protocols
   - x11proto-core-dev
   - yasm
   - zlib1g-dev

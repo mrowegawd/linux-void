@@ -5,4 +5,3 @@
     _apt_packages: "{{ tool_video_pgks }}"
   tags:
     - video
-    - mpv

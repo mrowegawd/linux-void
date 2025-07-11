@@ -1,8 +1,7 @@
 ---
-# #
 # WARN: Task dibawah ini semuanya gagal, gunakan installansi menggunakan `apt install mpv`
 # dari pada build dari tasks ini
-# #
+
 - name: MPV-VIDEO | Check mpv installed version
   become: true
   become_user: "{{ user_admin }}"
@@ -41,15 +40,19 @@
       until: mpvdlgit is success
       with_items: "{{ mpv_build }}"
 
+    # - name: Debug file temp_dir for mpv build
+    #   ansible.builtin.debug:
+    #     msg: "{{ temp_dir }}/mpv_build"
+
     - name: MPV-VIDEO | Ensure mpv deps installed
       ansible.builtin.include_role:
         name: _0package
       vars:
         _apt_packages: "{{ __mpv_deps }}"
 
+        # printf "%s\n" --disable-gl > mpv_options
     - name: MPV-VIDEO | Install MPV
       ansible.builtin.shell: |
-        printf "%s\n" --disable-gl > mpv_options
         ./rebuild -j4
         sudo ./install
       args:

@@ -3,6 +3,8 @@
   ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
   tags:
     - video
+    - mpv
+    - slop
 
 # - name: VIDEO | Include task maim-slop.yml
 #   ansible.builtin.include_tasks: maim-slop.yml
@@ -14,9 +16,11 @@
   ansible.builtin.include_tasks: tool-video.yml
   tags:
     - video
-    - mpv
+    - slop
+    # - mpv
 
 - name: Import task mpv.yml
   ansible.builtin.import_tasks: mpv.yml
   tags:
     - video
+    - mpv

@@ -5,3 +5,8 @@
 tmp
 .env
 *.lock
+
+.yarn
+
+*.mjs
+.pnp.cjs
