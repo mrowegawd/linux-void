@@ -7,15 +7,15 @@
     - alacritty
     - zsh
 
-- include_tasks: kitty.yml
-  tags:
-    - terminal
-    - kitty
+      # - include_tasks: kitty.yml
+      #   tags:
+      #     - terminal
+      #     - kitty
 
-- include_tasks: alacritty.yml
-  tags:
-    - terminal
-    - alacritty
+      # - include_tasks: alacritty.yml
+      #   tags:
+      #     - terminal
+      #     - alacritty
 
 - include_tasks: zsh.yml
   tags:

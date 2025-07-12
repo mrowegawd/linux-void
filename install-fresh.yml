@@ -17,17 +17,16 @@
     - tool-editor
     - tool-fzf
     - tool-misc
-    - tool-newsboat
+    # - tool-newsboat
     - tool-qemu
     - tool-terminal
     - tool-tmux
-    # - tool-video  # --> mpv error ketika install di debian 12 (bookworm)
+    - tool-video # --> mpv error ketika install di debian 12 (bookworm)
     # - tool-test
     # - tools
-
     # Window Manager
     - wm-bspwm
-    - wm-conky
+      # - wm-conky
     - wm-rofi
     # - wm-polybar
     - wm-eww # (eww dont like this!)

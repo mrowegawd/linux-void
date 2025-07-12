@@ -20,11 +20,12 @@
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
-    source ~/.asdf/asdf.sh &&
     bash -c 'if command -v rustup &> /dev/null;
     then rustup -V; else echo "not found"; fi'
   args:
     executable: /bin/bash
+  environment:
+    PATH: "/home/{{ user_admin }}/.asdf/shims:{{ lookup('env', 'PATH') }}"
   changed_when: false
   register: eww_current_version
   when: eww_is_asdf_exists.stat.exists
@@ -102,11 +103,12 @@
       become: true
       become_user: "{{ user_admin }}"
       ansible.builtin.shell: |
-        source ~/.asdf/asdf.sh &&
         cargo build --release --no-default-features --features x11
       args:
         executable: /bin/bash
         chdir: "{{ dest_eww }}"
+      environment:
+        PATH: "/home/{{ user_admin }}/.asdf/shims:{{ lookup('env', 'PATH') }}"
       changed_when: false
       when: ewwdlgit is success
       tags:

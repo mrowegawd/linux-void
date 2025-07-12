@@ -9,11 +9,11 @@
     - dropbox
     - tools
 
-- name: MISC | Include task mpdris2-rs.yml
-  ansible.builtin.include_tasks: mpdris2-rs.yml
-  tags:
-    - misc
-    - mpdris
+# - name: MISC | Include task mpdris2-rs.yml
+#   ansible.builtin.include_tasks: mpdris2-rs.yml
+#   tags:
+#     - misc
+#     - mpdris
 # - include_tasks: pamixer.yml
 #   tags:
 #     - misc
@@ -25,11 +25,11 @@
     - misc
     - folders
 
-- name: MISC | Include task dropbox.yml
-  ansible.builtin.include_tasks: dropbox.yml
-  tags:
-    - misc
-    - folders
+# - name: MISC | Include task dropbox.yml
+#   ansible.builtin.include_tasks: dropbox.yml
+#   tags:
+#     - misc
+#     - folders
 
 - name: MISC | Include task tools.yml
   ansible.builtin.include_tasks: tools.yml

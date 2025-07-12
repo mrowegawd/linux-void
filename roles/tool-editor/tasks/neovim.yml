@@ -7,18 +7,22 @@
 #   tags:
 #     - editor
 #     - nvim
+#     - neovim
 
 - name: NEOVIM-PROVIDER-EDITOR | Install provider neovim for Nodejs
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
-    source ~/.asdf/asdf.sh && npm install -g neovim
+    npm install -g neovim
   args:
     executable: /bin/bash
+  environment:
+    PATH: "/home/{{ user_admin }}/.asdf/shims:{{ lookup('env', 'PATH') }}"
   changed_when: false
   register: neovim_provider_nodejs
   tags:
     - editor
+    - neovim
     - nvim
     - nvimprovider
 
@@ -26,13 +30,16 @@
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
-    source ~/.asdf/asdf.sh && asdf reshim nodejs
+    asdf reshim nodejs
   args:
     executable: /bin/bash
+  environment:
+    PATH: "/home/{{ user_admin }}/.asdf/shims:{{ lookup('env', 'PATH') }}"
   when: neovim_provider_nodejs is success
   changed_when: false
   tags:
     - editor
+    - neovim
     - nvim
     - nvimprovider
 
@@ -40,13 +47,16 @@
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
-    source ~/.asdf/asdf.sh && gem install neovim
+    gem install neovim
   args:
     executable: /bin/bash
+  environment:
+    PATH: "/home/{{ user_admin }}/.asdf/shims:{{ lookup('env', 'PATH') }}"
   changed_when: false
   register: neovim_provider_ruby
   tags:
     - editor
+    - neovim
     - nvim
     - nvimprovider
 
@@ -54,13 +64,16 @@
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
-    source ~/.asdf/asdf.sh && asdf reshim ruby
+    asdf reshim ruby
   args:
     executable: /bin/bash
+  environment:
+    PATH: "/home/{{ user_admin }}/.asdf/shims:{{ lookup('env', 'PATH') }}"
   when: neovim_provider_ruby is success
   changed_when: false
   tags:
     - editor
+    - neovim
     - nvim
     - nvimprovider
 
@@ -68,10 +81,12 @@
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
-    source ~/.asdf/asdf.sh && {{ item }}
+    {{ item }}
   args:
     executable: /bin/bash
     chdir: ~/.config
+  environment:
+    PATH: "/home/{{ user_admin }}/.asdf/shims:{{ lookup('env', 'PATH') }}"
   changed_when: false
   failed_when: false
   with_items:
@@ -80,6 +95,7 @@
     - "python2 -m virtualenv neovim2"
   tags:
     - editor
+    - neovim
     - nvim
     - nvimprovider
 
@@ -87,10 +103,12 @@
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
-    source ~/.asdf/asdf.sh && {{ item }} install neovim
+    {{ item }} install neovim
   args:
     executable: /bin/bash
     chdir: ~/.config
+  environment:
+    PATH: "/home/{{ user_admin }}/.asdf/shims:{{ lookup('env', 'PATH') }}"
   changed_when: false
   failed_when: false
   register: neovim_provider_python
@@ -99,6 +117,7 @@
     - "~/.config/neovim2/bin/pip"
   tags:
     - editor
+    - neovim
     - nvim
     - nvimprovider
 
@@ -106,12 +125,15 @@
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
-    source ~/.asdf/asdf.sh && asdf reshim python
+    asdf reshim python
   args:
     executable: /bin/bash
+  environment:
+    PATH: "/home/{{ user_admin }}/.asdf/shims:{{ lookup('env', 'PATH') }}"
   when: neovim_provider_python is success
   changed_when: false
   tags:
     - editor
+    - neovim
     - nvim
     - nvimprovider

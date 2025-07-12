@@ -5,5 +5,5 @@ __eww_deps:
   - libgdk-pixbuf2.0-dev
   - libglib2.0-dev
   - libdbusmenu-glib-dev
-  - librust-gdk+v3-24-dev
+  # - librust-gdk+v3-24-dev
   - libdbusmenu-gtk3-dev

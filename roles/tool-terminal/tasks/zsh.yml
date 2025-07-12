@@ -30,13 +30,13 @@
         state: directory
         mode: 0755
 
-    - name: TERMINAL-ZSH | Git clone oh-my-zsh and their plugins
-      become: true
-      become_user: "{{ user_admin }}"
-      ansible.builtin.git:
-        repo: "{{ item.repo }}"
-        dest: "/home/{{ user_admin }}/{{ item.dest }}"
-        version: master
-        force: yes
-        recursive: yes
-      with_items: "{{ zsh_plugins }}"
+          #  - name: TERMINAL-ZSH | Git clone oh-my-zsh and their plugins
+          #    become: true
+          #    become_user: "{{ user_admin }}"
+          #    ansible.builtin.git:
+          #      repo: "{{ item.repo }}"
+          #      dest: "/home/{{ user_admin }}/{{ item.dest }}"
+          #      version: master
+          #      force: yes
+          #      recursive: yes
+          #    with_items: "{{ zsh_plugins }}"
