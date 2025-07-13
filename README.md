@@ -6,13 +6,16 @@
 # Run the following command for the default installation
 ./install.sh
 
-# Install Only ansible-stuff
+# Install ansible-stuff
 ./install.sh main deps
 
-# Install Using Ansible Playbook
+# To create make pass
+./install.sh main makepass
+
+# Install using ansible playbook
 ansible-playbook install-fresh.yml --ask-become-pass
 
-# Install a Specific Role
+# Install a specific role
 ansible-playbook install-fresh.yml --ask-become-pass --tag "eww" # "eww,tools,nvim"
 ```
 

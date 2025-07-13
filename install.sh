@@ -24,6 +24,16 @@ __install_deps() {
 	pipx install "molecule-plugins[docker]" --include-deps # for driver
 }
 
+mkpass() {
+	read -r -p "your password? " getvar
+
+	mkdir -p tmp
+
+	mkpasswd -m sha-512 "$getvar" >tmp/userpass-SHA5
+	echo "$getvar" >tmp/userpass
+	echo "$USER" >tmp/user
+}
+
 playbook_start() {
 	WORKDIR="$HOME/moxconf/development"
 	CURRENT_DIR="$(pwd)"
@@ -37,16 +47,6 @@ playbook_start() {
 		exit 1
 	fi
 
-	_mkpass() {
-		read -r -p "your password? " getvar
-
-		mkdir -p tmp
-
-		mkpasswd -m sha-512 "$getvar" >tmp/userpass-SHA5
-		echo "$getvar" >tmp/userpass
-		echo "$USER" >tmp/user
-	}
-
 	if [ -z "$(command -v mkpasswd)" ]; then
 		echo "package whois not found! let me install it.."
 		sudo apt install whois -y
@@ -54,9 +54,8 @@ playbook_start() {
 	fi
 
 	clear
-	echo ""
+	mkpass
 
-	_mkpass
 	sleep 2
 	printf "[+] Starting ansible-playbook !!\n\n"
 
@@ -72,6 +71,10 @@ main() {
 
 	if [[ $1 == "deps" ]]; then
 		__install_deps
+	fi
+
+	if [[ $1 == "makepass" ]]; then
+		mkpasswd
 	fi
 }
 

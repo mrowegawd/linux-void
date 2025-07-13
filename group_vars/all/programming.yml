@@ -43,3 +43,5 @@ _install_programming:
     ruby_version: "3.4.3"
   rust:
     rust_version: "1.86.0"
+  zig:
+    zig_version: "1.86.0"

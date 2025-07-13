@@ -1,0 +1,136 @@
+- name: ASDF | Check if .local/bin directory exists
+  become: true
+  become_user: "{{ user_admin }}"
+  ansible.builtin.stat:
+    path: "/home/{{ user_admin }}/.local/bin"
+  register: local_bin_dir
+  check_mode: false
+  tags:
+    - asdf
+    - install
+
+- name: ASDF | Create .local/bin directory if it does not exist
+  ansible.builtin.file:
+    path: "/home/{{ user_admin }}/{{ item }}"
+    state: directory
+    mode: "0755"
+    owner: "{{ user_admin }}"
+    group: "{{ user_admin }}"
+  when: not local_bin_dir.stat.exists
+  with_items:
+    - ".local"
+    - ".local/bin"
+  tags:
+    - asdf
+    - install
+
+- name: ASDF | Check if asdf bin exists
+  ansible.builtin.stat:
+    path: "/home/{{ user_admin }}/.local/bin/asdf"
+  register: asdf_file_bin_path
+  check_mode: false
+  tags:
+    - asdf
+    - install
+
+# - name: ASDF | Debug asdf_file_bin_path!
+#   ansible.builtin.debug:
+#     msg: "{{ asdf_tar_gz }}"
+
+- block:
+    - name: ASDF | Ensure apt packages are managed | Debian
+      become: true
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - "{{ __dep_asdf_pkgs }}"
+      when: ansible_os_family | lower == 'debian'
+      tags:
+        - asdf
+        - install
+
+    - name: ASDF | Ensure yum packages are managed | Redhat
+      become: true
+      ansible.builtin.yum:
+        name: "{{ packages }}"
+        state: "{{ _apt_state }}"
+      vars:
+        packages: "{{ __dep_asdf_pkgs }}"
+        state: '{{ _apt_state | default("present") }}'
+      when: ansible_os_family | lower == 'redhat'
+      tags:
+        - asdf
+        - install
+
+    - name: ASDF | Download tar asdf-v{{ asdf_version }}
+      become: true
+      become_user: "{{ user_admin }}"
+      ansible.builtin.get_url:
+        url: "https://github.com/asdf-vm/asdf/releases/download/v{{ asdf_version }}/{{ asdf_tar_gz }}"
+        dest: "/home/{{ user_admin }}/.local/bin"
+        mode: 0755
+        force: true
+        timeout: 30
+      register: jobasdfdownload
+      until: jobasdfdownload is succeeded
+      retries: 3
+      delay: 3
+      tags:
+        - asdf
+        - install
+
+    - name: ASDF | Extract tar asdf-v{{ asdf_version }}
+      become: true
+      become_user: "{{ user_admin }}"
+      ansible.builtin.unarchive:
+        src: "/home/{{ user_admin }}/.local/bin/{{ asdf_tar_gz }}"
+        dest: "/home/{{ user_admin }}/.local/bin"
+        copy: no # with no will not copy or will deleted
+      when:
+        - jobasdfdownload is succeeded
+      tags:
+        - asdf
+        - install
+
+    - name: ASDF | Check string 'ASDF_DATA_DIR' if exists in file .bashrc
+      ansible.builtin.shell: |
+        cat /home/{{ user_admin }}/.bashrc
+      register: cat_string_bashrc
+      args:
+        executable: /bin/bash
+      changed_when: false
+      tags:
+        - asdf
+        - install
+
+    # - name: ASDF | Debug this cat_string_bashrc
+    #   # jika line string nya tidak ditemukan bakal teroutput -1
+    #   ansible.builtin.debug:
+    #     msg: "{{ cat_string_bashrc.stdout.find('ASDF_DATA_DIR') }}"
+
+    - name: ASDF | Ensure string 'ASDF_DATA_DIR' (multiline strings block) exists in file .bashrc
+      ansible.builtin.blockinfile:
+        path: "/home/{{ user_admin }}/.bashrc"
+        block: |
+          export PATH="$HOME/.local/bin:$PATH"
+          export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
+          . <(asdf completion bash)
+        state: present
+      when: cat_string_bashrc.stdout.find('ASDF_DATA_DIR') == -1
+      tags:
+        - asdf
+        - install
+
+    - name: ASDF | Remove asdf tar gz
+      ansible.builtin.file:
+        path: "/home/{{ user_admin }}/.local/bin/{{ asdf_tar_gz }}"
+        state: absent
+      tags:
+        - asdf
+        - install
+
+  when: not asdf_file_bin_path.stat.exists
+  tags:
+    - asdf
+    - install

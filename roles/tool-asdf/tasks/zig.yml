@@ -1,74 +1,74 @@
 ---
-- name: ASDF-Rust | Check plugin-list if spesific our lang is exists
+- name: ASDF-Zig | Check plugin-list if spesific our lang is exists
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
-    /home/{{ user_admin }}/.local/bin/asdf list rust
+    /home/{{ user_admin }}/.local/bin/asdf list zig
   args:
     executable: /bin/bash
-  register: plugin_rust_exists
+  register: plugin_zig_exists
   changed_when: false
   failed_when: false
   ignore_errors: true
   tags:
     - asdf
-    - rust
+    - zig
 
-# - name: ASDF-Rust | Debug plugin_rust_exists 2
+# - name: ASDF-Zig | Debug plugin_zig_exists!
 #   ansible.builtin.debug:
-#     msg: "{{ plugin_rust_exists }}"
+#     msg: "{{ plugin_zig_exists.stdout.find('zig') }}"
 
-- name: ASDF-Rust | Install asdf plugin for rust
+- name: ASDF-Zig | Install plugin asdf for zig
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
-    /home/{{ user_admin }}/.local/bin/asdf {{ rust_lang.plugin_asdf_install }}
+    /home/{{ user_admin }}/.local/bin/asdf {{ zig_lang.plugin_asdf_install }}
   args:
     executable: /bin/bash
   changed_when: false
   when:
-    - plugin_rust_exists.stderr | length > 0
+    - plugin_zig_exists.stderr | length > 0
   tags:
     - asdf
-    - rust
+    - zig
 
-- name: ASDF-Rust | Check rust version if exists
+- name: ASDF-Zig | Check zig version if exists
   become: true
   become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
-    rustc --version
+    zig version
   args:
     executable: /bin/bash
   environment:
     PATH: "/home/{{ user_admin }}/.asdf/shims:{{ lookup('env', 'PATH') }}"
-  register: rust_version_cur_version
+  register: zig_version_cur_version
   changed_when: false
   failed_when: false
   ignore_errors: true
   tags:
     - asdf
-    - rust
+    - zig
 
-# - name: ASDF-Rust | Debug plugin_rust_exists!
+# - name: ASDF-Zig | Debug zig_version_cur_version
 #   ansible.builtin.debug:
-#     msg: "{{ rust_version_cur_version }}"
+#     msg: "{{ zig_version_cur_version }}"
 
 - block:
-    - name: ASDF-Rust | Ensure apt packages are managed | Debian
+    - name: ASDF-Zig | Ensure apt packages are managed | Debian
       become: true
       ansible.builtin.apt:
         name: "{{ item }}"
         state: present
       with_items:
-        - "{{ rust_lang.plugin_asdf_deps }}"
+        - "{{ zig_lang.plugin_asdf_deps }}"
       when:
-        - rust_lang.plugin_asdf_deps | length > 0
+        - zig_lang.plugin_asdf_deps | length > 0
         - ansible_os_family | lower == 'debian'
       tags:
         - asdf
-        - rust
+        - zig
 
-    - name: ASDF-Rust | Ensure yum packages are managed | Redhat
+    - name: ASDF-Zig | Ensure yum packages are managed | Redhat
       become: true
       ansible.builtin.yum:
         name: "{{ item }}"
@@ -76,44 +76,47 @@
       vars:
         state: '{{ _apt_state | default("present") }}'
       with_items:
-        - "{{ rust_lang.plugin_asdf_deps }}"
+        - "{{ zig_lang.plugin_asdf_deps }}"
       when:
-        - rust_lang.plugin_asdf_deps | length > 0
+        - zig_lang.plugin_asdf_deps | length > 0
         - ansible_os_family | lower == 'redhat'
       tags:
         - asdf
-        - rust
+        - zig
 
-    - name: ASDF-Rust | Install rust version
+    - name: ASDF-Zig | Install zig version
       become: true
       become_user: "{{ user_admin }}"
       ansible.builtin.shell: |
-        /home/{{ user_admin }}/.local/bin/asdf install rust {{ rust_lang.plugin_asdf_rust_version }}
+        /home/{{ user_admin }}/.local/bin/asdf install zig {{ zig_lang.plugin_asdf_zig_version }}
       args:
         executable: /bin/bash
       changed_when: false
-      register: rust_version_installed
+      register: zig_version_installed
+      environment:
+        PATH: "/home/{{ user_admin }}/.local/bin:{{ lookup('env', 'PATH') }}"
       tags:
         - asdf
-        - rust
+        - zig
 
-    - name: ASDF-Rust | Set global for rust version on .tool_version
+    - name: ASDF-Zig | Set global for zig version on .tool_version
       become: true
       become_user: "{{ user_admin }}"
       ansible.builtin.shell: |
-        /home/{{ user_admin }}/.local/bin/asdf set --home rust {{ rust_lang.plugin_asdf_rust_version }}
+        /home/{{ user_admin }}/.local/bin/asdf set --home zig {{ zig_lang.plugin_asdf_zig_version}}
       args:
         executable: /bin/bash
       changed_when: false
+      register: zig_version_installed
       environment:
         PATH: "/home/{{ user_admin }}/.local/bin:{{ lookup('env', 'PATH') }}"
       when:
-        - rust_version_installed is success
+        - zig_version_installed is success
       tags:
         - asdf
-        - rust
+        - zig
   when:
-    - rust_version_cur_version.stderr | length > 0
+    - zig_version_cur_version.stderr | length > 0
   tags:
     - asdf
-    - rust
+    - zig

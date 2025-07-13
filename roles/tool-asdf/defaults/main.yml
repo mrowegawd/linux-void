@@ -4,9 +4,8 @@ asdf_ver_arch: "{{ 'arm64' if ansible_architecture == 'aarch64' else 'armhf' if 
 asdf_os_ver: "{{ 'linux' if ansible_os_family == 'Debian' else 'Linux' if ansible_architecture == 'redhat' else 'Darwin' }}"
 asdf_tar_gz: "asdf-v{{ asdf_version }}-{{ asdf_os_ver }}-{{ asdf_ver_arch }}.tar.gz"
 
-# lua_version: "{{ _install_programming.lua.lua_version }}"
-
-go_version: "{{ _install_programming.golang.golang_version }}"
+# go_version: "{{ _install_programming.golang.golang_version }}"
+go_version: "latest"
 
 go_lang:
   plugin_asdf_deps: []
@@ -18,7 +17,8 @@ go_lang:
     if command -v go &> /dev/null;
     then go version ; else echo "not found"; fi
 
-rust_version: "{{ _install_programming.rust.rust_version }}"
+# rust_version: "{{ _install_programming.rust.rust_version }}"
+rust_version: "latest"
 
 rust_lang:
   plugin_asdf_deps: []
@@ -29,10 +29,9 @@ rust_lang:
   plugin_asdf_check_version: |
     if command -v rustc &> /dev/null;
     then rustc --version ; else echo "not found"; fi
-  plugin_asdf_set_global_version: |
-    asdf global rust {{ rust_version }}
 
-nodejs_version: "{{ _install_programming.nodejs.nodejs_version }}"
+# nodejs_version: "{{ _install_programming.nodejs.nodejs_version }}"
+nodejs_version: "latest"
 
 nodejs_lang:
   plugin_asdf_deps: "{{ __dep_nodejs_pkgs }}"
@@ -45,24 +44,35 @@ nodejs_lang:
     then node --version ; else echo "not found"; fi
   # lang_cmd_install_plugin: |
   #    asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
-  plugin_asdf_set_global_version: |
-    asdf global nodejs {{ nodejs_version }}
 
-ruby_version: "{{ _install_programming.ruby.ruby_version }}"
+# ruby_version: "{{ _install_programming.ruby.ruby_version }}"
+ruby_version: "latest"
 
 ruby_lang:
   plugin_asdf_deps: "{{ __dep_ruby_pkgs }}"
-  plugin_asdf_version: "{{ ruby_version }}"
+  plugin_asdf_ruby_version: "{{ ruby_version }}"
   plugin_asdf_name: "ruby"
   plugin_asdf_install: |
     plugin add ruby https://github.com/asdf-vm/asdf-ruby.git
   plugin_asdf_check_version: |
     if command -v ruby &> /dev/null;
     then ruby --version ; else echo "not found"; fi
-  plugin_asdf_set_global_version: |
-    asdf global ruby {{ ruby_version }}
 
-python3_version: "{{ _install_programming.python3.python3_version }}"
+# zig_version: "{{ _install_programming.zig.zig_version }}"
+zig_version: "latest"
+
+zig_lang:
+  plugin_asdf_deps: "{{ __dep_zig_pkgs }}"
+  plugin_asdf_zig_version: "{{ zig_version }}"
+  plugin_asdf_name: "zig"
+  plugin_asdf_install: |
+    plugin add zig https://github.com/asdf-community/asdf-zig.git
+  plugin_asdf_check_version: |
+    if command -v zig &> /dev/null;
+    then zig --version ; else echo "not found"; fi
+
+# python3_version: "{{ _install_programming.python3.python3_version }}"
+python3_version: "latest"
 python2_version: "{{ _install_programming.python3.python2_version }}"
 
 python_lang:
@@ -74,8 +84,6 @@ python_lang:
     plugin_asdf_check_version: |
       if command -v python &> /dev/null;
       then python --version ; else echo "not found"; fi
-    plugin_asdf_set_global_version: |
-      asdf global python {{ python3_version }} {{ python2_version }}
 
   - plugin_asdf_name: "python2"
     plugin_asdf_deps: "{{ __dep_python2_pkgs }}"
@@ -85,5 +93,3 @@ python_lang:
     plugin_asdf_check_version: |
       if command -v python2 &> /dev/null;
       then python2 --version ; else echo "not found"; fi
-    plugin_asdf_set_global_version: |
-      asdf global python {{ python3_version }} {{ python2_version }}

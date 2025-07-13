@@ -38,6 +38,8 @@ __dep_nodejs_pkgs:
   - dirmngr
   - gawk
 
+__dep_zig_pkgs: []
+
 __dep_lua_pkgs:
   - unzip
 
