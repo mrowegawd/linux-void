@@ -1,4 +1,4 @@
-newsboat_version: "2.36"
+newsboat_version: "2.40"
 
 build_from_source_newsboat:
   - pkg_name: "newsboat"

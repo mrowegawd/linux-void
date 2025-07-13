@@ -9,6 +9,7 @@
 
 - name: NEWSBOAT | Check newsboat current version
   become: true
+  become_user: "{{ user_admin }}"
   ansible.builtin.shell: |
     {{ item.pkg_cmd_check_version }}
   args:
@@ -25,29 +26,26 @@
 #     msg: "{{ newsboat_current_version }}"
 
 - name: NEWSBOAT | Setup newsboat {{ newsboat_version }}
-  tags:
-    - newsboat
-  when:
-    - newsboat_current_version.results.0.stdout.find(newsboat_version) == -1
   block:
     - name: NEWSBOAT | Ensure tmp dir to hold any temporary files for newsboat
+      become: true
+      become_user: "{{ user_admin }}"
       ansible.builtin.tempfile:
         state: directory
         suffix: build
       register: temp_dir_newsboat
       changed_when: false
 
-    - name: NEWSBOAT | Install dependencies | Debian
+    - name: NEWSBOAT | Install newsboat deps | Debian
       become: true
       ansible.builtin.apt:
         name: "{{ item }}"
         state: present
-        update_cache: yes
       when: ansible_os_family | lower == 'debian'
       with_items:
         - "{{ __newsboat_deps }}"
 
-    - name: NEWSBOAT | Install dependencies | Redhat
+    - name: NEWSBOAT | Install newsboat deps | Redhat
       become: true
       ansible.builtin.yum:
         name: "{{ packages }}"
@@ -62,6 +60,7 @@
       #     msg: "{{ temp_dir_newsboat }}"
     - name: NEWSBOAT | Get download tar gz from github newsboat release
       become: true
+      become_user: "{{ user_admin }}"
       ansible.builtin.get_url:
         url: "{{ item.link.0.url }}"
         dest: "{{ temp_dir_newsboat.path }}"
@@ -74,36 +73,27 @@
       delay: 3
       with_items:
         - "{{ build_from_source_newsboat }}"
-      # when: item.pkg_version not in check_pkg_command.stdout or check_pkg_command.stdout.find('not found') != -1
 
-    - name: NEWSBOAT | Check if cargo is installed
+    # - name: NEWSBOAT | Import task asdf.yml
+    #   ansible.builtin.import_tasks: ../../tool-asdf/tasks/asdf.yml
+
+    - name: NEWSBOAT | Import task rust.yml
+      ansible.builtin.import_tasks: ../../tool-asdf/tasks/rust.yml
+
+    - name: NEWSBOAT | Install xtr with rust
       become: true
+      become_user: "{{ user_admin }}"
       ansible.builtin.shell: |
-        command -v cargo
+        cargo install xtr
+      args:
+        executable: /bin/bash
+      environment:
+        PATH: "/home/{{ user_admin }}/.local/bin:{{ lookup('env', 'PATH') }}"
       changed_when: false
-      register: cargo_exists
-      ignore_errors: yes
-
-    - name: NEWSBOAT | Download Installer rust
-      ansible.builtin.get_url:
-        url: https://sh.rustup.rs
-        dest: /tmp/sh.rustup.rs
-        mode: "0755"
-        force: "yes"
-      when: cargo_exists is failed
-      tags:
-        - rust
-
-    - name: NEWSBOAT | Install rust/cargo for dependencies newsboat
-      become: true
-      ansible.builtin.shell: |
-        /tmp/sh.rustup.rs -y
-      when: cargo_exists is failed
-      changed_when: false
-      tags:
-        - rust
 
     - name: NEWSBOAT | Extract tar file newsboat-{{ newsboat_version }}
+      become: true
+      become_user: "{{ user_admin }}"
       ansible.builtin.unarchive:
         src: "{{ temp_dir_newsboat.path }}/{{ item.link.0.tar_file }}"
         dest: "{{ temp_dir_newsboat.path }}"
@@ -122,3 +112,7 @@
       # ignore_errors: true
       with_items:
         - "{{ build_from_source_newsboat }}"
+  tags:
+    - newsboat
+  when:
+    - newsboat_current_version.results.0.stdout.find(newsboat_version) == -1
