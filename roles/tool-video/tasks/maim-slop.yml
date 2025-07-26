@@ -10,9 +10,11 @@
   changed_when: false
   register: check_slop
   tags:
+    - maim
+    - slop
     - video
 
-- name: SLOP-VIDEO | Install slop with dependencies
+- name: SLOP-VIDEO | Install maim and slop with deps
   ansible.builtin.include_role:
     name: _0package
   when: check_slop.stdout.find('not found') != -1
@@ -23,7 +25,8 @@
       - slop
       - maim
   tags:
-    - install
+    - maim
+    - slop
     - video
 # - name: MAIM | Check installed maim version
 #   shell: |

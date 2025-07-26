@@ -1,63 +1,8 @@
----
-# WARN: Task dibawah ini semuanya gagal, gunakan installansi menggunakan `apt install mpv`
-# dari pada build dari tasks ini
-
-- name: MPV-VIDEO | Check mpv installed version
-  become: true
-  become_user: "{{ user_admin }}"
-  ansible.builtin.shell: |
-    set -o pipefail
-    if command -v mpv &> /dev/null;
-    then mpv --version | head -1 | cut -d" " -f2 ; else echo "not found"; fi
-  args:
-    chdir: "/home/{{ user_admin }}"
-    executable: /bin/bash
-  changed_when: false
-  register: check_mpv_version
+- name: MPV | Ensure mpv installed
+  ansible.builtin.include_role:
+    name: _0package
+  vars:
+    _apt_packages: "{{ tool_video_pgks }}"
   tags:
     - mpv
     - video
-
-- name: MPV-VIDEO | Intsall MPV
-  become: true
-  when: check_mpv_version.stdout.find('not found') != -1
-  tags:
-    - mpv
-    - video
-  block:
-    - name: MPV-VIDEO | Clone mpv-build from github
-      ansible.builtin.git:
-        repo: "{{ item.repo }}"
-        dest: "{{ item.dest }}"
-        clone: yes
-        update: no
-        force: yes
-        version: master
-        recursive: false
-      retries: 3
-      delay: 3
-      register: mpvdlgit
-      until: mpvdlgit is success
-      with_items: "{{ mpv_build }}"
-
-    # - name: Debug file temp_dir for mpv build
-    #   ansible.builtin.debug:
-    #     msg: "{{ temp_dir }}/mpv_build"
-
-    - name: MPV-VIDEO | Ensure mpv deps installed
-      ansible.builtin.include_role:
-        name: _0package
-      vars:
-        _apt_packages: "{{ __mpv_deps }}"
-
-        # printf "%s\n" --disable-gl > mpv_options
-    - name: MPV-VIDEO | Install MPV
-      ansible.builtin.shell: |
-        ./rebuild -j4
-        sudo ./install
-      args:
-        executable: /bin/bash
-        chdir: "{{ item.dest }}"
-      when: mpvdlgit is success
-      changed_when: false
-      with_items: "{{ mpv_build }}"
