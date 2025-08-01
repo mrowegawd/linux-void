@@ -1,23 +1,23 @@
 ---
-- name: SLOP-VIDEO | Check installed slop version
-  ansible.builtin.shell: >
-    if command -v slop &> /dev/null;
-    then echo "found"; else echo "not found"; fi
-  args:
-    executable: /bin/bash
-  ignore_errors: True
-  failed_when: false
-  changed_when: false
-  register: check_slop
-  tags:
-    - maim
-    - slop
-    - video
+# - name: SLOP-VIDEO | Check installed slop version
+#   ansible.builtin.shell: >
+#     if command -v slop &> /dev/null;
+#     then echo "found"; else echo "not found"; fi
+#   args:
+#     executable: /bin/bash
+#   ignore_errors: True
+#   failed_when: false
+#   changed_when: false
+#   register: check_slop
+#   tags:
+#     - maim
+#     - slop
+#     - video
 
 - name: SLOP-VIDEO | Install maim and slop with deps
   ansible.builtin.include_role:
     name: _0package
-  when: check_slop.stdout.find('not found') != -1
+  # when: check_slop.stdout.find('not found') != -1
   vars:
     _apt_packages:
       - cmake
