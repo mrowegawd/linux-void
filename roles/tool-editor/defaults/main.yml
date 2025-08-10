@@ -29,3 +29,24 @@ build_from_source_luarocks:
         dest_tar_file: "luarocks-{{ luarocks_version }}"
     pkg_cmd_make: |
       sudo ./configure && make && sudo make install
+
+fonts_jetbrains_mono_version: "2.304"
+fonts_hack_nerd_font_version: "3.4.0"
+fonts_maple_mono_version: "7.5"
+
+fonts_extract_to: "/tmp/extracted-fonts"
+fonts_install_path: "~/.local/share/fonts"
+fonts_archive_pattern: "*.zip"
+fonts_git:
+  - repo: "https://github.com/supercomputra/SF-Mono-Font"
+    dest: "{{ fonts_install_path }}/sf-mono"
+  - repo: "https://github.com/zapolnoch/CousinsHug"
+    dest: "{{ fonts_install_path }}/cousinshug"
+
+fonts_wget:
+  - url: "https://github.com/JetBrains/JetBrainsMono/releases/download/v{{ fonts_jetbrains_mono_version }}/JetBrainsMono-{{ fonts_jetbrains_mono_version }}.zip"
+    dest: "{{ fonts_install_path }}"
+  - url: "https://github.com/ryanoasis/nerd-fonts/releases/download/v{{ fonts_hack_nerd_font_version }}/Hack.zip"
+    dest: "{{ fonts_install_path }}"
+  - url: "https://github.com/subframe7536/maple-font/releases/download/v{{ fonts_maple_mono_version }}/MapleMonoNL-NF.zip"
+    dest: "{{ fonts_install_path }}"

@@ -1,0 +1,151 @@
+---
+# NOTE: ketika menjalankan role ini pada hosts (untuk debug)
+# jangan lupa install fontsconfig `sudo apt install fontconfig,`
+
+- name: FONTS | Install fonts deps
+  ansible.builtin.include_role:
+    name: _0package
+  vars:
+    _apt_packages:
+      - git
+      - tar
+      - unzip
+      - fontconfig
+  tags:
+    - fonts
+
+# - name: FONTS | Flatten this_repo
+#   set_fact:
+#     flat_this_repo: "{{ this_repo | map('dict2items') | map('first') | map(attribute='value') | list | flatten }}"
+#
+# - name: FONTS | Combine all repos
+#   set_fact:
+#     all_repos: "{{ flat_this_repo + another_repo }}"
+#
+- name: FONTS | Ensure install and extract dirs exist
+  become: true
+  become_user: "{{ user_admin }}"
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  with_items:
+    - "{{ fonts_install_path | expanduser }}"
+  tags:
+    - fonts
+
+- name: FONTS | Get clone fonts repository
+  become: true
+  become_user: "{{ user_admin }}"
+  git:
+    repo: "{{ item.repo }}"
+    dest: "{{ item.dest }}"
+    force: yes
+  with_items: "{{ fonts_git }}"
+  tags:
+    - fonts
+
+- name: FONTS | Wget fonts
+  become: true
+  become_user: "{{ user_admin }}"
+  ansible.builtin.get_url:
+    url: "{{ item.url }}"
+    dest: "{{ item.dest }}"
+    force: no
+    mode: "755"
+  with_items: "{{ fonts_wget }}"
+  tags:
+    - fonts
+
+- name: FONTS | Find font archives in repo
+  become: true
+  become_user: "{{ user_admin }}"
+  find:
+    paths: "{{ fonts_install_path }}"
+    patterns: "{{ fonts_archive_pattern }}"
+    recurse: yes
+  register: font_archives
+  tags:
+    - fonts
+
+# - name: FONTS | Debug font_archives!
+#   become: true
+#   become_user: "{{ user_admin }}"
+#   ansible.builtin.debug:
+#     msg: "{{ font_archives }}"
+
+- name: FONTS | Extract font archives
+  become: true
+  become_user: "{{ user_admin }}"
+  unarchive:
+    src: "{{ item.path }}"
+    dest: "{{ fonts_install_path | expanduser }}"
+    remote_src: yes
+  with_items: "{{ font_archives.files }}"
+  tags:
+    - fonts
+
+- name: FONTS | Delete file patterns .md, .txt, .json, .tar, .zip
+  become: true
+  become_user: "{{ user_admin }}"
+  find:
+    paths: "{{ fonts_install_path | expanduser }}"
+    patterns:
+      - "*.md"
+      - "*.txt"
+      - "*.json"
+      - "*.tar"
+      - "*.zip"
+    recurse: yes
+  register: files_to_delete
+  tags:
+    - fonts
+
+- name: FONTS | Delete the file patterns
+  become: true
+  become_user: "{{ user_admin }}"
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  loop: "{{ files_to_delete.files }}"
+  when: files_to_delete.matched > 0
+  tags:
+    - fonts
+
+- name: FONTS | Find *.ttf *.ottf
+  become: true
+  become_user: "{{ user_admin }}"
+  find:
+    paths: "{{ fonts_install_path | expanduser }}"
+    patterns:
+      - "*.ttf"
+      - "*.otf"
+    recurse: yes
+  register: files_font_ttf
+  tags:
+    - fonts
+
+- name: FONTS | Move file *.ttf *.ottf
+  become: true
+  become_user: "{{ user_admin }}"
+  ansible.builtin.shell: |
+    mv {{ item.path }} "{{ fonts_install_path | expanduser }}"
+  args:
+    executable: /bin/bash
+  changed_when: false
+  failed_when: false
+  loop: "{{ files_font_ttf.files }}"
+  when: files_font_ttf.matched > 0
+  tags:
+    - fonts
+
+- name: FONTS | Rebuild font cache
+  become: true
+  become_user: "{{ user_admin }}"
+  ansible.builtin.shell: |
+    fc-cache -fv
+  args:
+    executable: /bin/bash
+  changed_when: false
+  tags:
+    - fonts

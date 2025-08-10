@@ -12,6 +12,13 @@ provisioner:
   name: ansible
   lint:
     name: ansible-lint
+  inventory:
+    links:
+      group_vars: ../../../../group_vars/
+  options:
+    vvv: true
+  env:
+    ANSIBLE_ROLES_PATH: ../../../../roles/
 scenario:
   create_sequence:
     - dependency
