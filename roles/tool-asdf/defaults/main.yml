@@ -1,5 +1,5 @@
 ---
-asdf_version: 0.16.7
+asdf_version: 0.18.0
 asdf_ver_arch: "{{ 'arm64' if ansible_architecture == 'aarch64' else 'armhf' if ansible_architecture == 'armv7l' else 'amd64' }}"
 asdf_os_ver: "{{ 'linux' if ansible_os_family == 'Debian' else 'Linux' if ansible_architecture == 'redhat' else 'Darwin' }}"
 asdf_tar_gz: "asdf-v{{ asdf_version }}-{{ asdf_os_ver }}-{{ asdf_ver_arch }}.tar.gz"

@@ -9,7 +9,7 @@
 # Install ansible-stuff
 ./install.sh main deps
 
-# To create make pass
+# To create hash pass
 ./install.sh main makepass
 
 # Install using ansible playbook
@@ -21,46 +21,26 @@ ansible-playbook install-fresh.yml --ask-become-pass --tag "eww" # "eww,tools,nv
 
 ## How to Test
 
-Example:
+You must create dummy user!
 
-```bash
-# Example test tool-fzf
-cd ./roles/tool-fzf
+1. Create a dummy user, password, and generate the hashed password:
 
-molecule converge
-```
+   ```bash
+   # Copy the template folder
+   cp tmp_example tmp
+   
+   # Generate hashed password
+   ./install.sh main makepass
+   ```
 
-## Fonts
+2. Insert a new user, real password, and the hashed password on that `./tmp`
+   folder
 
-Install and copy fonts at `~/.local/share/fonts`:
+3. Choose the role to test (e.g., `tool-fzf`):
 
-- [JetBrains Mono](https://www.jetbrains.com/lp/mono/)
-- [Nerd Fonts release](https://github.com/ryanoasis/nerd-fonts/releases)
-- [Maple Fonts](https://github.com/subframe7536/maple-font/releases)
-
-Cache the fonts `fc-cache -f -v`
-
-## TODO
-
-- [ ] tambahkan content ini ke file `../molecule/defualt/molecule.yml`
-
-  Molecule versi terbaru perlu penambahan content pada file `../molecule/defualt/molecule.yml`
-  pada tiap **roles**, kalau tidak `molecule converge` akan gagal
-
-  ```yml
-  ---
-  provisioner:
-    name: ansible
-    lint:
-      name: ansible-lint
-    inventory:
-      links:
-        group_vars: ../../../../group_vars/
-    options:
-      vvv: true
-    env:
-      ANSIBLE_ROLES_PATH: ../../../../roles/
-  ```
-
-  - [x] tool-tmux
-  - [x] tool-video
+   ```bash
+   # Example: testing the tool-fzf role
+   cd ./roles/tool-fzf
+   
+   molecule converge
+   ```

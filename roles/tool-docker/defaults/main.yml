@@ -48,7 +48,7 @@ docker_compose_package_state: present
 
 # Docker Compose options.
 docker_install_compose: true
-docker_compose_version: "v2.29.0"
+docker_compose_version: "v2.32.2"
 docker_compose_arch: "{{ ansible_architecture }}"
 docker_compose_url: "https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-linux-{{ docker_compose_arch }}"
 docker_compose_path: /usr/local/bin/docker-compose
