@@ -26,6 +26,10 @@
 #     msg: "{{ newsboat_current_version }}"
 
 - name: NEWSBOAT | Setup newsboat {{ newsboat_version }}
+  when:
+    - newsboat_current_version.results.0.stdout.find(newsboat_version) == -1
+  tags:
+    - newsboat
   block:
     - name: NEWSBOAT | Ensure tmp dir to hold any temporary files for newsboat
       become: true
@@ -112,7 +116,3 @@
       # ignore_errors: true
       with_items:
         - "{{ build_from_source_newsboat }}"
-  tags:
-    - newsboat
-  when:
-    - newsboat_current_version.results.0.stdout.find(newsboat_version) == -1

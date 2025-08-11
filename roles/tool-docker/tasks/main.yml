@@ -8,12 +8,14 @@
   tags:
     - docker
 
-- include_tasks: setup-RedHat.yml
+- name: DOCKER | Include task setup-RedHat.yml
+  include_tasks: setup-RedHat.yml
   when: ansible_os_family == 'RedHat'
   tags:
     - docker
 
-- include_tasks: setup-Debian.yml
+- name: DOCKER | Include task setup-Debian.yml
+  include_tasks: setup-Debian.yml
   when: ansible_os_family == 'Debian'
   tags:
     - docker
@@ -94,7 +96,8 @@
   tags:
     - docker
 
-- include_tasks: docker-compose.yml
+- name: DOCKER | Include task docker-compose.yml
+  include_tasks: docker-compose.yml
   when: docker_install_compose | bool
   tags:
     - docker
@@ -118,7 +121,8 @@
   tags:
     - docker
 
-- include_tasks: docker-users.yml
+- name: DOCKER | Include task docker-users.yml
+  include_tasks: docker-users.yml
   when: at_least_one_user_to_modify is defined
   tags:
     - docker

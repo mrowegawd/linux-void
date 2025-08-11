@@ -9,7 +9,8 @@
     - docker
     - docker-compose
 
-- set_fact:
+- name: DOCKER-COMPOSE | Set fact docker_compose_current_version
+  set_fact:
     docker_compose_current_version: "{{ docker_compose_vsn.stdout | regex_search('(\\d+(\\.\\d+)+)') }}"
   when: >
     docker_compose_vsn.stdout is defined

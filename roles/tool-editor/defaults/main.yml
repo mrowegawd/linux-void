@@ -39,8 +39,10 @@ fonts_install_path: "~/.local/share/fonts"
 fonts_archive_pattern: "*.zip"
 fonts_git:
   - repo: "https://github.com/supercomputra/SF-Mono-Font"
+    version: "master"
     dest: "{{ fonts_install_path }}/sf-mono"
   - repo: "https://github.com/zapolnoch/CousinsHug"
+    version: "mainh"
     dest: "{{ fonts_install_path }}/cousinshug"
 
 fonts_wget:

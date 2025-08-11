@@ -36,12 +36,13 @@
   tags:
     - fonts
 
-- name: FONTS | Get clone fonts repository
+- name: FONTS | Get clone fonts repo
   become: true
   become_user: "{{ user_admin }}"
   git:
     repo: "{{ item.repo }}"
     dest: "{{ item.dest }}"
+    version: "{{ item.version | default('main') }}"
     force: yes
   with_items: "{{ fonts_git }}"
   tags:
