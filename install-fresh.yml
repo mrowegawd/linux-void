@@ -26,6 +26,7 @@
     # - tools
     # Window Manager
     - wm-bspwm
+    - wm-lock
       # - wm-conky
     - wm-rofi
     # - wm-polybar

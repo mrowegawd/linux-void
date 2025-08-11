@@ -1,12 +1,4 @@
 ---
-##############################
-#
-# WM VARIAN
-#
-##############################
-#
-# }}}
-# AWESOME --------------------------------------------------------- {{{
 awesome_git:
   - repo: "https://github.com/awesomewm/awesome"
     dest: "{{ temp_dir }}/awesome"
@@ -19,14 +11,8 @@ awesome_git:
   - repo: "https://github.com/baskerville/xdo.git"
     dest: "{{ temp_dir }}/xdo"
 
-#
-# }}}
-# DWM --------------------------------------------------------- {{{
 dwm_git:
   - repo: "https://github.com/sunilRF9/Custom-DWM-Build"
     dest: "{{ temp_dir }}/dwm"
-
-#
-# }}}
 
 lua_version: "{{ _install_programming.lua.lua_version }}"

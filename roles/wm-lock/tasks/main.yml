@@ -1,31 +1,41 @@
 ---
-- name: WM_LOCK | Check command i3lock if exists
-  shell: >
+- name: WM LOCK | Include vars for specific os
+  ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
+  tags:
+    - wm-lock
+
+- name: WM LOCK | Debug wm lock
+  ansible.builtin.debug:
+    msg: "{{ temp_dir }}"
+  tags:
+    - wm-lock
+
+- name: WM LOCK | Check command i3lock if exists
+  ansible.builtin.shell: |
     if command -v i3lock &> /dev/null;
     then echo "found"; else echo "not found"; fi
   args:
-    warn: no
     executable: /bin/bash
   changed_when: false
   register: check_i3lock_color_command
   tags:
-    - wm_lock
+    - wm-lock
 
-- name: WM_LOCK | Install i3lock if not exists
+- name: WM LOCK | Install i3lock if not exists
   when: check_i3lock_color_command.stdout.find('not found') != -1
   tags:
-    - wm_lock
+    - wm-lock
   block:
-    - name: WM_LOCK | Install dependencies i3lock
-      include_role:
+    - name: WM LOCK | Install dependencies i3lock
+      ansible.builtin.include_role:
         name: _0package
       vars:
         _apt_packages: "{{ __wm_i3lock_color_deps }}"
       tags:
         - install
-        - wm_lock
+        - wm-lock
 
-    - name: WM_LCOK | Clone i3lock
+    - name: WM LOCK | Clone i3lock
       git:
         repo: "https://github.com/Raymo111/i3lock-color.git"
         dest: "{{ temp_dir }}/i3lock-color"
@@ -37,43 +47,41 @@
       delay: 10
       tags:
         - install
-        - wm_lock
+        - wm-lock
 
-    - name: WM_LOCK | Install i3lock
-      shell: |
+    - name: WM LOCK | Install i3lock
+      ansible.builtin.shell: |
         ./install-i3lock-color.sh
       args:
-        warn: no
         chdir: "{{ temp_dir }}/i3lock-color"
         executable: /bin/bash
       changed_when: false
       tags:
-        - wm_lock
+        - wm-lock
 
-- name: WM_LOCK | Check command betterlockscreen if exists
-  shell: >
+- name: WM LOCK | Check command betterlockscreen if exists
+  ansible.builtin.shell: |
     if command -v betterlockscreen &> /dev/null;
     then echo "found"; else echo "not found"; fi
   args:
-    warn: no
     executable: /bin/bash
   changed_when: false
   register: check_betterlockscreen_command
   tags:
-    - wm_lock
+    - wm-lock
 
-- name: WM_LOCK | Install betterlockscreen if not exists
+- name: WM LOCK | Install betterlockscreen if not exists
   when: check_betterlockscreen_command.stdout.find('not found') != -1
   tags:
-    - wm_lock
+    - wm-lock
   block:
-    - name: WM_LOCK | Install dependencies betterlockscreen
-      include_role:
+    - name: WM LOCK | Install dependencies betterlockscreen
+      ansible.builtin.include_role:
         name: _0package
       vars:
         _apt_packages: "{{ __wm_betterlockscreen_deps }}"
       tags:
-        - wm_lock
+        - wm-lock
 
     - name: WM_LCOK | Clone betterlockscreen
       git:
@@ -86,15 +94,14 @@
       retries: 10
       delay: 10
       tags:
-        - wm_lock
+        - wm-lock
 
-    - name: WM_LOCK | Install betterlockscreen
-      shell: |
+    - name: WM LOCK | Install betterlockscreen
+      ansible.builtin.shell: |
         ./install.sh system
       args:
-        warn: no
         chdir: "{{ temp_dir }}/betterlockscreen"
         executable: /bin/bash
       changed_when: false
       tags:
-        - wm_lock
+        - wm-lock
