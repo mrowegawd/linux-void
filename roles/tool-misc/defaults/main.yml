@@ -11,3 +11,9 @@ xgetres_version: "1.0"
 cava_version: "0.10.2"
 
 euberzugpp_version: "2.9.6"
+
+telegram_version: "6.0.2"
+telegram_tar: "tsetup.{{ telegram_version }}.tar.xz"
+telegram_dest: "/opt"
+
+qbittorrent_version: "5.1.2"

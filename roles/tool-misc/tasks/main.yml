@@ -2,11 +2,13 @@
 - name: MISC | Include vars for specific os
   ansible.builtin.include_vars: "{{ ansible_distribution | lower }}/main.yml"
   tags:
+    - dropbox
+    - folders
     - misc
     - mpdris
     - pamixer
-    - folders
-    - dropbox
+    - qbittorrent
+    - telegram
     - tools
 
 # - name: MISC | Include task mpdris2-rs.yml
@@ -40,5 +42,17 @@
 - name: MISC | Include task autoenv.yml
   ansible.builtin.include_tasks: autoenv.yml
   tags:
-    - misc
     - autoenv
+    - misc
+
+- name: MISC | Include task telegram.yml
+  ansible.builtin.include_tasks: telegram.yml
+  tags:
+    - misc
+    - telegram
+
+- name: MISC | Include task qbittorrent.yml
+  ansible.builtin.include_tasks: qbittorrent.yml
+  tags:
+    - misc
+    - qbittorrent

@@ -1,6 +1,7 @@
 ---
-# NOTE: ketika menjalankan role ini pada hosts (untuk debug)
-# jangan lupa install fontsconfig `sudo apt install fontconfig,`
+# NOTE: ketika menjalankan role ini pada hosts untuk debug,
+# jangan lupa install fontsconfig terlebih dahulu pada host tersebut
+# command: `sudo apt install fontconfig,`
 
 - name: FONTS | Install fonts deps
   ansible.builtin.include_role:
@@ -22,6 +23,7 @@
 #   set_fact:
 #     all_repos: "{{ flat_this_repo + another_repo }}"
 #
+
 - name: FONTS | Ensure install and extract dirs exist
   become: true
   become_user: "{{ user_admin }}"

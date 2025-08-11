@@ -1,0 +1,47 @@
+---
+- name: TELEGRAM | Install telegram deps
+  ansible.builtin.include_role:
+    name: _0package
+  vars:
+    _apt_packages:
+      - tar
+      - unzip
+  tags:
+    - telegram
+
+- name: TELEGRAM | Wget tsetup for telegram
+  ansible.builtin.get_url:
+    url: "https://td.telegram.org/tlinux/{{ telegram_tar }}"
+    dest: "/tmp"
+    force: no
+    mode: "755"
+  tags:
+    - telegram
+
+- name: TELEGRAM | Ensure dir /opt exist
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  with_items:
+    - "/opt"
+  tags:
+    - telegram
+
+- name: TELEGRAM | Extract telegram archives
+  unarchive:
+    src: "/tmp/{{ telegram_tar }}"
+    dest: "/opt"
+    remote_src: yes
+  register: telegram_ekstract
+  tags:
+    - telegram
+
+- name: TELEGRAM | Ensure symlink telegram exists
+  ansible.builtin.file:
+    src: "/opt/Telegram/Telegram"
+    dest: "/usr/bin/Telegram"
+    state: link
+  when: telegram_ekstract is succeeded
+  tags:
+    - telegram

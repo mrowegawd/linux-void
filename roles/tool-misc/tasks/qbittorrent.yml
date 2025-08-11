@@ -1,0 +1,27 @@
+---
+- name: QBITTORENT | Ensure dir .local/bin exist
+  become: true
+  become_user: "{{ user_admin }}"
+  file:
+    path: "/home/{{ user_admin }}/.local/bin"
+    state: directory
+    mode: "0755"
+  tags:
+    - qbittorrent
+
+# - name: QBITTORENT | Debug system architecture
+#   ansible.builtin.debug:
+#     msg: "{{ ansible_architecture }}"
+#   tags:
+#     - qbittorrent
+
+- name: QBITTORENT | Wget qbittorrent appimage
+  become: true
+  become_user: "{{ user_admin }}"
+  ansible.builtin.get_url:
+    url: "https://onboardcloud.dl.sourceforge.net/project/qbittorrent/qbittorrent-appimage/qbittorrent-{{ qbittorrent_version }}/qbittorrent-{{ qbittorrent_version }}_{{ ansible_architecture }}.AppImage"
+    dest: "/home/{{ user_admin }}/.local/bin/qbittorent"
+    force: no
+    mode: "755"
+  tags:
+    - qbittorrent
