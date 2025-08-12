@@ -16,3 +16,4 @@ __tools_base_pkg:
   - g++
   - gcc
   - cmake
+  - xclip
