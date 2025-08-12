@@ -10,27 +10,27 @@ __dep_python2_pkgs: []
 
 __dep_python3_pkgs:
   - build-essential
-  - git
-  - make
+  - cmake
+  - curl 
   - g++
   - gcc
-  - cmake
-  - make
-  - libssl-dev
-  - zlib1g-dev
+  - git 
   - libbz2-dev
-  - libreadline-dev
-  - libsqlite3-dev
-  - llvm
-  - libncursesw5-dev
-  - xz-utils
-  - tk-dev
-  - libxml2-dev
-  - libxmlsec1-dev
   - libffi-dev
   - liblzma-dev
-  - curl
+  - libncurses-dev 
+  - libncursesw5-dev
+  - libreadline-dev
+  - libsqlite3-dev
+  - libssl-dev
+  - libxml2-dev
+  - libxmlsec1-dev
+  - llvm
+  - make
+  - tk-dev
   - wget
+  - xz-utils
+  - zlib1g-dev
 
 __dep_nodejs_pkgs:
   - gpg

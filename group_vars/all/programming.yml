@@ -38,7 +38,7 @@ _install_programming:
     group_for_webserver: "www"
   python3:
     python3_version: "3.13.3"
-    python2_version: "2.7.16"
+    python2_version: "2.7.18"
   ruby:
     ruby_version: "3.4.3"
   rust:

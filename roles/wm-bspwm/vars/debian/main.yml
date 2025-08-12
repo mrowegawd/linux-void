@@ -13,5 +13,4 @@ __bspwm_deps:
   - libxcb-xinerama0-dev
   - libxcb-xtest0-dev
   - make
-  - xcb
   - xdotool

@@ -27,7 +27,7 @@ __cava_deps:
   - g++
   - gcc
   - gettext
-  - software-properties-common
+  # - software-properties-common
   - curl
   - gnupg
   - wget
@@ -139,10 +139,8 @@ __tools_extensions:
   - zathura-ps
 
 # tools yang di install melalui ppa
-__tools_ppa_keys:
-  []
+__tools_ppa_keys: []
   # - "ppa:altair-ibn-la-ahad/incron"
 
-__tools_ppa:
-  []
+__tools_ppa: []
   # - incron

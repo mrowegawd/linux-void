@@ -8,11 +8,11 @@
     - nvim
     - fonts
 
-- name: EDITOR | Include vscode.yml
-  ansible.builtin.include_tasks: vscode.yml
-  tags:
-    - editor
-    - vscode
+# - name: EDITOR | Include vscode.yml
+#   ansible.builtin.include_tasks: vscode.yml
+#   tags:
+#     - editor
+#     - vscode
 
 - name: EDITOR | Include neovim.yml
   ansible.builtin.include_tasks: neovim.yml

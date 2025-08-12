@@ -1,9 +1,11 @@
 ---
 __eww_deps:
-  - libcairo2-dev
+  - build-essential
   - libatk1.0-dev
-  - libgdk-pixbuf2.0-dev
-  - libglib2.0-dev
+  - libcairo2-dev
+  - libcairo2-dev
   - libdbusmenu-glib-dev
-  - librust-gdk+v3-24-dev
   - libdbusmenu-gtk3-dev
+  - libglib2.0-dev
+  - libgtk-3-dev
+  - libpango1.0-dev

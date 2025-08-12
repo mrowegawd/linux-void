@@ -42,7 +42,7 @@ fonts_git:
     version: "master"
     dest: "{{ fonts_install_path }}/sf-mono"
   - repo: "https://github.com/zapolnoch/CousinsHug"
-    version: "mainh"
+    version: "main"
     dest: "{{ fonts_install_path }}/cousinshug"
 
 fonts_wget:

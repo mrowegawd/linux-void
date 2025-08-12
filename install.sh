@@ -16,12 +16,16 @@ __install_deps() {
 		sshpass \
 		python3-pip
 
-	pip install pipx
+	sudo apt install pipx
+	pipx ensurepath
 
 	# https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#installing-ansible
 	pipx install ansible-dev-tools
 	pipx install molecule --include-devs
 	pipx install "molecule-plugins[docker]" --include-deps # for driver
+	pipx ensurepath
+
+	ansible-galaxy collection install community.general
 }
 
 mkpass() {
