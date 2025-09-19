@@ -21,7 +21,7 @@
   vars:
     _apt_packages:
       - fonts-noto-color-emoji
-      - fonts-noto-color-cjk
+      - fonts-noto-cjk
       - fonts-dejavu
       - fonts-freefont-ttf
       - fonts-symbola

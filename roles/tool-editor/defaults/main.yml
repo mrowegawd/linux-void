@@ -31,6 +31,7 @@ build_from_source_luarocks:
       sudo ./configure && make && sudo make install
 
 fonts_jetbrains_mono_version: "2.304"
+fonts_jetbrains_mono_version_nerd_fonts: "2.3.3"
 fonts_hack_nerd_font_version: "3.4.0"
 fonts_maple_mono_version: "7.5"
 
@@ -46,7 +47,7 @@ fonts_git:
     dest: "{{ fonts_install_path }}/cousinshug"
 
 fonts_wget:
-  - url: "https://github.com/JetBrains/JetBrainsMono/releases/download/v{{ fonts_jetbrains_mono_version }}/JetBrainsMono-{{ fonts_jetbrains_mono_version }}.zip"
+  - url: "https://github.com/ryanoasis/nerd-fonts/releases/download/v{{ fonts_jetbrains_mono_version_nerd_fonts }}/JetBrainsMono.zip"
     dest: "{{ fonts_install_path }}"
   - url: "https://github.com/ryanoasis/nerd-fonts/releases/download/v{{ fonts_hack_nerd_font_version }}/Hack.zip"
     dest: "{{ fonts_install_path }}"
