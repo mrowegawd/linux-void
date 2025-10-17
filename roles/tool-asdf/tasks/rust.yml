@@ -53,7 +53,13 @@
 #   ansible.builtin.debug:
 #     msg: "{{ rust_version_cur_version }}"
 
-- block:
+- name: "ASDF-Rust | Install rust"
+  when:
+    - rust_version_cur_version.stderr | length > 0
+  tags:
+    - asdf
+    - rust
+  block:
     - name: ASDF-Rust | Ensure apt packages are managed | Debian
       become: true
       ansible.builtin.apt:
@@ -112,8 +118,3 @@
       tags:
         - asdf
         - rust
-  when:
-    - rust_version_cur_version.stderr | length > 0
-  tags:
-    - asdf
-    - rust

@@ -82,7 +82,14 @@
 #     - asdf
 #     - python
 
-- block:
+- name: "ASDF-Python | Install python"
+  when:
+    - python_versions is defined
+    - python_versions | length > 0
+  tags:
+    - asdf
+    - python
+  block:
     - name: ASDF-Python | Ensure apt packages are managed | Debian
       become: true
       ansible.builtin.apt:
@@ -141,9 +148,3 @@
       tags:
         - asdf
         - python
-  when:
-    - python_versions is defined
-    - python_versions | length > 0
-  tags:
-    - asdf
-    - python

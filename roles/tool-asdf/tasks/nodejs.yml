@@ -53,7 +53,13 @@
 #   ansible.builtin.debug:
 #     msg: "{{ nodejs_version_cur_version.stdout.find(nodejs_version) }}"
 
-- block:
+- name: "ASDF-Nodejs | Install nodejs"
+  when:
+    - nodejs_version_cur_version.stderr | length > 0
+  tags:
+    - asdf
+    - nodejs
+  block:
     - name: ASDF-Nodejs | Ensure apt packages are managed | Debian
       become: true
       ansible.builtin.apt:
@@ -114,9 +120,3 @@
       tags:
         - asdf
         - nodejs
-
-  when:
-    - nodejs_version_cur_version.stderr | length > 0
-  tags:
-    - asdf
-    - nodejs

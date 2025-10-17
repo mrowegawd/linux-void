@@ -36,6 +36,7 @@
 # - name: ASDF | Debug asdf_file_bin_path!
 #   ansible.builtin.debug:
 #     msg: "{{ asdf_tar_gz }}"
+
 - name: ASDF | Install asdf
   when: not asdf_file_bin_path.stat.exists
   tags:

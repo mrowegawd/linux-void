@@ -52,8 +52,16 @@
 # - name: ASDF-Zig | Debug zig_version_cur_version
 #   ansible.builtin.debug:
 #     msg: "{{ zig_version_cur_version }}"
+#   tags:
+#     - zig
 
-- block:
+- name: "ASDF-Zig | Install zig"
+  when:
+    - zig_version_cur_version.stderr | length > 0
+  tags:
+    - asdf
+    - zig
+  block:
     - name: ASDF-Zig | Ensure apt packages are managed | Debian
       become: true
       ansible.builtin.apt:
@@ -115,8 +123,3 @@
       tags:
         - asdf
         - zig
-  when:
-    - zig_version_cur_version.stderr | length > 0
-  tags:
-    - asdf
-    - zig
