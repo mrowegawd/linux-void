@@ -17,6 +17,8 @@ ansible-playbook install-fresh.yml --ask-become-pass
 
 # Install a specific role
 ansible-playbook install-fresh.yml --ask-become-pass --tag "eww" # "eww,tools,nvim"
+# Using uv:
+# uv run ansible-playbook install-fresh.yml --ask-become-pass --tag "eww" # "eww,tools,nvim"
 ```
 
 ## How to Test

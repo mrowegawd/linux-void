@@ -1,4 +1,4 @@
-tmux_version: "3.6"
+tmux_version: "3.6a"
 
 build_from_source_tmux:
   - pkg_name: "tmux"
