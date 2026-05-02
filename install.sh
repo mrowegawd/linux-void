@@ -28,7 +28,17 @@ __install_deps() {
 	ansible-galaxy collection install community.general
 }
 
+__install_mkpass() {
+	if [ -z "$(command -v mkpasswd)" ]; then
+		echo "package whois not found! let me install it.."
+		sudo apt install whois -y
+		sleep 1
+	fi
+}
+
 mkpass() {
+	__install_mkpass
+
 	read -r -p "your password? " getvar
 
 	mkdir -p tmp
@@ -51,11 +61,7 @@ playbook_start() {
 		exit 1
 	fi
 
-	if [ -z "$(command -v mkpasswd)" ]; then
-		echo "package whois not found! let me install it.."
-		sudo apt install whois -y
-		sleep 1
-	fi
+	__install_mkpass
 
 	clear
 	mkpass

@@ -28,7 +28,7 @@ You must create dummy user!
    ```bash
    # Copy the template folder
    cp tmp_example tmp
-   
+
    # Generate hashed password
    ./install.sh main makepass
    ```
@@ -41,6 +41,24 @@ You must create dummy user!
    ```bash
    # Example: testing the tool-fzf role
    cd ./roles/tool-fzf
-   
+
    molecule converge
    ```
+
+## Install NVIDIA
+
+> Works on Debian 13 with the latest VGA drivers
+
+```bash
+sudo apt update
+sudo apt upgrade
+
+sudo apt install linux-headers-$(uname -r) build-essential dkms nvidia-detect
+
+sudo apt update
+sudo apt upgrade
+
+sudo apt install nvidia-driver nvidia-kernel-dkms
+
+sudo reboot
+```
