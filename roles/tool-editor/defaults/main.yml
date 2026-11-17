@@ -47,6 +47,9 @@ fonts_git:
   - repo: "https://github.com/zapolnoch/CousinsHug"
     version: "main"
     dest: "{{ fonts_install_path }}/cousinshug"
+  - repo: "https://github.com/g5becks/Cartograph"
+    version: "main"
+    dest: "{{ fonts_install_path }}/cartograph"
 
 fonts_wget:
   - url: "https://github.com/ryanoasis/nerd-fonts/releases/download/v{{ fonts_jetbrains_mono_version_nerd_fonts }}/JetBrainsMono.zip"
